@@ -1,0 +1,131 @@
+{
+ "trailer": "wrapped",
+ "stage": "1080x1920",
+ "tests": [
+  {
+   "t": 11.8,
+   "identical": true,
+   "paths": [
+    {
+     "label": "desde 0",
+     "from": 0,
+     "sha256": "6d49cbf7a241e1a9eaf61c76118bf2616e0b47e61ce7c333c7bf5c7687101bfd"
+    },
+    {
+     "label": "desde el final",
+     "from": 42.99,
+     "sha256": "6d49cbf7a241e1a9eaf61c76118bf2616e0b47e61ce7c333c7bf5c7687101bfd",
+     "diff": {
+      "pixels": 0,
+      "of": 2073600,
+      "maxLevel": 0
+     }
+    },
+    {
+     "label": "desde 9,3 s",
+     "from": 9.3,
+     "sha256": "6d49cbf7a241e1a9eaf61c76118bf2616e0b47e61ce7c333c7bf5c7687101bfd",
+     "diff": {
+      "pixels": 0,
+      "of": 2073600,
+      "maxLevel": 0
+     }
+    }
+   ]
+  },
+  {
+   "t": 2.5,
+   "identical": true,
+   "paths": [
+    {
+     "label": "desde 0",
+     "from": 0,
+     "sha256": "e05f475f64954bcb0ca536c1eec4ebf41831789e093206beaafb65820adc3378"
+    },
+    {
+     "label": "desde el final",
+     "from": 42.99,
+     "sha256": "e05f475f64954bcb0ca536c1eec4ebf41831789e093206beaafb65820adc3378",
+     "diff": {
+      "pixels": 0,
+      "of": 2073600,
+      "maxLevel": 0
+     }
+    },
+    {
+     "label": "desde 0 s",
+     "from": 0,
+     "sha256": "e05f475f64954bcb0ca536c1eec4ebf41831789e093206beaafb65820adc3378",
+     "diff": {
+      "pixels": 0,
+      "of": 2073600,
+      "maxLevel": 0
+     }
+    }
+   ]
+  },
+  {
+   "t": 21.3,
+   "identical": false,
+   "paths": [
+    {
+     "label": "desde 0",
+     "from": 0,
+     "sha256": "46b1beb9411d69a3a5d14c5db6a8f28bd0d92f0f160d3dc49e5f33a9be26563b"
+    },
+    {
+     "label": "desde el final",
+     "from": 42.99,
+     "sha256": "46b1beb9411d69a3a5d14c5db6a8f28bd0d92f0f160d3dc49e5f33a9be26563b",
+     "diff": {
+      "pixels": 0,
+      "of": 2073600,
+      "maxLevel": 0
+     }
+    },
+    {
+     "label": "desde 18,8 s",
+     "from": 18.8,
+     "sha256": "95d78ebb166e48d06bfdf0bed5a089405beb211000f51d11afaf6faafeafaf53",
+     "diff": {
+      "pixels": 1,
+      "of": 2073600,
+      "maxLevel": 1
+     }
+    }
+   ]
+  },
+  {
+   "t": 38.4,
+   "identical": false,
+   "paths": [
+    {
+     "label": "desde 0",
+     "from": 0,
+     "sha256": "cb2dad8112fb638311ad617ccbb2339046e9642cc1cfe7317335247de5dfb8c1"
+    },
+    {
+     "label": "desde el final",
+     "from": 42.99,
+     "sha256": "3a8ae1a35a9c1fc318ff83bc027d2d03c26db63a441d849b590f50772c6f05ff",
+     "diff": {
+      "pixels": 121,
+      "of": 2073600,
+      "maxLevel": 1
+     }
+    },
+    {
+     "label": "desde 35,9 s",
+     "from": 35.9,
+     "sha256": "2d035e64cd603d5f3a407dc56cd81bd1b9e4dcd6c99bc6449383fd0186552056",
+     "diff": {
+      "pixels": 118,
+      "of": 2073600,
+      "maxLevel": 1
+     }
+    }
+   ]
+  }
+ ],
+ "browser": "Chrome/154.0.8037.58"
+}

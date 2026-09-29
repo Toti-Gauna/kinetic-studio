@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trailer Hub — Motion Graphics</title>
+<meta name="description" content="Hub de tráilers de motion graphics hechos 100% con código.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="hub/hub.css">
+</head>
+<body>
+<div class="grain" id="grain" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="index.html" aria-label="Trailer Hub">
+    <span class="mark" aria-hidden="true"><i class="m-c"></i><i class="m-s"></i><i class="m-t"></i></span>
+    <span class="mono">KINETIC STUDIO</span>
+  </a>
+  <p class="top-meta mono"><span class="dot-live" aria-hidden="true"></span><b id="count-ready">0</b> DISPONIBLE <span class="sep">·</span> <b id="count-soon">0</b> EN PRODUCCIÓN</p>
+</header>
+
+<main>
+  <section class="intro">
+    <p class="eyebrow mono">TRAILER HUB — MOTION GRAPHICS 100% CÓDIGO</p>
+    <h1 class="hub-title v" id="hub-title">TRAILER HUB</h1>
+    <p class="lede">Cada tráiler se genera en vivo en el navegador: sin videos, sin imágenes y sin audio grabado. Elegí uno, pasá el mouse por la pantalla para previsualizarlo y dale play con sonido.</p>
+  </section>
+
+  <section class="feature" id="feature" aria-labelledby="f-title">
+    <a class="screen" id="screen" href="#" aria-label="Ver tráiler con sonido">
+      <iframe id="preview" title="Vista previa del tráiler" tabindex="-1" aria-hidden="true"></iframe>
+      <span class="screen-loading mono" aria-hidden="true">CARGANDO VISTA PREVIA</span>
+      <span class="screen-hint mono" aria-hidden="true"><span class="rec" aria-hidden="true"></span>PASÁ EL MOUSE PARA PREVISUALIZAR · CLIC PARA VER CON SONIDO</span>
+      <span class="screen-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.2v13.6L19 12z"/></svg></span>
+    </a>
+    <div class="info">
+      <p class="kicker mono" id="f-kicker"></p>
+      <h2 class="f-title v" id="f-title"></h2>
+      <p class="f-logline" id="f-logline"></p>
+      <dl class="f-meta mono" id="f-meta"></dl>
+      <ul class="tags" id="f-tags" aria-label="Qué pone a prueba"></ul>
+      <a class="cta mono" id="f-cta" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.2v13.6L19 12z"/></svg>VER TRÁILER</a>
+      <p class="f-keys mono">ESPACIO PAUSA · M SILENCIO · F PANTALLA COMPLETA · ESC VUELVE AL HUB</p>
+    </div>
+  </section>
+
+  <section class="library" aria-labelledby="lib-title">
+    <div class="lib-head">
+      <h3 class="mono" id="lib-title">BIBLIOTECA <span id="lib-count"></span></h3>
+      <div class="filters" id="filters" role="group" aria-label="Filtrar por categoría"></div>
+    </div>
+    <ul class="legend mono" aria-label="Estado de producción">
+      <li><i class="st st-kit"></i>LISTO CON EL KIT</li>
+      <li><i class="st st-recetas"></i>NECESITA RECETAS NUEVAS</li>
+      <li><i class="st st-tech"></i>NECESITA TECNOLOGÍA NUEVA</li>
+    </ul>
+    <ul class="grid" id="grid"></ul>
+  </section>
+</main>
+
+<footer class="foot mono">
+  <span>HECHO CON EL TRAILER KIT · AGENTE TRAILER-DIRECTOR</span>
+  <span>0 VIDEOS · 0 IMÁGENES · 100% CÓDIGO</span>
+</footer>
+
+<div class="toast mono" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="hub/catalog.js"></script>
+<script src="hub/motifs.js"></script>
+<script src="hub/hub.js"></script>
+</body>
+</html>

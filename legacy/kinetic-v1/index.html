@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KINETIC — A Motion Study</title>
+<meta name="description" content="A code-only motion graphics trailer. No video, no images — every frame and every sound is generated live.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=block" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="viewport">
+  <div id="stage">
+    <div id="bg"></div>
+    <div id="wipe"></div>
+
+    <div id="camera">
+      <canvas id="fx" width="1920" height="1080"></canvas>
+
+      <!-- 01 ORIGIN -->
+      <section class="scene" id="s1">
+        <div class="s1-glow c"></div>
+        <div class="ring c"></div><div class="ring c"></div><div class="ring c"></div>
+        <div class="dot c" id="s1-dot"></div>
+        <div class="s1-line v c" id="s1-a">EVERYTHING BEGINS</div>
+        <div class="s1-line v c" id="s1-b">WITH A SINGLE <em>POINT</em></div>
+      </section>
+
+      <!-- 02 FORM -->
+      <section class="scene" id="s2">
+        <div class="s2-word v c" id="s2-word">FORM</div>
+        <svg class="s2-guides" viewBox="0 0 1920 1080" aria-hidden="true">
+          <line class="guide" x1="0" y1="540" x2="1920" y2="540"/>
+          <line class="guide" x1="560" y1="120" x2="560" y2="960"/>
+          <line class="guide" x1="960" y1="120" x2="960" y2="960"/>
+          <line class="guide" x1="1360" y1="120" x2="1360" y2="960"/>
+          <circle class="guide" cx="960" cy="540" r="330"/>
+        </svg>
+        <div class="shape c" id="f-circle" style="left:560px"><svg viewBox="-200 -200 400 400"><path class="fill" d=""/><path class="stroke" d=""/></svg></div>
+        <div class="shape c" id="f-square" style="left:960px"><svg viewBox="-200 -200 400 400"><path class="fill" d=""/><path class="stroke" d=""/></svg></div>
+        <div class="shape c" id="f-tri" style="left:1360px"><svg viewBox="-200 -200 400 400"><path class="fill" d=""/><path class="stroke" d=""/></svg></div>
+        <div class="s2-label c" style="left:560px"></div>
+        <div class="s2-label c" style="left:960px"></div>
+        <div class="s2-label c" style="left:1360px"></div>
+      </section>
+
+      <!-- 03 SHIFT -->
+      <section class="scene" id="s3">
+        <div class="s3-count mono" id="s3-count">00 / 08</div>
+        <div class="s3-words" id="s3-words"></div>
+        <div class="s3-meta mono" id="s3-meta"></div>
+        <div class="s3-shape c" id="s3-shape"><svg viewBox="-250 -250 500 500"><path id="s3-path" d=""/></svg></div>
+      </section>
+
+      <!-- 04 RHYTHM -->
+      <section class="scene" id="s4">
+        <div id="grid"></div>
+        <div class="s4-word v c" id="s4-word">RHYTHM</div>
+      </section>
+
+      <!-- 05 MOTION (particles live on the canvas) -->
+      <section class="scene" id="s5">
+        <div class="cap mono c" id="s5-cap" style="top:770px"></div>
+      </section>
+
+      <!-- 06 DEPTH (tunnel lives on the canvas) -->
+      <section class="scene" id="s6">
+        <div class="s6-word v c" id="s6-depth">DEPTH</div>
+        <div class="s6-word v c" id="s6-speed">SPEED</div>
+        <div class="s6-word v c" id="s6-light">LIGHT</div>
+        <div class="cap mono c" id="s6-vel" style="top:700px">VELOCITY 0.000 c</div>
+      </section>
+
+      <!-- 07 MONTAGE -->
+      <section class="scene" id="s7"></section>
+
+      <!-- 08 TITLE -->
+      <section class="scene" id="s8">
+        <div class="s8-glow c" id="s8-glow"></div>
+        <svg class="s8-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+          <circle id="s8-ring2" cx="960" cy="540" r="470"/>
+          <circle id="s8-ring" cx="960" cy="540" r="430"/>
+        </svg>
+        <div class="s8-orbit c" id="s8-orbit"><i class="o o-c c"></i><i class="o o-s c"></i><i class="o o-t c"></i></div>
+        <h1 class="title v c" id="title">KINETIC</h1>
+        <div class="title v c title-sheen" id="title-sheen" aria-hidden="true">KINETIC</div>
+        <div class="subtitle mono c" id="subtitle"></div>
+        <div class="tagline v c" id="tagline">EVERYTHING <span>MOVES.</span></div>
+        <div class="credits c" id="credits">
+          <div class="cr-mark" id="cr-mark"><i class="m-c"></i><i class="m-s"></i><i class="m-t"></i></div>
+          <div class="stat"><b class="v">0</b><span class="mono">VIDEO FILES</span></div>
+          <div class="stat"><b class="v">0</b><span class="mono">IMAGES</span></div>
+          <div class="stat"><b class="v" id="pct">0%</b><span class="mono">CODE</span></div>
+          <p class="cr-line mono" id="cr-line"></p>
+        </div>
+      </section>
+    </div>
+
+    <div class="bar" id="bar-top"></div>
+    <div class="bar" id="bar-bot"></div>
+
+    <div id="hud" class="mono" aria-hidden="true">
+      <i class="crop tl"></i><i class="crop tr"></i><i class="crop bl"></i><i class="crop br"></i>
+      <div class="hud-tl"><span class="rec"></span>REC <span class="dim">/</span> KINETIC — MOTION STUDY</div>
+      <div class="hud-tr" id="hud-scene">&nbsp;</div>
+      <div class="hud-bl">TC <span id="hud-tc">00:00:00:00</span></div>
+      <div class="hud-br">SC <span id="hud-num">00</span>/08 <span class="dim">·</span> 24 FPS <span class="dim">·</span> 1920×1080</div>
+    </div>
+
+    <div id="flash"></div>
+    <div id="vignette"></div>
+    <div id="grain"></div>
+  </div>
+</div>
+
+<div id="intro">
+  <div class="intro-inner">
+    <div class="intro-mark"><i class="m-c"></i><i class="m-s"></i><i class="m-t"></i></div>
+    <h1 class="intro-title v">KINETIC</h1>
+    <p class="intro-sub">A MOTION STUDY <span>·</span> 52 SECONDS <span>·</span> SOUND ON</p>
+    <button id="play" aria-label="Play trailer" disabled>
+      <span class="play-ring"></span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.2v13.6L19 12z"/></svg>
+    </button>
+    <p class="intro-state" id="intro-state">LOADING</p>
+  </div>
+  <p class="intro-keys">SPACE PAUSE · M MUTE · R REPLAY · F FULLSCREEN</p>
+</div>
+
+<div id="end"><button id="replay">↺&nbsp; REPLAY</button></div>
+
+<div id="ui">
+  <div id="ui-state" class="mono"></div>
+  <div id="progress"><i></i></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MorphSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

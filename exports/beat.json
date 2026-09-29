@@ -1,0 +1,22 @@
+{
+ "trailer": "beat",
+ "format": "gif",
+ "from": 0,
+ "to": 34,
+ "duration": 34,
+ "fps": 15,
+ "frames": 510,
+ "width": 480,
+ "height": 270,
+ "stage": "1920x1080",
+ "codecs": {
+  "video": "gif",
+  "audio": null
+ },
+ "captureSeconds": 45.28,
+ "file": "C:\\Users\\ignacio.gauna\\Desktop\\Personal Projects\\animations\\exports\\beat.gif",
+ "bytes": 15462470,
+ "mbps": 3.64,
+ "totalSeconds": 48.58,
+ "date": "2026-09-29T15:54:52.994Z"
+}
