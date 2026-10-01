@@ -1,67 +1,68 @@
-# HANDY · App de usuario — storyboard del tráiler
+# HANDY USUARIO REMIX — storyboard
 
-Duración: **90,0 s** · 10 escenas + pantalla inicial · grilla de 120 BPM (1 compás = 2 s; todos los cortes caen en compás) ·
-escenario **1440×1080 (4:3)** escalado para entrar en pantalla · idioma: español rioplatense (voseo).
+El tráiler de la app de usuario de Handy (`trailers/handy-usuario/`, 90 s) cortado como un spot: **más comercial, más
+rápido y con más música**. El original queda intacto: esta carpeta es una copia aparte.
 
-Público: mentores de una aceleradora, mirando un iPad. Nadie habla: la película tiene que explicar la idea y venderla sola.
-Concepto: *se rompe algo en casa → preguntar en grupos no sirve → Handy: pedís, el especialista presupuesta, vos elegís, seguís
-todo en la app → Mar del Plata, 28/10.*
+Duración: **56,0 s** · 12 escenas (10 capítulos) + pantalla inicial · **120 BPM** (1 compás = 2 s, 1 tiempo = 0,5 s) ·
+escenario **1440×1080 (4:3)** para iPad · español rioplatense (voseo).
 
-## Reglas de contenido (mandan sobre las fotos de referencia)
+Idea del remix: las diez escenas del original, **sin cambiar una línea**, corren **al doble de velocidad**. A 120 BPM cada
+tiempo del original (0,5 s) cae en una corchea (0,25 s), así que cada golpe, toque y "ding" sigue en el pulso. Arriba de eso:
+un arreglo de pop con **tres drops**, un gancho de **cinco notas** (cinco Handys, cinco notas), **golpes de palabras** a
+pantalla completa, el sello **REMIX** y un **final nuevo con los Handys bailando** en el tiempo.
 
-- Todo en español rioplatense con voseo (Tocá, Elegí, Confirmá, ¿Qué necesitás?). Nada en inglés en pantalla.
-- Rubros, exactamente seis: **Electricidad · Plomería · Gas · Cerrajería · Albañilería · Aire acondicionado**. "Mecánico" no existe.
-- Accesos "Quiero…": **Destapar cañería · Cambiar cerradura · Instalar aire · Arreglar enchufe · Revisar pérdida de gas · Reparar humedad**.
-  Nada de autos, aceite ni cables de internet.
-- Moneda: pesos argentinos con formato **$ 45.000** (`formatARS`). Nunca dólares.
-- Fechas: octubre de 2026, en español ("Jue 15 oct", "jueves 15 de octubre").
-- Especialistas ficticios: **Martín R., Lucía G., Diego P.** Ningún nombre real.
-- No hay precios fijos: el precio lo pone el especialista en su presupuesto. Handy suma una **tarifa de servicio del 5%**, siempre visible.
-- Prohibido: "matriculados", "despachamos", "te enviamos un especialista". Se dice **verificados**.
-- El horario de llegada es el que declara el especialista: **"Llega entre 16:06 y 16:30"**.
-- No se muestran tarjetas, saldos, movimientos ni cupones.
+## Reglas de contenido (las mismas del original)
+
+- Todo en español rioplatense con voseo (Pedí, Compará, Elegí, Seguí, ¿Cuánto sale?). Nada en inglés en pantalla, salvo
+  el nombre pedido para el tráiler: "Remix" (el sello REMIX).
+- Rubros, exactamente seis: **Electricidad · Plomería · Gas · Cerrajería · Albañilería · Aire acondicionado**.
+- Moneda: pesos con formato **$ 45.000**. Especialistas ficticios: **Martín R., Lucía G., Diego P.**
+- El precio lo pone el especialista; Handy suma una **tarifa de servicio del 5 %**, siempre visible. Se dice **verificados**.
+- Lanzamiento: **Mar del Plata · Llegamos el 28/10**. No se inventan cifras, promesas ni funciones.
 
 ## Dirección de arte
 
-- Fondo base: gris Handy **#CFCFCF** en todo el escenario y en el relleno de los bordes (en pantallas que no son 4:3 no se ve
-  el borde del escenario). Azul principal **#1F57A8**, azul claro de interfaz **#4A72B0**, azul de personajes **#2F6BFF**,
-  amarillo lamparita **#F5F59A**.
-- Tipografía: **Inter** para la interfaz y los titulares (titulares 800, azul, en frase con punto final, tal como están escritos
-  acá). El logo es el wordmark vectorizado desde la foto, con la bajada "Soluciones, no problemas".
-- Composición de las escenas de app: titular en la columna izquierda (x 110–730) y el teléfono a la derecha
-  (centro 1030, 540; pantalla de 414×896). Los cortes entre escenas de app dejan el teléfono exactamente en ese lugar.
-- Movimiento: entradas `expo.out`, pops `back.out(2)`, personajes con anticipación y squash & stretch, salidas `power3.in`.
-  **Solo se anima transform y opacity** (nada de blur, filtros, clip-path ni sombras animadas): tiene que ir fluido en Safari de iPad.
-- Sonido: groove pop sintetizado en Do mayor (Do – Sol – Lam – Fa), 120 BPM, más efectos: gotas, toques, mensajes, saltos.
+- La del original: gris Handy **#CFCFCF**, azul **#1F57A8**, amarillo lamparita **#F8FFA0**, Inter (800 en titulares,
+  900 en los golpes de palabras), los personajes y el logo de `src/handy/`.
+- Lo nuevo del remix: paneles de color a pantalla completa que barren en el tiempo, tipografía gigante que pega con un
+  "punch" de escala, una calcomanía amarilla **REMIX**, destellos blancos en los drops y los Handys bailando.
+- **Solo se anima transform y opacity** (como el original: tiene que ir fluido en Safari de iPad). `?audit` lo verifica.
 
 ## Escenas
 
-| # | escena (`id` = etiqueta GSAP) | inicio–fin | texto en pantalla | qué pasa | momento sonoro | pase a la siguiente |
-|---|---|---|---|---|---|---|
-| 0 | pantalla inicial (fuera del timeline) | — | logo · **Tocá para empezar** | Fondo gris, logo centrado, "Tocá para empezar" late suave. Toda la pantalla es el botón. Mientras carga: "Cargando…". | silencio; el toque habilita el audio | el intro se desvanece y arranca la película |
-| 1 | `gancho` | 0–8 | **Se rompió algo en casa.** | El Caño (personaje) gotea: dos gotitas crecen en el pico y caen. A la tercera cae la Gota, con cara preocupada; rebota al aterrizar y mira a los costados. El Caño también se preocupa. | pulso grave, "plic" por gota, golpe suave al caer la Gota | los personajes se corren y el titular sale; escenario gris limpio |
-| 2 | `problema` | 8–18 | **Preguntás. Esperás. Nadie confirma.** (tres golpes) | Burbujas de grupos de chat genéricos (estilo mensajería, sin marcas): "Vecinos del edificio", "Familia", "Fútbol de los jueves". El mismo mensaje en todos: "¿Alguien tiene un plomero?", con tildes grises. Respuestas que no resuelven ("Tu tío tenía uno, preguntale.", "Ni idea, che.") y "Visto". Un reloj y las horas de los mensajes avanzan (10:02 → 12:47 → 16:30 → 19:15). **Sin cifras.** | tics de reloj, "pop" por burbuja, el ritmo se apaga | las burbujas caen/se apagan; escenario gris limpio |
-| 3 | `entrada` | 18–26 | logo **Handy** + **Soluciones, no problemas** | Golpe: entran saltando los cinco Handys (gota, caño, engranaje, lamparita, llave) y aterrizan en fila. Cada uno salta y deja una letra de "Handy" arriba suyo (cinco Handys, cinco letras); las letras se juntan en el wordmark y aparece la bajada. | golpe + groove; un "boing" por salto, campana por letra | el logo se achica y los Handys salen de cuadro |
-| 4 | `inicio` | 26–36 | **Pedís lo que necesitás.** | Sube el teléfono con la pantalla de inicio corregida: encabezado (logo, campana, ubicación), "¿Qué necesitás hoy?" + los seis rubros, "Quiero…" + los seis accesos, botón flotante de urgencia y barra inferior (Inicio · Agenda · Mensajes · Cuenta). Las fichas entran en cascada. El dedo toca **Plomería**. | groove suave, toque al tocar | el teléfono queda en su lugar |
-| 5 | `tipo-de-trabajo` | 36–46 | **Urgencia, programado u obra.** | Se oscurece la pantalla y sube una hoja: "Plomería · ¿Qué tipo de trabajo es?" con **Urgencia** (Lo antes posible) · **Programado** (Elegís día y horario) · **Obra** (Un trabajo más grande). El dedo elige Programado. Selector de fecha en español: "¿Cuándo te queda bien?", rueda de días (Mar 13 oct … Sáb 17 oct) y horarios; queda **Jue 15 oct · 16:00**. Botón **Pedir presupuestos**. | toques, "clic" de la rueda | toca "Pedir presupuestos"; el teléfono queda en su lugar |
-| 6 | `presupuestos` | 46–60 | **El especialista pone su precio. Vos elegís.** | Chat "Presupuestos · Plomería": aviso "Tu pedido llegó a especialistas verificados." Llegan tres mensajes estructurados, estilo cuenta de empresa verificada: avatar, nombre con insignia **Verificado**, rubro y el detalle (trabajo, mano de obra, materiales, total, validez 48 h) con botones **Aceptar** y **Consultar**. Después salen del teléfono y se comparan lado a lado. El dedo acepta el de Martín R. | golpe de sección, "ding" por presupuesto | la tarjeta elegida vuelve al teléfono |
-| 7 | `confirmacion` | 60–68 | **Precio final antes de confirmar.** | "Confirmá tu pedido": Martín R., Jue 15 oct, Llega entre 16:06 y 16:30, Casa · Mar del Plata. Desglose: presupuesto **$ 45.000** + tarifa de servicio Handy 5% **$ 2.250** = **$ 47.250**, también grande en el escenario. El dedo toca **Confirmar** y aparece el tilde. | golpe al total, campana de confirmación | el teléfono queda en su lugar |
-| 8 | `seguimiento` | 68–80 | **Tu teléfono no se comparte. Todo queda en Handy.** | Mapa ilustrado con tres estados: **Buscando a Martín…** → **Martín está en camino** → **¡Martín llegó!**, siempre con "Llega entre 16:06 y 16:30". Después el chat interno: Martín: "¡Hola! Estoy a unas cuadras." · "¿Me mandás una foto de la pérdida? Así llevo el repuesto justo." · Vos: foto del caño goteando + "Es abajo de la bacha." · Martín: "Perfecto, ya sé qué llevar." | groove, "ding" por mensaje | el chat se cierra |
-| 9 | `resena` | 80–85 | **¿Cómo fue tu experiencia con Martín?** | Se completan las 5 estrellas, una por tiempo; "Enviar". Los Handys aparecen y festejan alrededor del teléfono. | campanas ascendentes, golpe de festejo | el teléfono baja y sale |
-| 10 | `cierre` | 85–90 | logo · **Mar del Plata · Llegamos el 28/10** · QR | Los Handys juntos, el logo y la fecha de lanzamiento. El QR sale de la constante `QR_URL` (en `js/trailer.js`); si está vacía, solo el texto, centrado. El último cuadro queda quieto. | golpe final y acorde | fin: botón "Ver de nuevo" abajo, sin tapar el cierre |
-
-Datos de los presupuestos (escena 6), pedido del jueves 15 de octubre de 2026 a las 16:00, trabajo "Reparar pérdida en el caño de la bacha":
-
-| especialista | mano de obra | materiales | total | llegada declarada | validez |
+| # | escena (`id`) | inicio–fin | de dónde sale | qué pasa | música |
 |---|---|---|---|---|---|
-| Martín R. (elegido) | $ 32.000 | $ 13.000 | **$ 45.000** | Llega entre 16:06 y 16:30 | 48 h |
-| Lucía G. | $ 36.000 | $ 12.500 | $ 48.500 | Llega entre 15:40 y 16:10 | 48 h |
-| Diego P. | $ 29.000 | $ 22.000 | $ 51.000 | Llega entre 17:00 y 17:30 | 48 h |
+| 1 | `gancho` | 0–3 | escena 1 del original al doble, cortada en su segundo 6 | El Caño gotea; cae la Gota (2,5) y el Caño se asusta. **Se rompió algo en casa.** Corte seco. | frío: La menor, pad oscuro y un latido grave |
+| 2 | `problema` | 3–8 | escena 2 al doble | Los grupos de chat que nadie contesta, el reloj que corre. **Preguntás. Esperás. Nadie confirma.** Todo se cae; un instante de gris vacío antes del drop. | latido que crece · 7–8 subida (riser) |
+| 3 | `entrada` | 8–12 | escena 3 al doble + destello | **DROP 1.** Los cinco Handys entran saltando y tiran las letras de "Handy" en corcheas; el logo encaja (10,75) y a las **11,0 pega el sello REMIX**. | golpe + coro: el gancho llama y las letras le contestan una octava arriba |
+| 4 | `inicio` | 12–17 | escena 4 al doble + empuje de cámara | El logo cruza al encabezado de la app. **Pedís lo que necesitás.** El dedo toca Plomería. | verso |
+| 5 | `tipo-de-trabajo` | 17–22 | escena 5 al doble + empuje | **Urgencia, programado u obra.** Programado, rueda de fecha: Jue 15 oct · 16:00. Pedir presupuestos. | verso |
+| — | (golpe) | 22–24 | `hdr-golpe` | **¿Cuánto** (22, blanco sobre azul) **sale?** (23, azul sobre amarillo, con la Gota preocupada); a las 23,7 todo se tira contra la cámara. | subida de 2 s |
+| 6 | `presupuestos` | 24–30 | escena 6 al doble, cortada en su segundo 12 + destello y punch | **DROP 2.** Llegan los tres presupuestos (Martín R. $ 45.000 · Lucía G. $ 48.500 · Diego P. $ 51.000), salen del teléfono en abanico. **El especialista pone su precio. Vos elegís.** Se acepta el de Martín. | golpe + coro con el gancho, debajo de los "ding" |
+| 7 | `confirmacion` | 30–34 | escena 7 al doble + empuje | **Precio final antes de confirmar.** $ 45.000 + Tarifa Handy 5 % $ 2.250 = **$ 47.250**. Confirmar ✓. | verso |
+| 8 | `seguimiento` | 34–40 | escena 8 al doble + empuje | Mapa: buscando → en camino → llegó. Chat con Martín. **Tu teléfono no se comparte. Todo queda en Handy.** | verso con pad (la variación) |
+| 9 | `resena` | 40–42 | escena 9 al doble, cortada en su segundo 4 | Cinco estrellas y los Handys festejan alrededor del teléfono. | coro sin gancho |
+| — | (golpe) | 42–46 | `hdr-golpe` | El resumen, uno cada medio compás (42 · 43 · 44 · 45): **Pedí.** Lo que necesitás. · **Compará.** Presupuestos de especialistas verificados. · **Elegí.** Precio final antes de confirmar. · **Seguí.** Todo queda en Handy. Un Handy por tarjeta. | quiebre (sin bombo) · 44–46 subida |
+| 10 | `final` | 46–56 | `hdr-final` | **DROP 3.** Los Handys entran de un salto y **bailan en el tiempo**; el logo letra por letra, **Soluciones, no problemas**, **Mar del Plata · Llegamos el 28/10**, el sello REMIX (50,0) y el QR si `QR_URL` tiene algo. A las 54,0 caen en la pose final; **desde las 54,5 todo queda quieto**. | golpe + coro con el gancho entero · 54 golpe final y acorde que suena hasta el final |
 
-Confirmación (escena 7): $ 45.000 + 5% ($ 2.250) = **$ 47.250** (`priceWithFee(45000)`).
+Los tiempos de cada golpe están en el encabezado de cada archivo: `js/escenas-remix-golpes.js`, `js/escenas-remix-final.js`
+y `js/partitura.js`.
+
+## Cómo está hecho
+
+- `js/escenas-a.js` … `js/escenas-d.js`, `js/escenas-base.js`, `js/engine.js` y `js/audio.js`: copias **sin cambios** del original.
+- `js/remix.js` — `hdr-corte`: corre una receta del original a otra velocidad (`k`) y la corta en `hasta`. La receta recibe
+  una fachada de `D` cuyo timeline lleva cada posición `p` a `T + (p − T)·k` y multiplica duraciones, delays y staggers por
+  `k`; lo que cae después del corte no se agrega. Opciones del remix: `empuje` (cámara lenta), `golpe` (punch de entrada),
+  `destello` (flash en un drop) y `extra` (superposiciones, como el sello).
+- `js/escenas-remix-golpes.js` — `hdr-golpe` (golpes de palabras) y `Trailer.remix.sello` (la calcomanía REMIX).
+- `js/escenas-remix-final.js` — `hdr-final`.
+- `js/recipes-music.js` (estilos nuevos: frío, latido, subida, coro, verso, quiebre, final; acordes y gancho por parte) y
+  `js/partitura.js` (el arreglo).
+- `js/trailer.js` — la línea de tiempo. Cada escena declara su `dur`; `src/handy/player.ts` corta el build si no coincide.
 
 ## Interacción
 
-- Tocar la pantalla pausa y reanuda. En pausa aparece la lista de escenas: tocar una salta a esa etiqueta y sigue.
-- Teclado: Espacio pausa · ← → escena anterior/siguiente · 1–9 y 0 saltan a la escena 1–10 · M silencio · F pantalla completa.
-- `?t=SEGUNDOS` congela un cuadro; `?embed` es la vista previa muda del hub.
+La del original: tocar la pantalla pausa y reanuda (en pausa, la lista de capítulos); Espacio pausa · ← → capítulo anterior
+o siguiente · 1–9 y 0 saltan a los capítulos 1–10 · M silencio · F pantalla completa. `?t=SEGUNDOS` congela un cuadro,
+`?embed` es la vista previa muda del hub, `?escena=<id|número>` arranca en un capítulo, `?audit` revisa las propiedades animadas.
