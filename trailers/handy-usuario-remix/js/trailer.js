@@ -39,17 +39,25 @@ Trailer.run({
     { type: 'hdr-corte', id: 'gancho', titulo: 'Gancho', de: 'hd-gancho', base: 8, k: 0.5, hasta: 6, dur: 3 },             //  0–3
     { type: 'hdr-corte', id: 'problema', titulo: 'Problema', de: 'hd-problema', base: 10, k: 0.5, dur: 5 },                //  3–8
     // ── DROP 1: Handy (8–12)
-    { type: 'hdr-corte', id: 'entrada', titulo: 'Handy', de: 'hd-entrada', base: 8, k: 0.5, dur: 4, destello: 0.55, extra: [{ tipo: 'sello', at: 2.75 }] }, //  8–12
+    { type: 'hdr-corte', id: 'entrada', titulo: 'Handy', de: 'hd-entrada', base: 8, k: 0.5, dur: 4, destello: 0.55, extra: [{ tipo: 'sello', at: 3 }] }, //  8–12
     // ── la app a toda velocidad (12–22)
     { type: 'hdr-corte', id: 'inicio', titulo: 'Inicio', de: 'hd-inicio', base: 10, k: 0.5, dur: 5, empuje: 1.03 },       // 12–17
     { type: 'hdr-corte', id: 'tipo-de-trabajo', titulo: 'Tipo de trabajo', de: 'hd-tipo-de-trabajo', base: 10, k: 0.5, dur: 5, empuje: 1.03 }, // 17–22
-    { type: 'hdr-golpe', dur: 2, palabras: [{ texto: '¿Cuánto', at: 0 }, { texto: 'sale?', at: 1 }] },                       // 22–24
+    { type: 'hdr-golpe', dur: 2, salida: 'camara', palabras: [                                                          // 22–24
+      { texto: '¿Cuánto', at: 0, fondo: 'azul', desde: 'der' },
+      { texto: 'sale?', at: 1, fondo: 'amarillo', mitad: true, handy: 'gota', humor: 'preocupado', lado: 'der' },
+    ] },
     // ── DROP 2: presupuestos (24–42)
     { type: 'hdr-corte', id: 'presupuestos', titulo: 'Presupuestos', de: 'hd-presupuestos', base: 14, k: 0.5, hasta: 12, dur: 6, golpe: 0.05, destello: 0.4 }, // 24–30
     { type: 'hdr-corte', id: 'confirmacion', titulo: 'Confirmación', de: 'hd-confirmacion', base: 8, k: 0.5, dur: 4, empuje: 1.03 }, // 30–34
     { type: 'hdr-corte', id: 'seguimiento', titulo: 'Seguimiento', de: 'hd-seguimiento', base: 12, k: 0.5, dur: 6, empuje: 1.03 }, // 34–40
     { type: 'hdr-corte', id: 'resena', titulo: 'Reseña', de: 'hd-resena', base: 5, k: 0.5, hasta: 4, dur: 2 },             // 40–42
-    { type: 'hdr-golpe', dur: 4, palabras: [{ texto: 'Pedí.', at: 0 }, { texto: 'Compará.', at: 1 }, { texto: 'Elegí.', at: 2 }, { texto: 'Seguí.', at: 3 }] }, // 42–46
+    { type: 'hdr-golpe', dur: 4, palabras: [                                                                          // 42–46
+      { texto: 'Pedí.', at: 0, fondo: 'azul', desde: 'izq', sub: 'Lo que necesitás.', handy: 'lamparita', lado: 'der' },
+      { texto: 'Compará.', at: 1, fondo: 'amarillo', desde: 'abajo', sub: 'Presupuestos de especialistas verificados.', icono: 'verificado', handy: 'engranaje', lado: 'izq' },
+      { texto: 'Elegí.', at: 2, fondo: 'blanco', desde: 'der', sub: 'Precio final antes de confirmar.', handy: 'gota', lado: 'der' },
+      { texto: 'Seguí.', at: 3, fondo: 'azul', desde: 'arriba', sub: 'Todo queda en Handy.', handy: 'llave', lado: 'izq' },
+    ] },
     // ── DROP 3: el final (46–56)
     { type: 'hdr-final', id: 'final', titulo: 'Final', dur: 10 },                                                          // 46–56
   ],
