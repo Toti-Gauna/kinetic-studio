@@ -32,6 +32,7 @@ index.html              hub (página principal)
 hub/                    código del hub en TypeScript: catálogo, pósters generativos, UI
 src/lib/                GSAP y Three.js desde npm, expuestos en window para el kit
 src/types/              tipos de los globals que comparten el hub y el kit
+src/handy/              componentes compartidos de los tráileres de Handy (galería en /src/handy/galeria.html con npm run dev)
 trailers/<id>/          un tráiler por carpeta
   index.html            escenario + <script type="module" src="./main.ts">
   main.ts               entry point: importa los scripts del kit en orden

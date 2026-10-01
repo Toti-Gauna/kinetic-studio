@@ -56,6 +56,17 @@ export const MOTIFS = {
   cards: ({ a, b, fg }) => `<rect x="96" y="14" width="34" height="56" rx="4" fill="${b}" transform="rotate(-14 113 42)"/><rect x="104" y="16" width="34" height="56" rx="4" fill="${a}" transform="rotate(2 121 44)"/><rect x="112" y="18" width="34" height="56" rx="4" fill="${fg}" transform="rotate(14 129 46)"/><text x="129" y="52" text-anchor="middle" font-family="Archivo" font-weight="900" font-size="14" fill="${a}" transform="rotate(14 129 46)">2026</text>`,
   film: ({ a, b, fg }) => `<rect x="66" y="26" width="94" height="38" fill="${fg}"/>` + Array.from({ length: 12 }, (_, i) => `<rect x="${69 + i * 8}" y="29" width="4" height="3" fill="var(--p0)"/><rect x="${69 + i * 8}" y="58" width="4" height="3" fill="var(--p0)"/>`).join('') + [0, 1, 2].map(i => `<rect x="${71 + i * 30}" y="35" width="26" height="20" fill="${i === 1 ? a : b}" opacity="${i === 1 ? 1 : 0.6}"/>`).join(''),
   branch: ({ a, b, fg }) => `<path d="M80 45 L104 45 L122 26 L150 26 M104 45 L122 64 L150 64 M122 26 L140 14 M122 64 L140 76" fill="none" stroke="${fg}" stroke-width="1.2" opacity=".6"/><circle cx="104" cy="45" r="4" fill="${fg}"/><circle cx="122" cy="26" r="3.4" fill="${a}"/><circle cx="122" cy="64" r="3.4" fill="${b}"/><circle cx="150" cy="26" r="2.4" fill="${a}"/><circle cx="150" cy="64" r="2.4" fill="${b}"/><circle cx="140" cy="14" r="2" fill="${a}"/><circle cx="140" cy="76" r="2" fill="${b}"/>`,
+  // Handy: la Gota (ojitos y sonrisa) y un engranaje, con un destello amarillo de lamparita
+  handy: ({ a, b, fg }) => {
+    const gx = 141, gy = 57, R = 12.5, r = 9.4, n = 8, w = Math.PI / n, pt = (t: number, d: number) => `${(gx + Math.cos(t) * d).toFixed(2)},${(gy + Math.sin(t) * d).toFixed(2)}`;
+    let gear = '';
+    for (let i = 0; i < n; i++) { const c = i * 2 * w; gear += `${i ? 'L' : 'M'}${pt(c - 0.36 * w, R)}L${pt(c + 0.36 * w, R)}L${pt(c + 0.64 * w, r)}L${pt(c + 1.36 * w, r)}`; }
+    const rays = 'M93 27 L88.5 22.5 M90 35 L84 34 M98 21 L97 15';
+    return `<path d="${rays}" stroke="${a}" stroke-width="3.4" stroke-linecap="round"/><path d="${rays}" stroke="${b}" stroke-width="1.8" stroke-linecap="round"/>` +
+      `<path d="${gear}Z" fill="${a}" transform="rotate(10 ${gx} ${gy})"/><circle cx="${gx}" cy="${gy + 3.4}" r="3.1" fill="#fff"/><circle cx="${gx - 3.6}" cy="${gy - 3.2}" r="1.3" fill="${fg}"/><circle cx="${gx + 3.6}" cy="${gy - 3.2}" r="1.3" fill="${fg}"/>` +
+      `<path d="M108 19 C114 29 125 39 125 52 A17 17 0 0 1 91 52 C91 39 102 29 108 19Z" fill="#8ec5ff" stroke="${a}" stroke-width="1.5" stroke-linejoin="round"/><ellipse cx="99.5" cy="44" rx="2" ry="4.2" fill="#fff" opacity=".75" transform="rotate(24 99.5 44)"/>` +
+      `<circle cx="102.5" cy="51" r="2.3" fill="${fg}"/><circle cx="113.5" cy="51" r="2.3" fill="${fg}"/><circle cx="103.2" cy="50.2" r=".75" fill="#fff"/><circle cx="114.2" cy="50.2" r=".75" fill="#fff"/><path d="M104 57 Q108 61 112 57" fill="none" stroke="${fg}" stroke-width="1.5" stroke-linecap="round"/>`;
+  },
 } satisfies Record<string, (c: MotifColors) => string>;
 
 export type MotifName = keyof typeof MOTIFS;

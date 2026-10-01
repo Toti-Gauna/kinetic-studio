@@ -1,0 +1,5 @@
+body { margin: 0; background: var(--hd-gris); font-family: var(--hd-font); color: var(--hd-tinta); }
+#galeria { display: flex; flex-direction: column; gap: 32px; padding: 32px; }
+.hd-gal-seccion { background: rgba(255, 255, 255, .35); border-radius: 24px; padding: 24px; }
+.hd-gal-titulo { margin: 0 0 16px; font: 800 28px/1 var(--hd-font); color: var(--hd-azul); }
+.hd-gal-cuerpo { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }

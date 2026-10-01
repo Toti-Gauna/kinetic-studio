@@ -1,0 +1,173 @@
+/* Handy — el reproductor de los tráileres de Handy (src/handy/player.ts lo importa).
+   Pisa el CSS base del kit (trailers/<id>/css/style.css): relleno gris Handy en pantallas que no son 4:3,
+   capas de película apagadas (HUD, grano, viñeta, barras de cine, canvas #fx), la pantalla inicial (todo
+   el fondo es el botón), la pantalla final sin velo (el último cuadro queda a la vista), la barra de
+   progreso y la pantalla de pausa con los capítulos. Todo cuelga de html.hd-player (está en el
+   index.html y player.ts la asegura), así gana sin importar el orden de las hojas.
+   Estado del reproductor: html[data-hd-estado="intro|reproduciendo|pausa|fin"].
+   Fuera del escenario se permiten transiciones y @keyframes de transform/opacity (no corren en la película). */
+
+/* ---------- página: táctil, sin selección ni menús, sin rebote ---------- */
+.hd-player, .hd-player body {
+  background: var(--hd-gris);
+  touch-action: manipulation;
+  overscroll-behavior: none;
+  -webkit-user-select: none; user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
+}
+.hd-player #viewport { background: var(--hd-gris); }
+.hd-player[data-hd-estado="pausa"] body.idle { cursor: auto; }
+
+/* ---------- capas de película del kit que Handy no usa (#flash queda) ---------- */
+.hd-player #hud, .hd-player #grain, .hd-player #vignette, .hd-player .bar, .hd-player #fx { display: none !important; }
+
+/* ---------- pantalla inicial: toda la pantalla es el botón ---------- */
+.hd-player #intro { display: block; background: var(--hd-gris); color: var(--hd-tinta); font-family: var(--hd-font); }
+.hd-player #play {
+  position: fixed; inset: 0; width: auto; height: auto; margin: 0; padding: 0;
+  display: grid; place-items: center;
+  border: 0; border-radius: 0; background: transparent; color: inherit; font: inherit; text-align: center;
+  -webkit-appearance: none; appearance: none; opacity: 1; cursor: pointer; transition: none;
+}
+.hd-player #play:hover:not(:disabled) { transform: none; background: transparent; color: inherit; border-color: transparent; }
+.hd-player #play:disabled { opacity: 1; color: inherit; cursor: progress; }
+/* el engine enfoca el botón al cargar: un halo blanco suave en la píldora, no un recuadro */
+.hd-player #play:focus-visible { outline: none; }
+.hd-player #play:focus-visible .intro-state { outline: 3px solid rgba(255, 255, 255, .9); outline-offset: 3px; }
+.hd-intro-centro {
+  display: flex; flex-direction: column; align-items: center; gap: clamp(20px, 3.6vh, 38px);
+  padding: 24px max(24px, env(safe-area-inset-right)) 24px max(24px, env(safe-area-inset-left));
+}
+.hd-intro-logo { display: block; width: min(560px, 70vw); color: var(--hd-azul); }
+/* (el kit trae "#play svg" = el triángulo de 28 px de KINETIC: acá el svg es el logo) */
+.hd-player #play .hd-intro-logo svg { display: block; width: 100%; height: auto; margin: 0; fill: currentColor; }
+.hd-player .intro-state {
+  display: inline-flex; align-items: center; gap: .6em; min-height: 0; margin-top: clamp(4px, 1vh, 12px);
+  padding: .8em 1.4em .8em 1.25em; border-radius: 999px;
+  font: 700 clamp(17px, 1.9vw, 22px)/1 var(--hd-font); letter-spacing: 0; text-transform: none;
+  background: var(--hd-azul); color: var(--hd-blanco); opacity: 1;
+  box-shadow: 0 6px 18px rgba(31, 87, 168, .22);
+  animation: hd-latido 1.8s ease-in-out infinite;
+}
+.hd-player .intro-state::before {
+  content: ''; flex: none; width: .62em; height: .72em; background: currentColor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+@keyframes hd-latido {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: .9; }
+}
+/* cargando (el engine habilita el botón cuando la película está armada). Letra del sistema: mientras
+   Inter baja (display=block) un texto en Inter sería invisible. */
+.hd-player #play:disabled:not(.hd-tocado) .intro-state {
+  background: transparent; color: var(--hd-tinta-suave); box-shadow: none; animation: none;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight: 600;
+}
+.hd-player #play:disabled:not(.hd-tocado) .intro-state::before { display: none; }
+.hd-player .intro-sub {
+  font: 500 clamp(12px, 1.3vw, 15px)/1.4 var(--hd-font); letter-spacing: .01em; padding: 0;
+  color: var(--hd-tinta-suave); opacity: 1; text-transform: none;
+}
+.hd-player .intro-sub span { opacity: .55; }
+.hd-player .intro-title, .hd-player .intro-keys { display: none; }
+/* "← Volver" arriba a la izquierda (encima del botón de pantalla completa) */
+.hd-player .back {
+  position: fixed; z-index: 2;
+  left: max(12px, env(safe-area-inset-left)); top: max(10px, env(safe-area-inset-top));
+  padding: 12px 14px; border-radius: 12px;
+  font: 600 15px/1 var(--hd-font); letter-spacing: 0; text-transform: none; text-decoration: none;
+  color: var(--hd-azul); opacity: .85; transition: opacity .2s, background-color .2s;
+}
+.hd-player .back:hover, .hd-player .back:focus-visible { opacity: 1; outline: none; background: rgba(255, 255, 255, .55); }
+
+/* ---------- pantalla final: sin velo; "Ver de nuevo" y "Volver" abajo al centro ---------- */
+.hd-player #end {
+  display: flex; align-items: flex-end; justify-content: center; background: none; pointer-events: none;
+  padding-bottom: max(18px, env(safe-area-inset-bottom));
+}
+.hd-player .end-row { pointer-events: auto; gap: 8px; padding: 0 16px; align-items: center; }
+.hd-player #replay {
+  padding: 13px 22px; border: 0; border-radius: 999px;
+  font: 700 16px/1 var(--hd-font); letter-spacing: 0; text-transform: none;
+  background: var(--hd-blanco); color: var(--hd-azul); box-shadow: 0 4px 14px rgba(20, 20, 20, .12);
+  cursor: pointer; transition: background-color .2s, color .2s;
+}
+.hd-player #replay:hover { background: var(--hd-azul); color: var(--hd-blanco); border-color: transparent; }
+.hd-player #replay:focus-visible { outline: 3px solid var(--hd-tinta); outline-offset: 3px; }
+.hd-player .end-back {
+  padding: 13px 16px; border: 0; border-radius: 999px;
+  font: 600 15px/1 var(--hd-font); letter-spacing: 0; text-transform: none;
+  color: var(--hd-tinta-suave); transition: color .2s, background-color .2s;
+}
+.hd-player .end-back:hover, .hd-player .end-back:focus-visible { color: var(--hd-azul); background: rgba(255, 255, 255, .55); outline: none; }
+
+/* ---------- estado y progreso (abajo; aparecen al mover el mouse o al tocar) ---------- */
+.hd-player #ui { display: flex; flex-direction: column; align-items: center; padding-bottom: env(safe-area-inset-bottom); }
+.hd-player #ui-state {
+  margin: 0 16px 12px; padding: 9px 16px; border-radius: 999px;
+  font: 600 14px/1.2 var(--hd-font); letter-spacing: 0; text-transform: none; text-align: center;
+  background: rgba(255, 255, 255, .94); color: var(--hd-azul); box-shadow: 0 4px 14px rgba(20, 20, 20, .12);
+}
+.hd-player #progress { align-self: stretch; height: 4px; background: rgba(31, 87, 168, .16); }
+.hd-player #progress i { background: var(--hd-azul); will-change: transform; }
+.hd-player[data-hd-estado="pausa"] #ui { opacity: 1; }
+.hd-player[data-hd-estado="pausa"] #ui-state { visibility: hidden; }
+.hd-player[data-hd-estado="fin"] #ui { display: none; }
+
+/* ---------- pausa: una tarjeta abajo (el cuadro en pausa queda a la vista para comentarlo) con el ícono,
+   "En pausa · Tocá para seguir" y una ficha por capítulo. Tocar fuera de las fichas reanuda. ---------- */
+.hd-pausa {
+  position: fixed; inset: 0; z-index: 18; display: flex; align-items: flex-end; justify-content: center;
+  padding: 0 max(12px, env(safe-area-inset-right)) calc(max(8px, env(safe-area-inset-bottom)) + 14px) max(12px, env(safe-area-inset-left));
+  background: transparent; cursor: pointer;
+  opacity: 0; visibility: hidden; transition: opacity .2s ease, visibility 0s linear .2s;
+}
+.hd-player[data-hd-estado="pausa"] .hd-pausa { opacity: 1; visibility: visible; transition: opacity .2s ease, visibility 0s; }
+.hd-pausa-panel {
+  width: min(1000px, 100%); display: flex; align-items: stretch; gap: 14px; padding: 14px; border-radius: 26px;
+  background: var(--hd-blanco); box-shadow: 0 12px 36px rgba(20, 20, 20, .18), 0 1px 3px rgba(20, 20, 20, .08);
+  transform: translateY(18px); transition: transform .32s cubic-bezier(.2, .8, .2, 1);
+}
+.hd-player[data-hd-estado="pausa"] .hd-pausa-panel { transform: none; }
+.hd-pausa-estado {
+  flex: none; width: 128px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; text-align: center;
+}
+.hd-pausa-icono {
+  flex: none; width: 58px; height: 58px; border-radius: 17px;
+  display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--hd-azul);
+}
+.hd-pausa-icono i { width: 8px; height: 24px; border-radius: 3px; background: var(--hd-blanco); }
+.hd-pausa-texto { font: 500 13px/1.25 var(--hd-font); color: var(--hd-tinta-suave); }
+.hd-pausa-texto b { display: block; font-size: 17px; font-weight: 800; color: var(--hd-azul); }
+.hd-pausa-sep { display: none; }
+.hd-pausa-capitulos { flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.hd-capitulo {
+  display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 6px 10px 6px 8px;
+  border: 0; border-radius: 15px; background: var(--hd-gris-ficha); color: var(--hd-tinta);
+  font: 700 14px/1.12 var(--hd-font); letter-spacing: 0; text-align: left; cursor: pointer;
+  -webkit-appearance: none; appearance: none; transition: background-color .15s, color .15s;
+}
+.hd-capitulo-n {
+  flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--hd-azul); color: var(--hd-blanco); font-size: 13px; font-weight: 800;
+}
+.hd-capitulo-titulo { min-width: 0; }
+.hd-capitulo.is-actual { background: var(--hd-azul); color: var(--hd-blanco); }
+.hd-capitulo.is-actual .hd-capitulo-n { background: var(--hd-blanco); color: var(--hd-azul); }
+.hd-capitulo:focus-visible { outline: 3px solid var(--hd-tinta); outline-offset: 2px; }
+@media (hover: hover) { .hd-capitulo:not(.is-actual):hover { background: #E1E7F1; } }
+/* pantallas angostas (teléfono vertical): el estado arriba en una línea, las fichas en dos columnas */
+@media (max-width: 760px) {
+  .hd-pausa-panel { flex-direction: column; gap: 10px; }
+  .hd-pausa-estado { width: auto; flex-direction: row; justify-content: flex-start; gap: 12px; text-align: left; }
+  .hd-pausa-icono { width: 44px; height: 44px; border-radius: 13px; gap: 6px; }
+  .hd-pausa-icono i { width: 6px; height: 18px; }
+  .hd-pausa-texto { font-size: 15px; }
+  .hd-pausa-texto b { display: inline; font-size: 15px; }
+  .hd-pausa-sep { display: inline; }
+  .hd-pausa-capitulos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hd-capitulo { min-height: 42px; }
+}

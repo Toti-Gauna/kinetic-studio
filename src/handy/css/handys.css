@@ -1,0 +1,30 @@
+/* Handys (src/handy/handys.ts): el wrapper HTML de cada personaje, su SVG, la sombra en el piso y la gotita.
+   El tamaño y el transform-origin del wrapper (centro de los pies, abajo) van en su style, por personaje.
+   Nada se anima con CSS: todo va en el timeline (handys-anim.ts). */
+.hd-handy {
+  line-height: 0;
+  transform-origin: 50% 100%;
+}
+.hd-handy .hd-h-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: 50% 50%;
+}
+
+/* sombra chata: la escena la ubica con left/top en el centro de los pies (los márgenes negativos la centran) */
+.hd-handy-sombra {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, .1);
+  transform-origin: 50% 50%;
+  pointer-events: none;
+}
+
+/* gotita sin cara: crece colgada de su punta */
+.hd-gotita {
+  display: block;
+  overflow: visible;
+  transform-origin: 50% 0;
+}
