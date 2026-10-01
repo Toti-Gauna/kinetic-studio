@@ -92,8 +92,10 @@ const ESTILO = `<style>
   .hdc7-regla { height: 4px; margin: 16px 0 14px; border-radius: 2px; background: var(--hd-azul); transform-origin: 0 50%; }
   .hdc7-total { display: block; }
   .hdc7-total .hdc7-et { display: block; font-weight: 800; color: var(--hd-azul); }
-  .hdc7-total .hdc7-val { display: block; margin-top: -4px; font-size: 124px; line-height: 1.02; letter-spacing: -0.035em;
+  .hdc7-total .hdc7-val { display: block; margin-top: 10px; font-size: 124px; line-height: 1.02; letter-spacing: -0.035em;
     text-align: right; color: var(--hd-azul); transform-origin: 100% 75%; }
+  .hdc7 .hd-desglose { position: relative; }
+  .hdc7-resalte { position: absolute; left: 8px; right: 8px; border-radius: 10px; background: rgba(255, 255, 255, 0.2); pointer-events: none; }
 </style>`;
 
 /* ════════════════════════════════════════════════════════════════════════════════════════════════════════════════
@@ -107,9 +109,9 @@ const FILA_X0 = (1440 - (3 * CARTA_W + 2 * HUECO)) / 2;
 const SLOT_X = [0, 1, 2].map(i => FILA_X0 + i * (CARTA_W + HUECO));
 /** titular: "El especialista pone su precio." a la izquierda durante el chat; en la comparación sube entero (sin
     reacomodar palabras) y forma, con "Vos elegís." grande al lado, un bloque centrado arriba de las tarjetas */
-const TIT_L = { x: 110, y: 392, tamano: 72 };
+const TIT_L = { x: 110, tamano: 76 };   // como los titulares de las escenas 4 y 5: 76 px, centrado en y 540
 const TAM_V = 104;
-const BLOQUE = { y: 184, hueco: 52 };
+const BLOQUE = { y: 176, hueco: 52 };
 /** línea de base de la última línea de un titular (Inter, interlineado 1,06): desde el borde de arriba */
 const baseTitular = (lineas, tamano) => (lineas - 1) * 1.06 * tamano + 0.8933 * tamano;
 
@@ -146,7 +148,8 @@ Trailer.recipe('hd-presupuestos', (D, T, o) => {
   // ── titular: L a la izquierda durante el chat; en la comparación L sube entero y, con V ("Vos elegís.") a su
   //    derecha sobre la misma línea de base, queda un bloque centrado arriba de las tarjetas
   const L = D.$('.hdc6-l', s), V = D.$('.hdc6-v', s);
-  Object.assign(L.style, { left: `${TIT_L.x}px`, top: `${TIT_L.y}px` });
+  const yL = Math.round(540 - L.offsetHeight / 2);
+  Object.assign(L.style, { left: `${TIT_L.x}px`, top: `${yL}px` });
   const anchoTexto = el => {
     const b0 = D.box(el);
     return Math.max(...D.$$('.hd-tit-palabra', el).map(p => { const b = D.box(p); return b.x + b.w - b0.x; }));
@@ -154,7 +157,7 @@ Trailer.recipe('hd-presupuestos', (D, T, o) => {
   const lineasL = Math.round(L.offsetHeight / (1.06 * TIT_L.tamano));
   const wL = anchoTexto(L), wV = anchoTexto(V);
   const x0 = Math.round((1440 - (wL + BLOQUE.hueco + wV)) / 2);
-  const subeL = { x: x0 - TIT_L.x, y: BLOQUE.y - TIT_L.y };
+  const subeL = { x: x0 - TIT_L.x, y: BLOQUE.y - yL };
   const baseBloque = BLOQUE.y + baseTitular(lineasL, TIT_L.tamano);
   Object.assign(V.style, { left: `${x0 + wL + BLOQUE.hueco}px`, top: `${Math.round(baseBloque - baseTitular(1, TAM_V))}px` });
   prepararTitular(L);
@@ -321,15 +324,15 @@ Trailer.recipe('hd-presupuestos', (D, T, o) => {
 /* ════════════════════════════════════════════════════════════════════════════════════════════════════════════════
    Escena 7 · confirmación (60–68 s)
    ════════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
-const TIT7 = { x: 110, y: 0, tamano: 72 };
+const TIT7 = { x: 110, tamano: 76, ancho: 660 };
 
 Trailer.recipe('hd-confirmacion', (D, T, o) => {
   const tl = D.tl;
   const p = priceWithFee(45000);
   const pct = `${Math.round(HANDY_FEE * 100)}%`;
-  const s = D.scene('confirmacion', `${ESTILO}<div class="hdc hd-ui">
+  const s = D.scene('confirmacion', `${ESTILO}<div class="hdc hdc7 hd-ui">
       ${phoneFrame({ pantalla: pantallaPresupuestos({ elegido: true }) + pantallaConfirmar() })}
-      ${titular({ texto: 'Precio final antes de confirmar.', tamano: TIT7.tamano, className: 'hdc7-tit' })}
+      ${titular({ texto: 'Precio final antes de confirmar.', tamano: TIT7.tamano, ancho: TIT7.ancho, className: 'hdc7-tit' })}
       <div class="hdc7-cuenta">
         <div class="hdc7-fila" data-i="0"><span class="hdc7-et">Presupuesto</span><span class="hdc7-val">${formatARS(p.budget)}</span></div>
         <div class="hdc7-fila" data-i="1"><span class="hdc7-et"><b>+</b> Tarifa Handy ${pct}</span><span class="hdc7-val">${formatARS(p.fee)}</span></div>
@@ -356,6 +359,19 @@ Trailer.recipe('hd-confirmacion', (D, T, o) => {
   gsap.set(tarjeta, { opacity: 0, scale: 0.86, y: 18, transformOrigin: '50% 50%' });
   gsap.set(check, { scale: 0, transformOrigin: '50% 50%' });
   gsap.set(textosExito, { opacity: 0, y: 12 });
+
+  // franjas de resalte sobre las filas del desglose del teléfono: se encienden junto con cada línea del escenario
+  const desglose = D.$('.hd-desglose', conf);
+  const filasTel = [...D.$$('.hd-desglose-fila', desglose), D.$('.hd-desglose-total', desglose)];
+  const resaltes = filasTel.map((f, i) => {
+    const r = document.createElement('span');
+    r.className = 'hdc7-resalte';
+    const extra = i === filasTel.length - 1 ? 8 : 0; // el total lleva un filete arriba: la franja arranca debajo
+    Object.assign(r.style, { top: `${f.offsetTop - 2 + extra}px`, height: `${f.offsetHeight + 4 - extra}px` });
+    desglose.appendChild(r);
+    return r;
+  });
+  gsap.set(resaltes, { opacity: 0 });
 
   // dedo dentro del teléfono (se mueve con él y no lo recorta la pantalla)
   tel.insertAdjacentHTML('beforeend', finger());
@@ -401,11 +417,17 @@ Trailer.recipe('hd-confirmacion', (D, T, o) => {
   entraTitular(tl, tit, tTit);
 
   // 61,0 · 61,5 · las dos filas · 62,0 · el total grande, con golpe
+  const resaltar = (r, at) => {
+    tl.to(r, { opacity: 1, duration: 0.15, ease: 'power1.out' }, at);
+    tl.to(r, { opacity: 0, duration: 0.7, ease: 'power1.inOut' }, at + 0.45);
+  };
   partesFila.forEach(([et, val], i) => {
     tl.to(et, { opacity: 1, x: 0, duration: 0.6, ease: 'expo.out' }, tFila[i]);
     tl.to(val, { opacity: 1, x: 0, duration: 0.6, ease: 'expo.out' }, tFila[i] + 0.08);
+    resaltar(resaltes[i], tFila[i]);
     D.sfx('key', tFila[i], 0.12);
   });
+  resaltar(resaltes[2], tTotal);
   tl.to(regla, { scaleX: 1, duration: 0.5, ease: 'expo.out' }, tRegla);
   D.sfx('tick', tRegla, 0.03);
   tl.to(totalEt, { opacity: 1, x: 0, duration: 0.6, ease: 'expo.out' }, tTotal - 0.1);

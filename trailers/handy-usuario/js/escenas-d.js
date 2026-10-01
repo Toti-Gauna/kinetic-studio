@@ -190,7 +190,7 @@ Trailer.recipe('hd-seguimiento', (D, T, o) => {
   const chat = D.$('[data-pantalla="chat-especialista"]', tel);
   const conf = D.$('[data-pantalla="confirmar"]', tel);
   const tarjetaExito = D.$('.hd-exito-tarjeta', conf);
-  gsap.set(inicio, { autoAlpha: 0 });
+  gsap.set([inicio, seg], { autoAlpha: 0 });
   gsap.set(chat, { x: SCREEN.w });
 
   // barras de estado: a = la del marco (10:41, íconos oscuros) · b/c sobre el azul del seguimiento · d/e sobre blanco
@@ -257,7 +257,7 @@ Trailer.recipe('hd-seguimiento', (D, T, o) => {
 
   // ════════ tiempos
   const tGiro = T + 0.25;     // 68,25 las agujas vuelan a las 16:00
-  const tFunde = T + 0.35;    // 68,35 confirmar → seguimiento
+  const tFunde = T + 0.3;     // 68,3 confirmar → seguimiento
   const tFecha = T + 1.25;    // 69,25 "Jueves 15 de octubre"
   const tCamino = T + 3;      // 71,0 en camino
   const tRuta = T + 3.75;     // 71,75 recorre la ruta
@@ -281,9 +281,10 @@ Trailer.recipe('hd-seguimiento', (D, T, o) => {
   tl.to(agH, { rotation: anguloHora(16, 0, 1), duration: 1, ease: 'power2.inOut', svgOrigin: RELOJ_ORIGEN }, tGiro);
   for (let i = 0; i < 16; i++) D.sfx('tick', tGiro + i * 0.0625, 0.022 + 0.014 * Math.sin((i / 15) * Math.PI));
 
-  // 68,35 · la confirmación se funde en el seguimiento (íconos de la barra de estado: de oscuros a blancos)
-  tl.to(conf, { autoAlpha: 0, duration: 0.5, ease: 'power1.inOut' }, tFunde);
-  cruzar(tl, barras.a, barras.b, tFunde, 0.5);
+  // 68,3 · la confirmación se apaga y se prende el seguimiento (un parpadeo en blanco, sin doble exposición de dos
+  // pantallas cargadas); los íconos de la barra de estado pasan de oscuros a blancos con su pantalla
+  tl.to([conf, barras.a], { autoAlpha: 0, duration: 0.22, ease: 'power1.in' }, tFunde);
+  tl.to([seg, barras.b], { autoAlpha: 1, duration: 0.38, ease: 'power1.out' }, tFunde + 0.24);
 
   // 69,25 · son las 16:00 del jueves 15
   entraTitular(tl, fecha, tFecha, { dur: 0.7 });

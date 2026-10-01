@@ -34,8 +34,8 @@ const CSS = `
 .hd-a2-zoom { zoom: 1.4; }
 .hd-a2-reloj { position: absolute; }
 .hd-a2-reloj svg { display: block; overflow: visible; }
-.hd-a2-hora { position: absolute; width: 300px; height: 96px; overflow: hidden; font: 800 80px/96px var(--hd-font);
-  letter-spacing: -0.03em; color: var(--hd-tinta); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hd-a2-hora { position: absolute; width: 300px; height: 96px; overflow: hidden; font: 800 72px/96px var(--hd-font);
+  letter-spacing: -0.03em; color: var(--hd-tinta-suave); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .hd-a2-hora-capa { position: absolute; left: 0; top: 0; }
 .hd-a2-escr { position: absolute; left: 0; top: 0; }
 `;
@@ -275,10 +275,10 @@ Trailer.recipe('hd-gancho', (D, T, o) => {
 /* ══════════════════════════ ESCENA 2 · PROBLEMA (8–18 s) ══════════════════════════ */
 
 const A2 = {
-  tit: { x: 110, y: 112, tamano: 80, ancho: 640 },
-  reloj: { x: 110, y: 476, d: 220 },
-  hora: { x: 362, y: 538 },     // la caja de 96 px queda centrada con el reloj (centro y 586)
-  tarjetas: [{ x: 792, y: 118, rot: -1.6 }, { x: 832, y: 380, rot: 1.3 }, { x: 772, y: 642, rot: -0.9 }],
+  tit: { x: 110, y: 152, tamano: 80, ancho: 640 },
+  reloj: { x: 110, y: 516, d: 220 },
+  hora: { x: 362, y: 578 },     // la caja de 96 px queda centrada con el reloj (centro y 626)
+  tarjetas: [{ x: 792, y: 160, rot: -1.6 }, { x: 832, y: 422, rot: 1.3 }, { x: 772, y: 684, rot: -0.9 }],
 };
 const HORAS = ['10:02', '12:47', '16:30', '19:15'];
 /** ángulo de las agujas a m minutos de las 10:02 (giran de corrido, varias vueltas) */
@@ -423,7 +423,11 @@ Trailer.recipe('hd-problema', (D, T, o) => {
   entraTitular(tl, tit, T + 7, { grupo: 2 });
   D.sfx('kick', T + 7, 0.24);
   D.sfx('boom', T + 7, 0.1);
-  [7.5, 8, 8.5].forEach(t => D.sfx('tick', T + t, 0.035));
+  [7.5, 8, 8.5].forEach(t => {                                               // tic… tic… tic…
+    tl.to(reloj, { scale: 1.04, duration: 0.07, ease: 'power2.out' }, T + t);
+    tl.to(reloj, { scale: 1, duration: 0.22, ease: 'power2.inOut' }, T + t + 0.07);
+    D.sfx('tick', T + t, 0.035);
+  });
 
   // ── la pila flota apenas mientras se espera (nada queda muerto en la pausa) ──
   [vecinos, familia, futbol].forEach((card, i) => {

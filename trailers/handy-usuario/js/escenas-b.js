@@ -14,13 +14,14 @@
      …22,5 (H gota · a caño · n engranaje · d lamparita · y llave, una por tiempo, campana pentatónica que sube); las
            letras quedan sobre la línea de base del logo, cada una encima de su Handy.
      23,0  las letras se juntan en el wordmark; 23,5 encaja (clac) y entra la bajada "Soluciones, no problemas".
-     23,5  el orgullo: caras de festejo, todos respiran y la lamparita saluda.
-     24,9  salen de cuadro saltando, cada uno por su lado; a las 26,0 queda solo el logo.
+     23,5  el orgullo: caras de festejo, la lamparita se enciende (rayos), todos respiran y el caño saluda.
+     24,85 de izquierda a derecha, cada uno pega un saltito y se va por abajo; a las 26,0 queda solo el logo.
    4 · inicio (26–36)
-     26,0  match cut: el teléfono sube desde abajo y el logo se achica y vuela al encabezado de la app (palabraHacia
-           al lockup compacto del encabezado, en PHONE_XY); a las 27,0 el logo del encabezado lo reemplaza.
+     26,0  match cut: la bajada se recoge debajo del wordmark y el logo se achica; 26,1 el teléfono sube desde abajo;
+           el logo cruza al encabezado de la app (palabraHacia al lockup compacto, con el teléfono en PHONE_XY) y a las
+           26,9 el logo del encabezado lo reemplaza.
      26,6  fichas en cascada por filas, los títulos de sección y el botón de urgencia; 27,0 entra "Pedís lo que necesitás.".
-     29,0  recorrido: los íconos de los seis rubros y de los seis accesos saltan uno por corchea (se leen todos).
+     29,0  recorrido: los seis rubros y los seis accesos se levantan uno por corchea (se leen todos); 32,5 late la urgencia.
      33,6  entra el dedo; 35,0 toca Plomería (ficha apretada + capa azul); se va. 35,25 sale el titular.
    5 · tipo de trabajo (36–46)
      36,0  el velo oscurece la app y sube la hoja "Plomería · ¿Qué tipo de trabajo es?"; entran las tres opciones.
@@ -265,7 +266,10 @@ Trailer.recipe('hd-entrada', (D, T, o) => {
 
   // ── saltan y se van por abajo (24,85–25,9); a las 26,0 queda el logo solo ──
   hs.forEach((h, k) => {
-    salirPorAbajo(tl, el[h.tipo], tSale[h.tipo], { altura: h.tipo === 'cano' ? 60 : 90, caida: D.H - h.top + 40 });
+    // el saltito no llega a la bajada del logo: el caño y la lamparita, que son los altos, saltan menos
+    const altura = { cano: 25, lamparita: 50 }[h.tipo] ?? 85;
+    // cae hasta que la cabeza pasa el borde de abajo, contando el estirón de la caída (scaleY 1,1 desde los pies)
+    salirPorAbajo(tl, el[h.tipo], tSale[h.tipo], { altura, caida: D.H - h.top + h.altura * 0.12 + 40 });
     D.sfx('plip', tSale[h.tipo] + 0.1, 0.05, h.voz * 1.4);
   });
   D.sfx('whoosh', T + 7.0, 0.7, 0.12);
@@ -312,15 +316,22 @@ Trailer.recipe('hd-inicio', (D, T, o) => {
 
   D.show(s, T);
 
-  // ── el teléfono sube y el logo se mete en su encabezado (26,0–27,0) ───────
-  const sube = 1.0;
-  tl.to(tel, { y: PHONE_XY.y, duration: sube, ease: 'power4.out' }, T);
-  tl.to(logo, { ...flip, transformOrigin: '0 0', duration: sube, ease: 'power4.out' }, T);
-  tl.to(bajada, { ...LOGO_INFO.bajadaCompacta, svgOrigin: '0 0', duration: sube, ease: 'power4.out' }, T);
-  tl.set(logoHeader, { opacity: 1 }, T + sube);
-  tl.set(logo, { autoAlpha: 0 }, T + sube);
-  D.sfx('whoosh', T - 0.1, 0.7, 0.16);
-  D.sfx('tick', T + 0.55, 0.05);
+  // ── el teléfono sube y el logo se mete en su encabezado (26,0–26,9) ───────
+  // En el golpe la bajada se recoge debajo del wordmark (lockup compacto) y el logo empieza a achicarse hacia su
+  // esquina; el teléfono sube 0,1 s después (expo.out: está quieto antes de que el logo lo cruce) y recién entonces
+  // el logo viaja a la derecha y aterriza en el encabezado. Así nunca pisa la barra de estado ni la isla del teléfono.
+  // Al llegar, el logo del encabezado, exactamente debajo, lo reemplaza.
+  const llega = T + 0.9;
+  gsap.set(logo, { transformOrigin: '0 0' });
+  tl.to(bajada, { ...LOGO_INFO.bajadaCompacta, svgOrigin: '0 0', duration: 0.35, ease: 'power2.inOut' }, T);
+  tl.to(logo, { scale: flip.scale, duration: 0.9, ease: 'power3.inOut' }, T);
+  tl.to(logo, { y: flip.y, duration: 0.9, ease: 'power3.inOut' }, T);
+  tl.to(logo, { x: flip.x, duration: 0.75, ease: 'power3.inOut' }, T + 0.15);
+  tl.to(tel, { y: PHONE_XY.y, duration: 0.8, ease: 'expo.out' }, T + 0.1);
+  tl.set(logoHeader, { opacity: 1 }, llega);
+  tl.set(logo, { autoAlpha: 0 }, llega);
+  D.sfx('whoosh', T, 0.6, 0.16);
+  D.sfx('tick', llega - 0.02, 0.06);
 
   // ── cascada (26,6–28,0) y titular (27,0) ──────────────────────────────────
   const fichaEn = (k, t0) => t0 + Math.floor(k / 3) * 0.25 + (k % 3) * 0.06; // por fila, y de izquierda a derecha
@@ -334,15 +345,19 @@ Trailer.recipe('hd-inicio', (D, T, o) => {
   D.sfx('plip', T + 2.0, 0.07, 700);
   entraTitular(tl, tit, T + 1.0);
 
-  // ── recorrido: un ícono por corchea (29,0–32,0) ───────────────────────────
+  // ── recorrido: una ficha por corchea (29,0–32,0): se levanta y su ícono salta ──
+  const resaltar = (f, t) => {
+    latido(tl, f, t, 1.07);
+    latido(tl, icono(f), t + 0.03, 1.24);
+  };
   rubros.forEach((f, k) => {
     const t = T + 3.0 + k * 0.25;
-    latido(tl, icono(f), t);
+    resaltar(f, t);
     D.sfx('plip', t, 0.035, PENTA[k]);
   });
   accesos.forEach((f, k) => {
     const t = T + 4.75 + k * 0.25;
-    latido(tl, icono(f), t);
+    resaltar(f, t);
     D.sfx('plip', t, 0.035, PENTA[5 - k]);
   });
   latido(tl, urgencia, T + 6.5, 1.12);
