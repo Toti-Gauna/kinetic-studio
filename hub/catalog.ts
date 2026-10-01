@@ -1,7 +1,8 @@
 /* ============================================================================
    CATÁLOGO DEL HUB — una entrada por tráiler.
    Para habilitar uno nuevo: construirlo en trailers/<id>/ (agente trailer-director),
-   poner enabled: true y completar path, poster, preview, duration, scenes.
+   adoptarlo en Vite (npm run adopt -- trailers/<id>), poner enabled: true y completar
+   path, poster, preview, duration, scenes.
 
    Campos
      id        slug (= carpeta en trailers/)
@@ -13,8 +14,41 @@
      path      ruta al index.html del tráiler (solo habilitados)
      poster    segundo que se usa como póster en vivo
      preview   segundo desde el que arranca la vista previa al pasar el mouse
+   Node (>= 22.18) lo importa directo (sin tipos) desde las herramientas de trailers/<id>/tools.
    ========================================================================== */
-window.HUB_CATALOG = [
+import type { MotifName } from './motifs.ts';
+
+export type TrailerStatus = 'kit' | 'recetas' | 'tech';
+
+interface TrailerBase {
+  id: string;
+  title: string;
+  category: string;
+  logline: string;
+  tags: string[];
+  status: TrailerStatus;
+  palette: [bg: string, accent: string, detail: string];
+  motif: MotifName;
+}
+
+/** Un tráiler publicado: se puede ver y previsualizar. */
+export interface ReadyTrailer extends TrailerBase {
+  enabled: true;
+  path: string;
+  poster: number;
+  preview: number;
+  duration: number;
+  scenes: number;
+}
+
+/** Un tráiler en producción: aparece como PRÓXIMAMENTE. */
+export interface UpcomingTrailer extends TrailerBase {
+  enabled: false;
+}
+
+export type TrailerEntry = ReadyTrailer | UpcomingTrailer;
+
+export const catalog: TrailerEntry[] = [
   {
     id: 'kinetic', enabled: true,
     title: 'KINETIC', category: 'Estudio',

@@ -1,0 +1,24 @@
+{
+  "name": "motion-animations",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Trailer Hub — motion graphics hechos 100% con código (GSAP + canvas + WebAudio).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "adopt": "node scripts/adopt-trailer.mjs"
+  },
+  "dependencies": {
+    "gsap": "3.13.0",
+    "three": "0.147.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "@types/three": "0.147.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.2"
+  }
+}

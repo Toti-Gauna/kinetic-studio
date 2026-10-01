@@ -4,9 +4,11 @@
    in headless Chrome (DevTools protocol) and measures, for real:
      duration, stage, scenes (labels, types, lengths), animations (tweens with a
      duration), events (zero-length calls: sounds, cues), words on screen (HTML text),
-     distinct recipes; plus title, category and palette from hub/catalog.js.
+     distinct recipes; plus title, category and palette from hub/catalog.ts.
    Writes ../js/data/wrapped-data.js  →  window.WRAPPED_DATA = { measured, trailers: [...] }
-   node trailers/wrapped/tools/measure.mjs
+   The trailers are ES modules, so they are measured from a server, not from file://:
+     npm run build && npm run preview     (or set TRAILER_BASE to wherever the site is served)
+     node trailers/wrapped/tools/measure.mjs
    ========================================================================== */
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
@@ -16,9 +18,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const HUB = path.resolve(here, '../../..');
-globalThis.window = {};
-await import(pathToFileURL(path.join(HUB, 'hub/catalog.js')).href);
-const catalog = window.HUB_CATALOG.filter(x => x.enabled && x.id !== 'wrapped');
+const BASE = process.env.TRAILER_BASE || 'http://localhost:4173/';
+const catalog = (await import(pathToFileURL(path.join(HUB, 'hub/catalog.ts')).href)).catalog.filter(x => x.enabled && x.id !== 'wrapped');
 
 const CH = process.env.CHROME_PATH || ['C:/Program Files/Google/Chrome/Application/chrome.exe', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome'].find(p => fs.existsSync(p));
 const port = 9500 + Math.floor(Math.random() * 300), prof = fs.mkdtempSync(path.join(os.tmpdir(), 'wrapped-'));
@@ -34,7 +35,7 @@ const ev = async expr => { const r = await send('Runtime.evaluate', { expression
 
 const out = [];
 for (const it of catalog) {
-  const url = pathToFileURL(path.join(HUB, it.path)).href + '?t=0.01&now=2026-09-29T12:00:00';
+  const url = new URL(it.path, BASE).href + '?t=0.01&now=2026-09-29T12:00:00';
   await send('Page.navigate', { url });
   let st = '';
   for (let i = 0; i < 120; i++) { st = await ev("document.documentElement.dataset.trailer || ''"); if (st) break; await sleep(250); }

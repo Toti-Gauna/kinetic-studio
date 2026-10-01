@@ -8,6 +8,9 @@
      node capture.mjs build     → ../js/data/export-data.js (window.EXPORT_DATA)
    Each export runs ~/.claude/trailer-kit/tools/export.mjs and keeps its report (exports/<id>.json)
    and its console output (exports/<id>.log, shown in the terminal scene).
+   Since the move to Vite the trailers are ES modules and no longer open from file://: `hash` loads them
+   from a server (npm run build && npm run preview, or TRAILER_BASE); the export steps need an
+   export.mjs that accepts a URL.
    ========================================================================== */
 import { spawn } from 'node:child_process';
 import crypto from 'node:crypto';
@@ -53,7 +56,7 @@ if (step === 'hash') {
   const ev = async expr => { const r = await send('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true }); return r.result && r.result.result ? r.result.result.value : undefined; };
   // node capture.mjs hash <trailer> <t1,t2,…>: the first time is the one shown on screen
   const who = process.argv[3] || 'wrapped', times = String(process.argv[4] || '11.8,2.5,21.3,38.4').split(',').map(Number);
-  await send('Page.navigate', { url: pathToFileURL(path.join(HUB, 'trailers', who, 'index.html')).href + '?t=0.01' });
+  await send('Page.navigate', { url: new URL(`trailers/${who}/index.html`, process.env.TRAILER_BASE || 'http://localhost:4173/').href + '?t=0.01' });
   for (let i = 0; i < 120; i++) { if ((await ev("(document.documentElement && document.documentElement.dataset.trailer) || ''")) === 'ready') break; await sleep(250); }
   const [W, H] = String(await ev("document.documentElement.dataset.stage || '1920x1080'")).split('x').map(Number);
   await send('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: false });
@@ -107,13 +110,11 @@ if (step === 'build') {
     log,
     hash: rd('hash.json'),
   };
-  // the hub's own posters (hub/motifs.js) for the three exported trailers
-  globalThis.window = globalThis.window || {};
-  await import(pathToFileURL(path.join(HUB, 'hub/catalog.js')).href);
-  await import(pathToFileURL(path.join(HUB, 'hub/motifs.js')).href);
-  const { MOTIFS, textOn } = window.HUB_ART;
+  // the hub's own posters (hub/motifs.ts) for the three exported trailers
+  const { catalog } = await import(pathToFileURL(path.join(HUB, 'hub/catalog.ts')).href);
+  const { MOTIFS, textOn } = await import(pathToFileURL(path.join(HUB, 'hub/motifs.ts')).href);
   data.posters = Object.fromEntries(Object.keys(JOBS).map(id => {
-    const it = window.HUB_CATALOG.find(x => x.id === id), [p0, a, b] = it.palette, fg = textOn(p0);
+    const it = catalog.find(x => x.id === id), [p0, a, b] = it.palette, fg = textOn(p0);
     return [id, { title: it.title, palette: it.palette, fg, svg: (MOTIFS[it.motif] || MOTIFS.shapes)({ a, b, fg }) }];
   }));
   const dest = path.join(here, '../js/data/export-data.js');
