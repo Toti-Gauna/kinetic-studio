@@ -1,0 +1,30 @@
+/* Handy — variables de marca y base tipográfica de los componentes compartidos.
+   Todas las clases de src/handy llevan el prefijo hd- (el CSS del kit es global y usa nombres cortos).
+   Los valores replican src/handy/tokens.ts (ahí está de dónde sale cada color). */
+:root {
+  --hd-azul: #1F57A8;
+  --hd-azul-claro: #496EA2;
+  --hd-azul-handy: #3071FF;
+  --hd-gris: #CFCFCF;
+  --hd-gris-ficha: #EDEDED;
+  --hd-amarillo: #F8FFA0;
+  --hd-amarillo-alerta: #FFC21A;
+  --hd-blanco: #FFFFFF;
+  --hd-tinta: #141414;
+  --hd-tinta-suave: #5C5C5C;
+  --hd-verde: #1FA855;
+  --hd-rojo: #E5322D;
+  --hd-font: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* raíz de cualquier pieza de interfaz de Handy */
+.hd-ui {
+  font-family: var(--hd-font);
+  color: var(--hd-tinta);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.25;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.hd-ui *, .hd-ui *::before, .hd-ui *::after { box-sizing: border-box; }
+.hd-icon { display: block; flex: none; }

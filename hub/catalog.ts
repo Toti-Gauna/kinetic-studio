@@ -225,4 +225,11 @@ export const catalog: TrailerEntry[] = [
     status: 'kit', palette: ['#0e0e10', '#a78bfa', '#34d399'], motif: 'branch',
     path: 'trailers/bifurcacion/index.html', poster: 8.5, preview: 4.0, duration: 34, scenes: 6,
   },
+  {
+    id: 'handy-usuario', enabled: true, title: 'HANDY · USUARIO', category: 'Producto',
+    logline: 'Handy conecta a quien tiene un problema en casa con especialistas verificados de Mar del Plata: el especialista pone su precio, vos elegís y seguís todo en la app. Un tráiler de 90 segundos para iPad, sin que nadie hable.',
+    tags: ['4:3 para iPad', 'tocá para pausar', 'escenas con etiqueta', 'personajes en SVG', 'app en HTML/CSS', 'solo transform y opacity'],
+    status: 'kit', palette: ['#cfcfcf', '#1f57a8', '#f5f59a'], motif: 'handy',
+    path: 'trailers/handy-usuario/index.html', poster: 52, preview: 18, duration: 90, scenes: 10,
+  },
 ];

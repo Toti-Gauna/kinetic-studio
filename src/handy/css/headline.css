@@ -1,0 +1,19 @@
+/* Titulares del escenario (ui/Headline.ts). Cada palabra va en una máscara: se revela moviendo .hd-tit-in (solo transform). */
+.hd-titular {
+  position: absolute;
+  font: 800 76px/1.06 var(--hd-font);
+  letter-spacing: -0.02em;
+  color: var(--hd-azul);
+  text-wrap: balance;
+}
+.hd-tit-grupo { display: inline; }
+.hd-tit-palabra {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* aire para los descendentes (g, p, y) y las tildes dentro de la máscara */
+  padding: 0.1em 0.02em 0.14em;
+  margin: -0.1em -0.02em -0.14em;
+}
+.hd-tit-in { display: inline-block; }
+.hd-tit-acento { color: var(--hd-tit-acento, var(--hd-azul-handy)); }
