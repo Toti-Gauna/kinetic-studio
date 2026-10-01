@@ -79,9 +79,7 @@ function apretar(tl, el, toque) {
 
 const ESTILO = `<style>
   .hdc { position: absolute; inset: 0; }
-  .hdc .hd-titular { margin: 0; }
-  .hdc6-tit .hd-tit-grupo[data-i="1"] { display: block; }
-  .hdc6-m { visibility: hidden; }
+  .hdc6-v { white-space: nowrap; }
   .hdc6-carta { position: absolute; }
   .hdc6-aro { position: absolute; inset: -2px; border: 4px solid var(--hd-verde); border-radius: 23.6px; pointer-events: none; }
   .hdc7-cuenta { position: absolute; width: 620px; font-family: var(--hd-font); color: var(--hd-tinta); }
@@ -92,33 +90,36 @@ const ESTILO = `<style>
   .hdc7-val { font-size: 42px; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; color: var(--hd-tinta);
     font-variant-numeric: tabular-nums; white-space: nowrap; }
   .hdc7-regla { height: 4px; margin: 16px 0 14px; border-radius: 2px; background: var(--hd-azul); transform-origin: 0 50%; }
-  .hdc7-total { align-items: flex-end; }
-  .hdc7-total .hdc7-et { padding-bottom: 14px; font-weight: 800; color: var(--hd-azul); }
-  .hdc7-total .hdc7-val { font-size: 112px; line-height: 1; letter-spacing: -0.035em; color: var(--hd-azul); transform-origin: 100% 80%; }
+  .hdc7-total { display: block; }
+  .hdc7-total .hdc7-et { display: block; font-weight: 800; color: var(--hd-azul); }
+  .hdc7-total .hdc7-val { display: block; margin-top: -4px; font-size: 124px; line-height: 1.02; letter-spacing: -0.035em;
+    text-align: right; color: var(--hd-azul); transform-origin: 100% 75%; }
 </style>`;
 
 /* ════════════════════════════════════════════════════════════════════════════════════════════════════════════════
    Escena 6 · presupuestos (46–60 s)
    ════════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
-const TEXTO6 = 'El especialista pone su precio.|*Vos elegís.*';
 /** escala de las tarjetas grandes de la comparación (408×476) y su fila centrada en el escenario */
 const K = 1.2;
 const CARTA_W = Math.round(340 * K);
 const HUECO = 24;
 const FILA_X0 = (1440 - (3 * CARTA_W + 2 * HUECO)) / 2;
 const SLOT_X = [0, 1, 2].map(i => FILA_X0 + i * (CARTA_W + HUECO));
-const SLOT_Y = 352;
-/** titular: a la izquierda durante el chat (72 px) y arriba al centro durante la comparación (58 px) */
+/** titular: "El especialista pone su precio." a la izquierda durante el chat; en la comparación sube entero (sin
+    reacomodar palabras) y forma, con "Vos elegís." grande al lado, un bloque centrado arriba de las tarjetas */
 const TIT_L = { x: 110, y: 392, tamano: 72 };
-const TIT_M = { x: 72, y: 170, tamano: 58, ancho: 1296 };
+const TAM_V = 104;
+const BLOQUE = { y: 184, hueco: 52 };
+/** línea de base de la última línea de un titular (Inter, interlineado 1,06): desde el borde de arriba */
+const baseTitular = (lineas, tamano) => (lineas - 1) * 1.06 * tamano + 0.8933 * tamano;
 
 Trailer.recipe('hd-presupuestos', (D, T, o) => {
   const tl = D.tl;
   const s = D.scene('presupuestos', `${ESTILO}<div class="hdc hd-ui">
       ${phoneFrame({ pantalla: pantallaFecha() + pantallaPresupuestos() })}
-      ${titular({ texto: TEXTO6, tamano: TIT_L.tamano, className: 'hdc6-tit hdc6-l' })}
-      ${titular({ texto: TEXTO6, tamano: TIT_M.tamano, ancho: TIT_M.ancho, alinear: 'center', className: 'hdc6-tit hdc6-m' })}
-      ${PRESUPUESTOS.map((d, i) => `<div class="hdc6-carta" data-id="${d.id}" style="left:${SLOT_X[i]}px;top:${SLOT_Y}px">`
+      ${titular({ texto: 'El especialista pone su precio.', tamano: TIT_L.tamano, className: 'hdc6-l' })}
+      ${titular({ texto: '*Vos elegís.*', tamano: TAM_V, ancho: 900, className: 'hdc6-v' })}
+      ${PRESUPUESTOS.map(d => `<div class="hdc6-carta" data-id="${d.id}">`
         + chatPresupuesto(presupuestoProps(d, { escala: K })) + '<span class="hdc6-aro"></span></div>').join('')}
       ${finger()}
     </div>`);
@@ -137,23 +138,33 @@ Trailer.recipe('hd-presupuestos', (D, T, o) => {
   const telCartas = PRESUPUESTOS.map(d => enTel[d.id]);
   gsap.set(chip, { opacity: 0, scale: 0.7 });
   gsap.set(telCartas, { opacity: 0, y: 46, scale: 0.94, transformOrigin: '0% 100%' });
-  gsap.set(D.$('.hd-presu-sello-pildora', enTel.martin), { scale: 1 });
 
   // desplazamiento de la lista para que la tarjeta nueva quede entera abajo de la ventana del chat
   const padAbajo = parseFloat(getComputedStyle(lista).paddingBottom) || 0;
   const scrollPara = el => Math.min(0, cuerpo.clientHeight - padAbajo - (el.offsetTop + el.offsetHeight));
 
-  // ── titular: L (a la izquierda) es el que se ve; M (arriba al centro, invisible) solo da las posiciones finales
-  const L = D.$('.hdc6-l', s), M = D.$('.hdc6-m', s);
+  // ── titular: L a la izquierda durante el chat; en la comparación L sube entero y, con V ("Vos elegís.") a su
+  //    derecha sobre la misma línea de base, queda un bloque centrado arriba de las tarjetas
+  const L = D.$('.hdc6-l', s), V = D.$('.hdc6-v', s);
   Object.assign(L.style, { left: `${TIT_L.x}px`, top: `${TIT_L.y}px` });
-  Object.assign(M.style, { left: `${TIT_M.x}px`, top: `${TIT_M.y}px` });
-  const palL = D.$$('.hd-tit-palabra', L), palM = D.$$('.hd-tit-palabra', M);
-  const bl = palL.map(e => D.box(e)), bm = palM.map(e => D.box(e));
+  const anchoTexto = el => {
+    const b0 = D.box(el);
+    return Math.max(...D.$$('.hd-tit-palabra', el).map(p => { const b = D.box(p); return b.x + b.w - b0.x; }));
+  };
+  const lineasL = Math.round(L.offsetHeight / (1.06 * TIT_L.tamano));
+  const wL = anchoTexto(L), wV = anchoTexto(V);
+  const x0 = Math.round((1440 - (wL + BLOQUE.hueco + wV)) / 2);
+  const subeL = { x: x0 - TIT_L.x, y: BLOQUE.y - TIT_L.y };
+  const baseBloque = BLOQUE.y + baseTitular(lineasL, TIT_L.tamano);
+  Object.assign(V.style, { left: `${x0 + wL + BLOQUE.hueco}px`, top: `${Math.round(baseBloque - baseTitular(1, TAM_V))}px` });
   prepararTitular(L);
-  gsap.set(palL, { transformOrigin: '0 0' });
+  prepararTitular(V);
 
-  // ── tarjetas grandes: arrancan exactamente sobre la de Diego en el teléfono (×1 = ×1,2 achicada 1/1,2)
+  // ── tarjetas grandes en fila debajo del titular; arrancan exactamente sobre la de Diego en el teléfono
+  //    (la ×1,2 achicada 1/1,2 calza sobre la ×1)
+  const SLOT_Y = Math.round(BLOQUE.y + L.offsetHeight + 56);
   const cartas = D.$$('.hdc6-carta', s);
+  cartas.forEach((c, i) => Object.assign(c.style, { left: `${SLOT_X[i]}px`, top: `${SLOT_Y}px` }));
   const [cM, cL, cD] = cartas;
   const aros = cartas.map(c => D.$('.hdc6-aro', c));
   const sello = D.$('.hd-presu-sello', cM), pildora = D.$('.hd-presu-sello-pildora', cM);
@@ -173,15 +184,17 @@ Trailer.recipe('hd-presupuestos', (D, T, o) => {
   const tChip = T + 0.8;       // 46,8
   const tLlega = [T + 1.5, T + 3, T + 4.5];   // 47,5 · 49,0 · 50,5
   const tAnticipa = T + 5.5;   // 51,5
+  const tSubeTit = T + 5.6;    // 51,6
   const tSale = T + 6;         // 52,0
   const tSellos = T + 7;       // 53,0
   const tTotales = T + 7.5;    // 53,5
   const tElegis = T + 8.25;    // 54,25
   const tDedo = T + 8.75;      // 54,75
   const tToque = T + 10;       // 56,0
-  const tVuelve = T + 11.5;    // 57,5
-  const tVuela = T + 12;       // 58,0
-  const tAterriza = T + 12.8;  // 58,8
+  const tVuelve = T + 11.6;    // 57,6
+  const tTelVuelve = T + 12.2; // 58,2 (cuando las otras dos ya salieron de cuadro)
+  const tVuela = T + 12.35;    // 58,35
+  const tAterriza = T + 13.15; // 59,15
 
   D.show(s, T);
 
@@ -190,7 +203,7 @@ Trailer.recipe('hd-presupuestos', (D, T, o) => {
   D.sfx('whoosh', tPush, 0.5, 0.1);
 
   // 46,5 · "El especialista pone su precio."
-  entraTitular(tl, L, tTit, { grupo: 0 });
+  entraTitular(tl, L, tTit);
 
   // 46,8 · aviso del sistema
   tl.to(chip, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(2.2)' }, tChip);
@@ -222,7 +235,7 @@ Trailer.recipe('hd-presupuestos', (D, T, o) => {
   tl.to(lista, { opacity: 0, duration: 0.2, ease: 'power1.out' }, tSale);
   tl.to(tel, { y: 1180, rotation: 3, duration: 0.55, ease: 'power3.in' }, tSale);
   D.sfx('whoosh', tSale, 0.7, 0.2);
-  const desfase = [0.12, 0.06, 0];   // Martín sale último y viaja más lejos
+  const desfase = [0.14, 0.07, 0];   // Martín sale último y viaja más lejos
   const giro = [-5, -3, 2.5];
   cartas.forEach((c, i) => {
     const t0 = tSale + desfase[i];
@@ -232,11 +245,8 @@ Trailer.recipe('hd-presupuestos', (D, T, o) => {
     D.sfx('fold', t0 + 0.04, 0.1);
   });
 
-  // 52,05 · el titular se reacomoda arriba al centro (cada palabra viaja a su lugar en M)
-  const escalaM = TIT_M.tamano / TIT_L.tamano;
-  palL.forEach((e, i) => {
-    tl.to(e, { x: bm[i].x - bl[i].x, y: bm[i].y - bl[i].y, scale: escalaM, duration: 0.8, ease: 'expo.inOut' }, tSale + 0.05 + i * 0.025);
-  });
+  // 51,6 · el titular sube entero a su lugar arriba (antes de que las tarjetas crucen la columna izquierda)
+  tl.to(L, { x: subeL.x, y: subeL.y, duration: 0.7, ease: 'expo.inOut' }, tSubeTit);
 
   // 53,0 · tres especialistas verificados · 53,5 · tres precios
   cartas.forEach((c, i) => {
@@ -249,7 +259,7 @@ Trailer.recipe('hd-presupuestos', (D, T, o) => {
   D.sfx('bell', tTotales + 0.5, HZ.E6, 0.04, 0.7);
 
   // 54,25 · "Vos elegís."
-  entraTitular(tl, L, tElegis, { grupo: 1, stagger: 0.08 });
+  entraTitular(tl, V, tElegis, { stagger: 0.09 });
 
   // 54,75 · el dedo entra y toca "Aceptar" en la de Martín (56,0)
   const pA = centro(aceptar, raiz);
@@ -281,13 +291,14 @@ Trailer.recipe('hd-presupuestos', (D, T, o) => {
   tl.set(D.$('.hd-presu-sello', enTel.martin), { opacity: 1 }, tReset);
   tl.set(tel, { rotation: 0 }, tReset);
 
-  // 57,5 · sale el titular, las otras dos caen y vuelve el teléfono
+  // 57,35 · sale el titular y las otras dos caen (Diego primero: deja libre la columna del teléfono) · 57,95 vuelve el teléfono
   saleTitular(tl, L, tVuelve);
-  tl.to(cL, { x: -40, y: 860, rotation: -9, duration: 0.7, ease: 'power3.in' }, tVuelve);
-  tl.to(cD, { x: 50, y: 860, rotation: 11, duration: 0.7, ease: 'power3.in' }, tVuelve + 0.1);
-  tl.set([cL, cD], { autoAlpha: 0 }, tVuelve + 0.85);
-  D.sfx('whoosh', tVuelve, 0.8, 0.16);
-  tl.to(tel, { y: TEL.y, duration: 0.85, ease: 'expo.out' }, tVuelve + 0.2);
+  saleTitular(tl, V, tVuelve + 0.08);
+  tl.to(cD, { x: 50, y: 880, rotation: 11, duration: 0.5, ease: 'power3.in' }, tVuelve);
+  tl.to(cL, { x: -40, y: 880, rotation: -9, duration: 0.5, ease: 'power3.in' }, tVuelve + 0.1);
+  tl.set([cL, cD], { autoAlpha: 0 }, tVuelve + 0.65);
+  D.sfx('whoosh', tVuelve, 0.6, 0.15);
+  tl.to(tel, { y: TEL.y, duration: 0.85, ease: 'expo.out' }, tTelVuelve);
 
   // 58,0 · la elegida vuela a su lugar en el chat (×1,2 → ×1) y el teléfono la recibe
   const bMt = caja(enTel.martin, tel);
@@ -323,7 +334,7 @@ Trailer.recipe('hd-confirmacion', (D, T, o) => {
         <div class="hdc7-fila" data-i="0"><span class="hdc7-et">Presupuesto</span><span class="hdc7-val">${formatARS(p.budget)}</span></div>
         <div class="hdc7-fila" data-i="1"><span class="hdc7-et"><b>+</b> Tarifa Handy ${pct}</span><span class="hdc7-val">${formatARS(p.fee)}</span></div>
         <div class="hdc7-regla"></div>
-        <div class="hdc7-total"><span class="hdc7-et"><b>=</b> Precio final</span><span class="hdc7-val">${formatARS(p.total)}</span></div>
+        <div class="hdc7-total"><div class="hdc7-et"><b>=</b> Precio final</div><div class="hdc7-val">${formatARS(p.total)}</div></div>
       </div>
     </div>`);
   const raiz = D.$('.hdc', s);
@@ -414,7 +425,7 @@ Trailer.recipe('hd-confirmacion', (D, T, o) => {
 
   // 65,6 · aparece el éxito: velo, tarjeta, tilde (66,0) con campana de confirmación
   tl.to(velo, { opacity: 1, duration: 0.35, ease: 'power1.out' }, toque + 0.1);
-  tl.to(tarjeta, { opacity: 1, scale: 1, y: 0, duration: 0.55, ease: 'back.out(1.6)' }, toque + 0.2);
+  tl.to(tarjeta, { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: 'back.out(1.6)' }, tCheck - 0.2);
   tl.to(check, { scale: 1, duration: 0.55, ease: 'back.out(2.4)' }, tCheck);
   tl.to(textosExito, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out', stagger: 0.08 }, tCheck + 0.1);
   [D.N.G5, HZ.B5, D.N.D6, HZ.G6].forEach((f, i) => D.sfx('bell', tCheck + i * 0.08, f, 0.07 - i * 0.008, 1.5));
