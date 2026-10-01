@@ -12,7 +12,8 @@
        desde   de dónde barre el panel: 'der' | 'izq' | 'abajo' | 'arriba' (default en ronda)
        mitad   true: el panel tapa solo la mitad de abajo y la palabra anterior sube a la mitad de arriba (pregunta en
                dos pisos, se leen juntas)
-       sub     una línea chica debajo (800, 54 px), entra una corchea después
+       sub     una línea chica debajo (800, 54 px), pega con la palabra (mismo punch que las letras): se lee ~0,8 s,
+               hasta que el panel siguiente lo empieza a tapar (en el tiempo siguiente − ENTRA)
        icono   ícono de src/handy/icons.ts en una ficha redonda antes del sub
        handy   un personaje ('gota' | 'cano' | 'engranaje' | 'lamparita' | 'llave') que asoma desde abajo en `lado`
                ('izq' | 'der') una corchea después y se aplasta en el tiempo siguiente; humor = su cara (default 'feliz';
@@ -21,35 +22,45 @@
      salida  'camara': en el último tiempo la escena se tira contra la cámara (escala 1 → 3,4, power4.in) hacia la
              última palabra; el corte cae en el flash de la escena siguiente.
      Cada panel barre en ENTRA s y termina en su tiempo: el primero empieza un poquito antes de T, encima del último
-     cuadro de la escena anterior (que se esconde recién en T). Sonido moderado (la música lleva el groove): un whoosh
-     que llega al tiempo, un clap por palabra (más un boom en la primera) y un "plic" por personaje.
+     cuadro de la escena anterior (que se esconde recién en T). Sin salida, la última tarjeta termina de moverse QUIETO
+     (0,25) s antes del corte: el cuadro del que corta queda limpio. Sonido moderado (la música lleva el groove): un
+     whoosh que llega al tiempo, un clap por palabra, low end en todas (boom 0,32 en la primera, bombo BOMBO = 0,45 en
+     las demás: así pegan parejo aunque la música no traiga bombo, como en el quiebre 42–44; picos de 100 ms entre
+     −2,8 y −4,2 dBFS) y un "plic" por personaje.
 
      22–24  "¿Cuánto sale?" (trailer.js), construye hacia el drop 2:
        21,84  el panel azul barre desde la derecha sobre el teléfono de tipo de trabajo
        22,0   "¿Cuánto" en blanco pega a pantalla completa (boom + clap) · 22,5 bump
-       22,84  "¿Cuánto" sube a la mitad de arriba y el panel amarillo barre desde abajo la mitad de abajo
-       23,0   "sale?" en azul pega · 23,25 la Gota asoma preocupada a la derecha · 23,5 bump y la Gota se aplasta
+       22,78  "¿Cuánto" sube a la mitad de arriba (hasta 23,08) · 22,84 el panel amarillo barre desde abajo la mitad de abajo
+       23,0   "sale?" en azul pega (bombo + clap) · 23,25 la Gota asoma preocupada a la derecha · 23,5 bump y la Gota se aplasta
        23,7   la escena se tira contra la cámara hacia "sale?" · 24,0 corte al flash de presupuestos
      42–46  "Pedí. Compará. Elegí. Seguí." (el recorrido de la app, una palabra por medio compás):
        41,84  el panel azul barre desde la izquierda sobre la reseña
-       42,0   "Pedí." blanco sobre azul · "Lo que necesitás." · la lamparita asoma a la derecha (42,25) · 42,5 bump
-       43,0   "Compará." azul sobre amarillo (barre desde abajo) · "Presupuestos de especialistas verificados." con la
-              insignia de verificado · el engranaje asoma a la izquierda · 43,5 bump
-       44,0   "Elegí." azul sobre blanco (barre desde la derecha) · "Precio final antes de confirmar." · la Gota festeja
-       45,0   "Seguí." blanco sobre azul (barre desde arriba) · "Todo queda en Handy." · la llave · 45,5 bump; 45,75 queda
-              quieto: es el cuadro limpio del que corta el golpe de las 46,0
+       42,0   "Pedí." blanco sobre azul con "Lo que necesitás." (boom + clap) · la lamparita asoma a la derecha (42,25)
+              · 42,5 bump · 42,84 el panel siguiente empieza a taparlo
+       43,0   "Compará." azul sobre amarillo (barre desde abajo) con "Especialistas verificados." y la insignia de
+              verificado (bombo + clap, en el quiebre sin bombo) · el engranaje asoma a la izquierda · 43,5 bump
+       44,0   "Elegí." azul sobre blanco (barre desde la derecha) con "Con el precio final." · la Gota festeja · 44,5 bump
+       45,0   "Seguí." blanco sobre azul (barre desde arriba) con "Todo queda en Handy." · la llave · 45,5 bump (más
+              corto); 45,75 queda quieto: es el cuadro limpio del que corta el golpe de las 46,0
    Contratos: la escena se ve desde T − ENTRA (el barrido) y se esconde en T + dur; devuelve exactamente o.dur.
 
    Trailer.remix.sello(D, at, fin, { x, y, rot, escala, texto })  el sello REMIX
      Una calcomanía: píldora amarillo lamparita con borde azul, "REMIX" en azul Inter 900 y una sombra azul corrida
      (estática), inclinada `rot`° (default −8). Su propia sección (D.scene) encima de la escena de abajo.
        at      pega: entra de escala 2,2 → 1 (back.out) con un tambaleo que se asienta, siete rayitas que saltan hacia arriba y afuera
-               y clap + boom moderados; en at + 0,5 un bump
-       fin     en fin − 0,22 se infla y se va (back.in); null = queda hasta el final de la película
-       x, y    centro en px del escenario (default: arriba a la derecha del wordmark "Handy" de la entrada, que a las
-               10,75 encaja en x 320–820, y 136–262; la bajada empieza en y 290: el sello va en 1100, 140, a 45 px de la «y», sin tapar
-               letras: la calcomanía mide unos 465 × 150 px a escala 1, con la sombra), escala (default 1), texto (default 'REMIX')
-     Se usa a las 11,0 en la entrada (trailer.js: extra sello at 3, el tiempo después de que encaja el logo) y en el final.
+               y clap + boom moderados; en at + 0,5 un bump (con salida, vuelve antes de que arranque la salida)
+       fin     se va en SALE (0,3) s y termina justo en fin: fin − 0,3 toma envión (escala × 1,14, se echa para atrás y
+               baja 14 px, power2.out); fin − 0,2 sale revoleado hacia arriba a la derecha (x +90, y −110, gira +34°) y
+               se achica a 0 (power2.in). null = queda hasta el final de la película
+       x, y    centro en px del escenario (default 1100, 140: arriba a la derecha del wordmark "Handy" de la entrada, que a
+               las 10,75 encaja en x 320–820, y 136–262; la bajada empieza en y 290. La píldora mide 375 × 128 px a escala
+               1 sin girar, con Inter (384 × 139 con la sombra; Trailer.remix.medirSello() da la medida real); girada
+               −8° ocupa x 905–1295, y 50–230: a unos 85 px de la «y», sin tapar letras), escala (default 1), texto
+               (default 'REMIX')
+     Se usa a las 11,0 en la entrada (trailer.js: extra sello at 3, el tiempo después de que encaja el logo; se va
+     11,7–12,0) y en el final (sin fin).
+   Trailer.remix.medirSello({ texto, escala })  →  { w, h }: lo que mide la píldora (sin girar, sin la sombra).
 
    Solo transform y opacity, todo en D.tl en tiempos absolutos, estados iniciales con gsap.set, sin azar. Clases hdr-g- y
    hdr-sello-. */
@@ -122,6 +133,8 @@ const ANCHO = 1240;      // ancho máximo de la palabra (px del escenario)
 const TAMANO = 330;      // cuerpo máximo de la letra
 const ENTRA = 0.16;      // el barrido del panel: termina en el tiempo de la palabra
 const ALTO_HANDY = 290;  // alto de los personajes de las tarjetas
+const QUIETO = 0.25;     // la última tarjeta (sin salida) termina de moverse QUIETO s antes del corte
+const BOMBO = 0.45;      // el bombo de las palabras que no llevan boom
 /** notas de los "plic" de los personajes (Do mayor pentatónica, sube con cada tarjeta) */
 const PLIC = [523.25, 587.33, 659.25, 783.99, 880];
 
@@ -155,10 +168,10 @@ function htmlTarjeta(p, i) {
     </div>` };
 }
 
-/** bump en el tiempo: se infla apenas (k) y vuelve a su escala (base) */
-function bump(tl, el, at, k = 1.05, base = 1) {
+/** bump en el tiempo: se infla apenas (k) y vuelve a su escala (base) en `vuelta` s */
+function bump(tl, el, at, k = 1.05, base = 1, vuelta = 0.32) {
   tl.to(el, { scale: base * k, duration: 0.05, ease: 'power2.out' }, at);
-  tl.to(el, { scale: base, duration: 0.32, ease: 'power3.out' }, at + 0.05);
+  tl.to(el, { scale: base, duration: vuelta, ease: 'power3.out' }, at + 0.05);
 }
 
 /* ═════════════════════════════ 'hdr-golpe' ═════════════════════════════ */
@@ -214,31 +227,41 @@ Trailer.recipe('hdr-golpe', (D, T, o) => {
     tl.to(c.palabra, { scale: 1, duration: 0.5, ease: 'expo.out' }, p0);
     tl.to(c.letras, { yPercent: 0, duration: 0.42, ease: 'expo.out', stagger: 0.024 }, p0);
     tl.to(c.letras, { opacity: 1, duration: 0.08, ease: 'none', stagger: 0.024 }, p0);
-    if (c.sub) tl.to(c.sub, { y: 0, autoAlpha: 1, duration: 0.4, ease: 'expo.out' }, a + 0.125);
+    // el sub pega con la palabra (mismo punch que las letras): se lee desde el tiempo hasta que lo tapa el panel siguiente
+    if (c.sub) {
+      tl.to(c.sub, { autoAlpha: 1, duration: 0.08, ease: 'none' }, p0);
+      tl.to(c.sub, { y: 0, duration: 0.42, ease: 'expo.out' }, p0);
+    }
 
     // el bump: en cada tiempo libre antes de la palabra siguiente (y antes de la salida)
-    const salida = o.salida === 'camara' && i === palabras.length - 1 ? fin - 0.3 : sig;
+    const ultima = i === palabras.length - 1;
+    const salida = o.salida === 'camara' && ultima ? fin - 0.3 : sig;
+    // la última tarjeta sin salida queda quieta una corchea antes del corte (QUIETO): su cuadro final es limpio
+    const quieto = ultima && o.salida !== 'camara' ? fin - QUIETO : Infinity;
     for (let b = a + 0.5; b < Math.min(sig, salida) - 0.2; b += 0.5) {
-      bump(tl, c.palabra, b);
-      if (p.mitad && ant) bump(tl, ant.palabra, b, 1.04);
+      const vuelta = Math.min(0.32, quieto - b - 0.05);
+      bump(tl, c.palabra, b, 1.05, 1, vuelta);
+      if (p.mitad && ant) bump(tl, ant.palabra, b, 1.04, 1, vuelta);
     }
 
     // el personaje asoma desde abajo una corchea después, y en el tiempo se aplasta (y festeja, si está feliz)
     if (c.pos) {
       tl.to(c.pos, { y: 0, rotation: 0, duration: 0.34, ease: 'back.out(1.8)' }, a + 0.25);
       tl.to(c.pj, { scaleY: 0.86, scaleX: 1.1, duration: 0.07, ease: 'power2.out' }, a + 0.5);
-      tl.to(c.pj, { scaleY: 1, scaleX: 1, duration: 0.3, ease: 'back.out(3)' }, a + 0.57);
+      tl.to(c.pj, { scaleY: 1, scaleX: 1, duration: Math.min(0.3, quieto - a - 0.57), ease: 'back.out(3)' }, a + 0.57);
       const cara = p.humor || 'feliz';
       if (cara === 'feliz') humor(tl, c.pj, 'festejo', a + 0.5, 0.1);
       else mirar(tl, c.pj, a + 0.5, { hacia: p.lado === 'izq' ? 'der' : 'izq', dur: 0.15 });
       D.sfx('plip', a + 0.25, 0.14, PLIC[i % PLIC.length]);
     }
 
-    // sonido: el whoosh llega al tiempo; clap por palabra, boom en la primera
+    // sonido: el whoosh llega al tiempo; clap por palabra, boom en la primera y un bombo en las demás (así todas
+    // pegan parejo, también en el quiebre de la música, que no lleva bombo)
     if (p.sonido !== false) {
       D.sfx('whoosh', a - 0.25, 0.4, 0.2);
       D.sfx('clap', a, 0.3);
       if (!i) D.sfx('boom', a, 0.32);
+      else D.sfx('kick', a, BOMBO);
     }
   });
 
@@ -260,6 +283,8 @@ Trailer.recipe('hdr-golpe', (D, T, o) => {
 /** las rayitas del golpe: ángulo (°) y distancia al centro (salen del borde de la píldora, que es ancha). Solo hacia
     arriba y a la derecha: abajo a la izquierda están las letras y la bajada del logo */
 const RAYOS = [[-160, 226], [-122, 120], [-90, 96], [-58, 120], [-22, 214], [8, 232], [36, 200]];
+/** lo que dura la salida del sello (envión 0,1 + revoleo 0,2), termina en `fin` */
+const SALE = 0.3;
 
 window.Trailer.remix = Object.assign(window.Trailer.remix || {}, {
   /** lo que mide la píldora del sello (sin girar, sin la sombra), en px del escenario: { w, h }. Arma una copia
@@ -313,13 +338,18 @@ window.Trailer.remix = Object.assign(window.Trailer.remix || {}, {
     D.sfx('clap', at, 0.4);
     D.sfx('boom', at, 0.3);
 
-    // un bump en el tiempo siguiente
-    if (fin === null || fin - at > 0.9) bump(tl, golpe, at + 0.5, 1.07, escala);
+    // un bump en el tiempo siguiente (si hay salida, vuelve antes de que arranque)
+    const vuelta = fin === null ? 0.32 : Math.min(0.32, fin - SALE - at - 0.55);
+    if (vuelta >= 0.12) bump(tl, golpe, at + 0.5, 1.07, escala, vuelta);
 
-    // se va: se infla y se achica hasta desaparecer, justo antes de `fin`
+    // se va en SALE s: toma envión (se infla y se echa para atrás) y sale revoleado hacia arriba a la derecha,
+    // girando y achicándose hasta desaparecer justo en `fin`
     if (fin !== null) {
-      tl.to(golpe, { scale: escala * 1.12, duration: 0.08, ease: 'power2.out' }, fin - 0.22);
-      tl.to(golpe, { scale: 0, autoAlpha: 0, duration: 0.14, ease: 'back.in(2)' }, fin - 0.14);
+      const e = fin - SALE;
+      tl.to(golpe, { scale: escala * 1.14, rotation: rot - 7, y: 14, duration: 0.1, ease: 'power2.out' }, e);
+      tl.to(golpe, { scale: 0, duration: 0.2, ease: 'power2.in' }, e + 0.1);
+      tl.to(golpe, { rotation: rot + 34, x: 90, y: -110, duration: 0.2, ease: 'power2.in' }, e + 0.1);
+      tl.to(golpe, { autoAlpha: 0, duration: 0.05, ease: 'none' }, fin - 0.05);
       D.hide(s, fin);
     }
   },
