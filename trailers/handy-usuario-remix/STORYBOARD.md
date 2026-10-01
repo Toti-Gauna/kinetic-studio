@@ -51,7 +51,10 @@ y `js/partitura.js`.
 
 ## Cómo está hecho
 
-- `js/escenas-a.js` … `js/escenas-d.js`, `js/escenas-base.js`, `js/engine.js` y `js/audio.js`: copias **sin cambios** del original.
+- `js/escenas-a.js` … `js/escenas-d.js` y `js/escenas-base.js`: copias **sin cambios** del original.
+- `js/engine.js` y `js/audio.js`: copias del original con dos arreglos solo del remix: `padStop` apaga los pads con
+  fundido (antes los cortaba en seco) y, en vivo, cada sonido se programa contra el reloj de audio con 30 ms de
+  anticipación (`SFX.play`), así el groove en semicorcheas no se corre con los cuadros. El render offline no cambia.
 - `js/remix.js` — `hdr-corte`: corre una receta del original a otra velocidad (`k`) y la corta en `hasta`. La receta recibe
   una fachada de `D` cuyo timeline lleva cada posición `p` a `T + (p − T)·k` y multiplica duraciones, delays y staggers por
   `k`; lo que arrancaría después del corte (o de `congela`) no se agrega. Opciones del remix: `empuje` (cámara lenta,
