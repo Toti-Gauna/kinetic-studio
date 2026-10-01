@@ -262,6 +262,19 @@ Trailer.recipe('hdr-golpe', (D, T, o) => {
 const RAYOS = [[-160, 226], [-122, 120], [-90, 96], [-58, 120], [-22, 214], [8, 232], [36, 200]];
 
 window.Trailer.remix = Object.assign(window.Trailer.remix || {}, {
+  /** lo que mide la píldora del sello (sin girar, sin la sombra), en px del escenario: { w, h }. Arma una copia
+      invisible en el escenario, la mide y la saca; para ubicar el sello antes de pegarlo (el final centra logo + sello). */
+  medirSello({ texto = 'REMIX', escala = 1 } = {}) {
+    const p = document.createElement('div');
+    p.className = 'hdr-sello-pildora';
+    p.textContent = texto;
+    Object.assign(p.style, { position: 'absolute', left: '0', top: '0', visibility: 'hidden' });
+    document.getElementById('stage').appendChild(p);
+    const r = { w: p.offsetWidth * escala, h: p.offsetHeight * escala };
+    p.remove();
+    return r;
+  },
+
   /** el sello REMIX: pega en `at`, se va en `fin` (null = queda hasta el final). opts = { x, y, rot, escala, texto } */
   sello(D, at, fin = null, opts = {}) {
     const tl = D.tl;
