@@ -232,4 +232,11 @@ export const catalog: TrailerEntry[] = [
     status: 'kit', palette: ['#cfcfcf', '#1f57a8', '#f5f59a'], motif: 'handy',
     path: 'trailers/handy-usuario/index.html', poster: 52, preview: 18, duration: 90, scenes: 10,
   },
+  {
+    id: 'handy-usuario-remix', enabled: true, title: 'HANDY USUARIO REMIX', category: 'Producto',
+    logline: 'El tráiler de Handy cortado como un spot: las diez escenas del original al doble de velocidad y en el pulso, golpes de palabras, tres drops de pop en Do mayor y un final con los Handys bailando. 56 segundos.',
+    tags: ['remix', '56 s', '4:3 para iPad', 'escenas al doble de velocidad', 'tres drops', 'golpes de palabras', 'los Handys bailan', 'solo transform y opacity'],
+    status: 'kit', palette: ['#F8FFA0', '#1F57A8', '#FFC21A'], motif: 'handy',
+    path: 'trailers/handy-usuario-remix/index.html', poster: 55, preview: 8, duration: 56, scenes: 12,
+  },
 ];
