@@ -29,11 +29,15 @@
    en el primer acorde. Todo en la grilla de semicorcheas (0,125 s a 120 BPM).
      'coro'    el estribillo de los drops: bombo en negras, palmas en 2 y 4, hats en semicorcheas con el
                contratiempo acentuado, bajo que salta de octava en corcheas, arpegio pulsado del acorde en
-               semicorcheas, un pad sostenido por compás (SFX.pad / padStop) y el gancho;
+               semicorcheas, un pad sostenido por compás (SFX.pad / padStop) y el gancho. `lleno: true` (el
+               drop más grande): el pad suma la octava de arriba y abre el filtro (2000 Hz) y el bajo galopa
+               (octava en la última semicorchea de cada tiempo); `pad: false`, sin pad;
      'verso'   lo liviano de las escenas de app: bombo en 1, 3 y "y" del 3, palmas suaves en 2 y 4, hats a
-               contratiempo, bajo sincopado y un arpegio en corcheas, bajito: deja lugar a los toques, "ding"
-               y barridos de las escenas. `full: true` suma pad y hats en semicorcheas; `answer: true`, una
-               respuesta de dos notas del acorde al final de cada compás impar;
+               contratiempo, bajo sincopado y un arpegio en corcheas, sobre una cama de pad muy baja y opaca
+               (0,009 · v, 900 Hz, por compás) que sostiene el compás entre los golpes, bajito: deja lugar a los
+               toques, "ding" y barridos de las escenas. `full: true` sube el pad (0,016 · v, 1100 Hz) y suma
+               hats en semicorcheas; `answer: true`, una respuesta de dos notas del acorde al final de cada
+               compás impar;
      'quiebre' el corte: pad + campanas del gancho que suenan más largas, hats suaves, sin bombo;
      'subida'  la subida al drop: SFX.riser sobre toda la parte, redoble de palmas que acelera (corcheas en
                la primera mitad, semicorcheas en la segunda; la última semicorchea queda muda), bombo que
@@ -43,6 +47,10 @@
      'latido'  el pulso que crece: bombo en negras que sube, bajo sincopado, hats que aparecen, el pad;
      'final'   el golpe final en `from` (crash, boom, bombo, bajo) y el último acorde sostenido: pad +
                campanas que suenan hasta `to`. El pad se apaga solo y nada queda programado en `to` ni después.
+   `ligado: true` ('coro', 'verso', 'quiebre', 'frio', 'latido'): la parte sigue con el pad de la anterior: no
+   arranca uno propio en `from` (solo en los compases) y la parte de esos estilos que termina en ese `from` no
+   apaga el suyo (events() le pone `sigue`; 'subida' y 'final' apagan siempre el suyo). Sirve cuando el cambio
+   de parte cae a mitad de compás con el mismo acorde: sin hueco en el pad.
    El gancho ("cinco Handys, cinco notas"): Trailer.music.HOOK, cuatro compases sobre C – G – Am – F hechos
    con las cinco notas de la pentatónica de Do (C D E G A): sube por las cinco, contesta bajando, vuelve a
    subir más alto y cierra en Do. Formato: [[semicorchea, midi, largo en semicorcheas], …]; se repite cada
@@ -50,9 +58,11 @@
      hook        la melodía (default HOOK en 'coro' y 'quiebre'; false = sin gancho)
      hookBar     en qué compás del gancho arranca la parte (default 0)
      hookOct     octavas extra, ej. [0, 12] = doblado una octava arriba (default [0])
+     hookOctDesde  tiempo (absoluto, como from/to) desde el que vale hookOct; antes, solo la melodía (default: toda la parte)
      hookVol     volumen de cada campana (default 0.1)
-   Los acordes y el gancho van en registros separados: bajo A1–G#2 (+ octava), pad G3–F#4, arpegio C4–C5,
-   gancho C5–E6. Así el bajo queda abajo y en el centro, y las campanas arriba.
+   Los acordes y el gancho van en registros separados: bajo A1–G#2 (+ octava), pad G3–F#4 (con `lleno` y en
+   'final', también G4–F#5), arpegio C4–D5, gancho C5–C6 (HOOK; doblado con hookOct [0, 12] llega a C7; la
+   firma del final, C6–A6). Así el bajo queda abajo y en el centro, y las campanas arriba.
    ========================================================================== */
 (() => {
   'use strict';
@@ -95,7 +105,8 @@
     const gancho = (t, i) => {
       if (!hook) return;
       const q = mod(i + 16 * (p.hookBar || 0), largoHook);
-      (notas.get(q) || []).forEach(([n, l]) => octs.forEach((o, k) =>
+      const os = p.hookOctDesde != null && t < p.hookOctDesde - 1e-6 ? [0] : octs; // el doblado, desde hookOctDesde
+      (notas.get(q) || []).forEach(([n, l]) => os.forEach((o, k) =>
         sfx('bell', t, hz(n + o), hv * (k ? 0.6 : 1), Math.min(1.6, l * s16 * hookLargo))));
     };
     const first = Math.ceil((p.from - a0) / s16 - 1e-6), last = Math.ceil((to - a0) / s16 - 1e-6) - 1, n16 = last - first + 1;
@@ -138,7 +149,8 @@
     for (let i = first; i <= last; i++) {
       const t = a0 + i * s16, pos = mod(i, 16), sub = pos & 3, k = Math.floor(i / 16);
       const ch = acorde(k), r = grave(ch), arp = enRango(ch, 60), x = (i - first) / Math.max(1, n16 - 1);
-      const pie = pos === 0 || i === first; // el pad entra en cada compás y al arrancar la parte
+      // el pad entra en cada compás y al arrancar la parte (con `ligado`, solo en los compases: sigue el de la anterior)
+      const pie = pos === 0 || (i === first && !p.ligado);
       const finDeFrase = mod(k, 4) === 3 || a0 + (k + 1) * bar >= to - 1e-6; // último compás de la frase o de la parte
       if (st === 'coro') {
         if (sub === 0) sfx('kick', t, 0.52 * v);
@@ -147,9 +159,14 @@
         sfx('hat', t, (sub === 2 ? 0.11 : sub === 0 ? 0.045 : 0.035) * v);
         if (sub === 0) sfx('bass', t, hz(r), 0.2 * v);
         if (sub === 2) sfx('bass', t, hz(r + 12), 0.28 * v);
+        if (p.lleno && sub === 3) sfx('bass', t, hz(r + 12), 0.13 * v); // `lleno`: el bajo galopa (octava en la "a")
         const PAT = [0, 1, 2, 3, 2, 1, 2, 3], nota = PAT[pos % 8] === 3 ? arp[0] + 12 : arp[PAT[pos % 8]];
         sfx('bell', t, hz(nota), (sub === 0 ? 0.04 : 0.028) * v, 0.16);
-        if (pie && p.pad !== false) sfx('pad', t, PAD, enRango(ch, 55).map(hz), 0.06, 0.045 * v, 1300);
+        if (pie && p.pad !== false) {
+          // `lleno`: el pad suma la octava de arriba y abre el filtro (el drop más grande)
+          const voces = p.lleno ? [...enRango(ch, 55), ...enRango(ch, 67)] : enRango(ch, 55);
+          sfx('pad', t, PAD, voces.map(hz), 0.06, (p.lleno ? 0.04 : 0.045) * v, p.lleno ? 2000 : 1300);
+        }
         gancho(t, i);
       } else if (st === 'verso') {
         if (pos === 0 || pos === 8) sfx('kick', t, 0.56 * v);
@@ -160,7 +177,8 @@
         const BAJO = { 0: 0, 6: 12, 8: 0, 12: 7, 14: 12 };
         if (pos in BAJO) sfx('bass', t, hz(r + BAJO[pos]), (pos === 0 ? 0.28 : 0.22) * v);
         if (sub === 2) sfx('bell', t, hz(arp[(pos >> 2) % 3] + (pos === 14 ? 12 : 0)), 0.022 * v, 0.3);
-        if (pie && p.full) sfx('pad', t, PAD, enRango(ch, 55).map(hz), 0.25, 0.016 * v, 1100);
+        // el pad: con `full`, presente; sin `full`, una cama muy baja y opaca que sostiene el compás entre los golpes
+        if (pie) sfx('pad', t, PAD, enRango(ch, 55).map(hz), 0.25, (p.full ? 0.016 : 0.009) * v, p.full ? 1100 : 900);
         if (p.answer && mod(k, 2) === 1 && (pos === 12 || pos === 14)) {
           const alto = enRango(ch, 72);
           sfx('bell', t, hz(pos === 12 ? alto[2] : alto[1]), 0.035 * v, 0.5);
@@ -185,8 +203,9 @@
         if (pie) sfx('pad', t, PAD, enRango(ch, 55).map(hz), i === first ? 0.25 : 0.4, (0.014 + 0.008 * x) * v, 600 + 500 * x);
       }
     }
-    // el pad de la parte se apaga en su fin (si la próxima trae otro, entra encima: un fundido corto)
-    if (st === 'coro' || st === 'quiebre' || st === 'frio' || st === 'latido' || (st === 'verso' && p.full)) sfx('padStop', to, PAD, 0.25);
+    // el pad de la parte se apaga en su fin (si la próxima trae otro, entra encima: un fundido corto), salvo que la
+    // próxima sea `ligado` (p.sigue, lo pone events()): ahí el mismo pad sigue sonando sin cortarse
+    if (!p.sigue && (st === 'coro' || st === 'quiebre' || st === 'frio' || st === 'latido' || st === 'verso')) sfx('padStop', to, PAD, 0.25);
   }
 
   /** The score as data: every note of cfg.music as { t, voice, a } (sorted by time). Pure — the
@@ -195,10 +214,12 @@
     const beat = 60 / (M.bpm || 120), e8 = beat / 2, V = M.volume ?? 1;
     const list = [];
     const sfx = (name, at, ...a) => { list.push({ t: at, voice: name, a }); };
+    // HANDY REMIX: los tiempos donde arranca una parte `ligado`: la parte que termina ahí no apaga su pad
+    const clave = x => Math.round(x * 1e6), ligados = new Set((M.parts || []).filter(p => p.ligado).map(p => clave(p.from)));
     (M.parts || []).forEach(p => {
       const st = p.style || 'groove', v = V * (p.volume ?? 1), anchor = p.anchor ?? (M.anchor || 0); // bars count from here
       const chords = p.chords || M.chords || CHORDS, riff = p.riff || M.riff || RIFF; // la parte puede pisar armonía y riff
-      if (ESTILOS_REMIX.has(st)) return remix(p, st, v, chords, beat, sfx);
+      if (ESTILOS_REMIX.has(st)) return remix(p.to != null && ligados.has(clave(p.to)) ? { ...p, sigue: true } : p, st, v, chords, beat, sfx);
       if (st === 'synth' && p.to) sfx('padStop', p.to, 'synpad', 0.6);
       if (st === 'hit') {
         sfx('crash', p.from, 0.3 * v);
