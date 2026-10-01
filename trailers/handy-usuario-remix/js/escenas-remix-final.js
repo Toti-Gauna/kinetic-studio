@@ -11,15 +11,19 @@
             desde acá hasta el 54,0.
    Frase 1 (47–50)
      47,0 · 47,5   brinco de todos en los tiempos. El logo entra letra por letra en corcheas: H 47,0 · a 47,25 · n 47,5 ·
-            d 47,75 · y 48,0 (pop con back.out y una campana por letra); 47,75 vuelve la cara feliz.
+            d 47,75 · y 48,0 (pop con back.out y una campana por letra: Do6 Re6 Mi6 Sol6 La6, las cinco notas del
+            gancho); 47,75 vuelve la cara feliz.
      48,0   la bajada "Soluciones, no problemas". Llamada y respuesta: la izquierda (gota, caño) brinca en 48,0 y 49,0,
-            la derecha (engranaje, lamparita, llave) en 48,5; el grupo que no salta se hamaca hacia el otro.
+            la derecha (engranaje, lamparita, llave) en 48,5; el grupo que no salta se hamaca hacia el otro (poco: los
+            vecinos están cerca; cuánto, en HAMACA).
      49,0   "Mar del Plata · Llegamos el 28/10" (titular) · 49,5 el QR, si D.cfg.qrUrl tiene algo (tarjeta blanca al lado
             del texto; si no, el texto va centrado debajo del logo, como en el cierre).
      49,3   se agachan todos y saltan alto con los brazos arriba (festejo; el engranaje da una vuelta entera)…
    Frase 2 (50–54)
-     50,0   …y caen en el tiempo fuerte: el logo late y entra el sello REMIX (Trailer.remix.sello) arriba a la
-            derecha de "Handy". 50,5 todos se hamacan para afuera; 50,7 el caño y la lamparita saludan (saludo).
+     50,0   …y caen en el tiempo fuerte: el logo late y entra el sello REMIX (Trailer.remix.sello) a la derecha de
+            "Handy", a 40 px de la «y»; el golpe empuja el logo a la izquierda (50,04–50,44: hasta acá iba solo y
+            centrado) y logo + sello quedan centrados. 50,5 todos se hamacan para afuera; 50,7 el caño y la lamparita
+            saludan (saludo).
      51,0 · 51,5   brincos cruzados: caño y lamparita en 51,0, engranaje y llave en 51,5; la gota rebota en cada tiempo;
             el engranaje se mece en los tiempos como un metrónomo.
      52,0   todos juntos (el logo late) · 52,5–53,0 la ola: brincan de izquierda a derecha en semicorcheas (las letras
@@ -29,18 +33,23 @@
             temblor corto.
      54,5–56,0 todo quieto: es el cuadro que queda bajo "↺ Ver de nuevo" (franja y > 960 entre x 470 y 970 libre).
 
-   Composición: la fila con los pies en PISO (948; la gota, que en el dibujo flota debajo del pico, acá baila en el
-   piso, así el caño puede aplastarse sin pisarla) y, arriba, el logo y la línea centrados en la zona libre (el
-   mismo armado del cierre, con el logo más grande). El sello REMIX va a la derecha de la palabra "Handy", encima de la
-   bajada. Los brincos son de esta escena (brinco: despega `aire` s antes del tiempo y aterriza en él); los saltos altos,
-   el festejo y el saludo son los de src/handy/handys-anim.ts, ubicados para que su aterrizaje caiga en el tiempo.
+   Composición: la fila de handys-grupo.png, centrada en 720, con 6 px más de aire entre vecinos (SEPARAR) y cada uno
+   con lo más bajo de los pies justo en PISO (948): sentarEnElPiso() mide la suela de cada dibujo (la gota, que en el
+   dibujo flota debajo del pico, acá baila en el piso, así el caño puede aplastarse sin pisarla); la sombra va
+   centrada en el piso. Arriba, el logo y la línea centrados en la zona libre (el mismo armado del cierre, con el logo
+   más grande). El sello REMIX va a la derecha de la palabra "Handy", encima de la bajada, con su borde a 40 px de la
+   «y» (SELLO_HUECO; el ancho sale de Trailer.remix.medirSello): logo + sello son un bloque y el logo se corre a la
+   izquierda para que el bloque quede centrado en 720, como la línea, el par texto + QR y la fila (sin QR, el bloque
+   va de x ≈ 314 a 1125; antes del sello, el logo solo va centrado y el sello lo empuja a ese lugar). Los brincos son de esta escena (brinco: despega `aire` s antes del tiempo y aterriza en él);
+   los saltos altos, el festejo y el saludo son los de src/handy/handys-anim.ts, ubicados para que su aterrizaje caiga
+   en el tiempo.
    Cada personaje anima su .hd-handy (y, escala, rotación) y su caja (.hdr-f-h: solo la entrada desde abajo); `agenda`
    avisa si dos movimientos del mismo personaje se pisan. Sonido: pies, campanas y "plips" bajitos (el groove es de la
    música). Solo transform y opacity; todo en D.tl en tiempos absolutos desde T; estados iniciales con gsap.set; azar con
    D.rand. Clases propias con prefijo hdr-f-. */
 import { gsap } from 'gsap';
 import { COLORS } from '../../../src/handy/tokens.ts';
-import { handy, filaHandys, sombraHandy, piesHandy } from '../../../src/handy/handys.ts';
+import { handy, filaHandys, sombraHandy, piesHandy, HANDY_INFO } from '../../../src/handy/handys.ts';
 import { humor, salto, festejo, saludo } from '../../../src/handy/handys-anim.ts';
 import { handyLogo, logoAlto, LETRAS, LOGO_INFO } from '../../../src/handy/logo.ts';
 import { titular, prepararTitular, entraTitular } from '../../../src/handy/ui/Headline.ts';
@@ -82,23 +91,64 @@ const FILA = filaHandys(ALTO_CANO);
 const PISO = 948;
 const FILA_X0 = 720 - FILA.ancho / 2;
 const FILA_Y0 = PISO - ALTO_CANO;
-const POS = Object.fromEntries(FILA.handys.map(h => [h.tipo, { x: FILA_X0 + h.x, y: FILA_Y0 + h.y, w: h.ancho, h: h.altura }]));
-// la gota, que en el dibujo flota debajo del pico, acá baila en el piso con los demás (abajo del pico, con su sombra):
-// así el caño puede aplastarse y saltar sin pisarla
-POS.gota.y = PISO - POS.gota.h;
+/** px de aire de más entre vecinos (la fila sigue centrada en 720): con los pies en el piso, la mano izquierda de la
+    lamparita quedaba a 1 px de la derecha del engranaje; así queda a unos 6 y los brincos casi no los tocan */
+const SEPARAR = 6;
+/** x, ancho y alto de cada uno salen de la fila (más SEPARAR); la y la pone sentarEnElPiso() al armar la escena */
+const POS = Object.fromEntries(FILA.handys.map((h, i) => [h.tipo, {
+  x: FILA_X0 + h.x + (i - (FILA.handys.length - 1) / 2) * SEPARAR, y: FILA_Y0 + h.y, w: h.ancho, h: h.altura, pies: h.altura,
+}]));
 /** orden de la fila, de izquierda a derecha (y del DOM) */
 const TIPOS = FILA.handys.map(h => h.tipo);
+
+/** px desde el borde de arriba del wrapper hasta lo más bajo del personaje: la suela de los pies (la gota, que no tiene
+    piernas, el fondo de su panza). El dibujo puede salirse del viewBox (overflow visible): en la fila, los pies de la
+    lamparita y de la llave bajan unos px más que su caja y los del engranaje quedan uno más arriba. Mide una copia
+    invisible (getBBox de cada pieza + medio trazo); si no puede, el borde de abajo del wrapper (piesHandy). */
+function asiento(tipo, altura) {
+  const vb = HANDY_INFO[tipo].viewBox, k = altura / vb.h;
+  const copia = document.createElement('div');
+  copia.style.cssText = 'position:absolute;left:0;top:0;visibility:hidden';
+  copia.innerHTML = handy(tipo, { altura });
+  (document.getElementById('stage') || document.body).appendChild(copia);
+  const piernas = [...copia.querySelectorAll('.hd-h-pierna > *')];
+  const piezas = piernas.length ? piernas : [...copia.querySelectorAll('.hd-h-cuerpo > *')];
+  let fondo = -Infinity;
+  piezas.forEach(el => {
+    const b = el.getBBox(), trazo = el.getAttribute('stroke') && el.getAttribute('stroke') !== 'none' ? +el.getAttribute('stroke-width') || 0 : 0;
+    fondo = Math.max(fondo, b.y + b.height + trazo / 2);
+  });
+  copia.remove();
+  return Number.isFinite(fondo) && fondo > vb.y ? (fondo - vb.y) * k : piesHandy(tipo, altura).y;
+}
+
+/** Todos con lo más bajo de los pies justo en PISO (y la gota, que en el dibujo flota debajo del pico, acá baila en el
+    piso con los demás, abajo del pico: así el caño puede aplastarse y saltar sin pisarla). POS[tipo].pies = px del
+    wrapper hasta el piso (ahí va el centro de su sombra). Se llama al armar la escena (necesita el DOM). */
+function sentarEnElPiso() {
+  TIPOS.forEach(tipo => {
+    const p = POS[tipo];
+    p.pies = asiento(tipo, p.h);
+    p.y = Math.round((PISO - p.pies) * 100) / 100;
+  });
+}
 const IZQ = ['gota', 'cano'];
 const DER = ['engranaje', 'lamparita', 'llave'];
 /** todos pisan el piso: todos tienen sombra */
 const CON_SOMBRA = TIPOS;
-/** cuánto se hamaca cada uno (°): el caño, alto y con el pico en voladizo, apenas */
-const HAMACA = { gota: 8, cano: 3, engranaje: 8, lamparita: 5, llave: 9 };
+/** cuánto se hamaca cada uno (°) [hacia la izquierda, hacia la derecha]. Los vecinos están muy cerca: el caño, alto y
+    con el pico en voladizo, apenas; el engranaje, entre el caño y la lamparita, apenas; la lamparita hacia la llave y la
+    llave hacia la lamparita, poco. Medido cada 0,025 s: en las hamacas (48,0 · 48,5 · 49,0 · 50,5) ninguna mano se mete
+    en el vecino (antes, el engranaje se metía en el caño y la hoja de la llave rozaba a la lamparita); los roces de un
+    cuadro que quedan son de los aplastones de los brincos */
+const HAMACA = { gota: [8, 8], cano: [3, 2], engranaje: [2, 2], lamparita: [2, 1.5], llave: [6, 2] };
 /** el salto alto de cada uno (px): el caño y la lamparita, más bajos para no llegar al texto */
 const SALTO_ALTO = { gota: 54, cano: 56, engranaje: 96, lamparita: 70, llave: 96 };
 /** zona de arriba (logo + texto + QR), entre el margen seguro y la fila */
 const ZONA = { y0: 72, y1: FILA_Y0 - 26 };
 const TEXTO = 'Mar del Plata · Llegamos el 28/10';
+/** el sello REMIX del final: escala, giro (°) y separación (px) entre el final de "Handy" y el borde de la calcomanía */
+const SELLO_ESCALA = 0.9, SELLO_ROT = -8, SELLO_HUECO = 40;
 
 /** entrada desde abajo: [salida (s después del golpe), cuánto sube por encima de su lugar, corrimiento x de partida] */
 const VUELO = {
@@ -110,7 +160,7 @@ const VUELO = {
 };
 
 /** notas (Hz): Do mayor, la tonalidad del groove */
-const HZ = { C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99, A5: 880, C6: 1046.5, D6: 1174.66, E6: 1318.51, G6: 1567.98, A6: 1760, C7: 2093 };
+const HZ = { C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99, A5: 880, C6: 1046.5, D6: 1174.66, E6: 1318.51, G6: 1567.98, A6: 1760 };
 /** un "plip" por personaje (de grave a agudo, de izquierda a derecha) */
 const PLIP = { gota: 660, cano: 392, engranaje: 440, lamparita: 523, llave: 587 };
 
@@ -162,6 +212,7 @@ Trailer.recipe('hdr-final', (D, T, o) => {
   const tl = D.tl;
   const B = n => T + n * 0.5; // el tiempo n de la escena (B(0) = 46,0 · B(16) = 54,0)
   const quieto = T + 8.5;     // 54,5: desde acá, nada se mueve
+  sentarEnElPiso();
 
   // ── el QR (como en el cierre): solo si hay URL
   const url = String(D.cfg.qrUrl || '').trim();
@@ -196,7 +247,7 @@ Trailer.recipe('hdr-final', (D, T, o) => {
       ${conQr ? `<div class="hdr-f-qr">${qr}</div>` : ''}
       <div class="hdr-f-sombras">${CON_SOMBRA.map(tipo => {
         const p = POS[tipo], pies = piesHandy(tipo, p.h);
-        return `<div class="hdr-f-sombra" data-tipo="${tipo}" style="position:absolute;left:${px(p.x + pies.x)};top:${px(p.y + pies.y)}">`
+        return `<div class="hdr-f-sombra" data-tipo="${tipo}" style="position:absolute;left:${px(p.x + pies.x)};top:${px(p.y + p.pies)}">`
           + sombraHandy(tipo, p.h) + '</div>';
       }).join('')}</div>
       <div class="hdr-f-handys">${TIPOS.map(tipo => {
@@ -256,9 +307,30 @@ Trailer.recipe('hdr-final', (D, T, o) => {
     Object.assign(D.$('svg', qrEl).style, { left: px(PAD), top: px(PAD) });
     gsap.set(qrEl, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' });
   }
-  const logoX = 720 - LOGO_W / 2;
+  // el sello REMIX y el logo son un solo bloque: la calcomanía va SELLO_HUECO px a la derecha del final de "Handy",
+  // encima de la bajada, y el logo se corre a la izquierda para que logo + sello queden centrados en 720 (como la línea
+  // y la fila). Ancho de la calcomanía: Trailer.remix.medirSello (la píldora sin girar; si falta, 375 × 128 a escala 1).
+  const conSello = !!(Trailer.remix && Trailer.remix.sello);
+  const vb = LOGO_INFO.viewBox.amplia, k = LOGO_W / vb.w;
+  const finPalabra = (LOGO_INFO.palabra.x + LOGO_INFO.palabra.w - vb.x) * k; // desde el borde izquierdo del logo
+  let selloDx = 0, anchoBloque = LOGO_W;
+  if (conSello) {
+    const pildora = Trailer.remix.medirSello
+      ? Trailer.remix.medirSello({ escala: SELLO_ESCALA })
+      : { w: 375 * SELLO_ESCALA, h: 128 * SELLO_ESCALA };
+    const a = Math.abs(SELLO_ROT) * Math.PI / 180;
+    // media extensión horizontal de la píldora girada (es un estadio: la parte recta girada + el radio)
+    const medio = ((pildora.w - pildora.h) / 2) * Math.cos(a) + pildora.h / 2;
+    // la sombra azul (corrida 9, 11 px en la calcomanía, girada con ella) asoma a la derecha
+    const sombraX = (9 * Math.cos(a) + 11 * Math.sin(a)) * SELLO_ESCALA;
+    selloDx = finPalabra + SELLO_HUECO + medio;
+    anchoBloque = Math.max(LOGO_W, selloDx + medio + sombraX);
+  }
+  const logoX = Math.round(720 - anchoBloque / 2);
   Object.assign(logoEl.style, { left: px(logoX), top: px(logoY), width: px(LOGO_W), height: px(LOGO_H) });
-  gsap.set(logoEl, { transformOrigin: '50% 60%' });
+  // hasta que pega el sello, el logo va solo y centrado en 720 (corrido `empujon` px); el sello lo empuja a su lugar
+  const empujon = Math.round(720 - LOGO_W / 2) - logoX;
+  gsap.set(logoEl, { transformOrigin: '50% 60%', x: empujon });
   const letras = LETRAS.map(l => D.$(`.hd-logo-letra[data-letra="${l}"]`, logoEl));
   const bajada = D.$('.hd-logo-bajada', logoEl);
   LETRAS.forEach((l, i) => {
@@ -267,11 +339,8 @@ Trailer.recipe('hdr-final', (D, T, o) => {
   });
   gsap.set(bajada, { opacity: 0, y: 40 });
   prepararTitular(txt);
-  // el sello REMIX: a la derecha de la palabra "Handy", encima de la bajada (px del escenario)
-  const vb = LOGO_INFO.viewBox.amplia, k = LOGO_W / vb.w;
-  const finPalabra = logoX + (LOGO_INFO.palabra.x + LOGO_INFO.palabra.w - vb.x) * k;
-  // la calcomanía mide unos 465 px de ancho a escala 1: a escala 0,9 su borde izquierdo queda 40 px después de la «y»
-  const SELLO = { x: Math.round(finPalabra + 40 + 0.45 * 465), y: Math.round(logoY + 0.2 * LOGO_H - 2), rot: -8, escala: 0.9 };
+  // el sello REMIX (centro, px del escenario): su borde izquierdo a SELLO_HUECO px de la «y», a la altura de la palabra
+  const SELLO = { x: Math.round(logoX + selloDx), y: Math.round(logoY + 0.2 * LOGO_H - 2), rot: SELLO_ROT, escala: SELLO_ESCALA };
 
   // ── agenda: avisa si dos movimientos de la misma pista de un personaje se pisan
   const agenda = {};
@@ -288,7 +357,7 @@ Trailer.recipe('hdr-final', (D, T, o) => {
     if (vol) D.sfx('plip', golpe, vol, PLIP[tipo]);
   };
   /** se hamaca hacia un lado (signo: −1 izquierda, +1 derecha), cada uno con su amplitud */
-  const hamacar = (tipo, at, lado) => ocupar(tipo, 'giro', at, hamaca(tl, cuerpo(tipo), at, lado * HAMACA[tipo]));
+  const hamacar = (tipo, at, lado) => ocupar(tipo, 'giro', at, hamaca(tl, cuerpo(tipo), at, lado * HAMACA[tipo][lado < 0 ? 0 : 1]));
   const finales = [];
 
   D.show(s, T);
@@ -348,7 +417,7 @@ Trailer.recipe('hdr-final', (D, T, o) => {
   // 47,0 · el logo, letra por letra en corcheas, con una campana por letra · 48,0 la bajada
   const tLogo = B(2);
   letras.forEach((el, i) => tl.to(el, { scale: 1, duration: 0.45, ease: 'back.out(2.4)' }, tLogo + i * 0.25));
-  [HZ.C6, HZ.D6, HZ.E6, HZ.G6, HZ.C7].forEach((f, i) => D.sfx('bell', tLogo + i * 0.25, f, 0.03, 0.8));
+  [HZ.C6, HZ.D6, HZ.E6, HZ.G6, HZ.A6].forEach((f, i) => D.sfx('bell', tLogo + i * 0.25, f, 0.03, 0.8));
   tl.to(bajada, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }, B(4));
   D.sfx('whoosh', B(4) - 0.125, 0.4, 0.05);
 
@@ -402,7 +471,11 @@ Trailer.recipe('hdr-final', (D, T, o) => {
   latido(tl, logoEl, B(8), 1.05);
   D.sfx('plip', B(8), 0.07, 330);
   [HZ.C6, HZ.E6, HZ.G6].forEach((f, i) => D.sfx('bell', B(8) + i * 0.125, f, 0.025, 1));
-  if (Trailer.remix && Trailer.remix.sello) Trailer.remix.sello(D, B(8), null, SELLO);
+  if (conSello) {
+    Trailer.remix.sello(D, B(8), null, SELLO);
+    // el golpe del sello empuja el logo a la izquierda: logo + sello quedan centrados
+    tl.to(logoEl, { x: 0, duration: 0.4, ease: 'back.out(1.6)' }, B(8) + 0.04);
+  }
 
   // 50,5 · todos se hamacan para afuera · 50,7 el caño y la lamparita saludan
   IZQ.forEach(tipo => hamacar(tipo, B(9), -1));
