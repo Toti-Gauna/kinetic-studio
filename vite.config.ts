@@ -37,7 +37,14 @@ export default defineConfig({
   base: './',
   plugins: [requireModuleScripts()],
   build: {
-    rolldownOptions: { input: pages() },
+    rolldownOptions: {
+      input: pages(),
+      // Trailers share modules with top-level side effects that rely on import order: src/handy/player.ts calls
+      // window.Trailer.plugin(), so it must run after the trailer's own js/engine.js. Once two trailers import it
+      // (handy-usuario and handy-usuario-remix), it lands in a shared chunk that would otherwise run before the
+      // entry's engine and break both pages ("Cannot read properties of undefined (reading 'plugin')").
+      output: { strictExecutionOrder: true },
+    },
     // each trailer bundles its whole recipe library (some include map and data tables)
     chunkSizeWarningLimit: 1500,
   },
