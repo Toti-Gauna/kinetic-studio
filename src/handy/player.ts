@@ -28,10 +28,13 @@
      pantalla no se apaga mientras se ve o se comenta en pausa (Screen Wake Lock, se pide en cada toque).
    - Pantalla inicial: pone handyLogo() en #hd-intro-logo.
    - Estado en <html data-hd-estado="intro|reproduciendo|pausa|fin"> para css/player.css y los tests.
+   - Sangrado: en pantallas que no son 4:3 la película se ve hasta el borde de la pantalla, no solo en el cuadro de
+     1440×1080 (armarSangrado(); el cuánto, en sangrado() de layout.ts y en <html data-hd-sangrado="XxY">).
    Con ?embed (vista previa del hub) o ?t= (cuadro congelado) solo quedan las etiquetas, los capítulos,
    ?audit y saltar(), que ahí mueve el cabezal sin reproducir: nada de toques, teclas, pausa ni sonido. */
 import { gsap } from 'gsap';
 import { handyLogo } from './logo.ts';
+import { sangrado } from './layout.ts';
 import './css/base.css';
 import './css/player.css';
 
@@ -67,6 +70,7 @@ const root = document.documentElement;
 
 root.classList.add('hd-player');
 if (!CONGELADO) root.dataset.hdEstado = 'intro';
+armarSangrado();
 const logo = document.getElementById('hd-intro-logo');
 if (logo) logo.innerHTML = handyLogo();
 
@@ -74,6 +78,26 @@ if (logo) logo.innerHTML = handyLogo();
 if (!CONGELADO) {
   const nav = navigator as Navigator & { audioSession?: { type: string } };
   try { if (nav.audioSession) nav.audioSession.type = 'playback'; } catch { /* Safari < 17 o sin soporte */ }
+}
+
+/** El sangrado (src/handy/layout.ts): el escenario deja de recortar en su cuadro de 1440×1080 y se ve hasta el borde
+    de la pantalla. Las capas del escenario (#bg, #wipe, #camera, #flash…) pasan a #hd-cuadro (mismo lugar y tamaño que
+    el cuadro: las coordenadas no cambian) dentro de #hd-marco, que recorta en el sangrado medido (más allá, el gris de
+    la página). css/player.css lee --hd-sx / --hd-sy (px del escenario) y estira #bg y #flash hasta ahí. */
+function armarSangrado() {
+  const stage = document.getElementById('stage');
+  if (!stage || document.getElementById('hd-marco')) return;
+  const { x, y } = sangrado();
+  root.style.setProperty('--hd-sx', `${x}px`);
+  root.style.setProperty('--hd-sy', `${y}px`);
+  root.dataset.hdSangrado = `${x}x${y}`;
+  const marco = document.createElement('div');
+  marco.id = 'hd-marco';
+  const cuadro = document.createElement('div');
+  cuadro.id = 'hd-cuadro';
+  cuadro.append(...Array.from(stage.childNodes));
+  marco.appendChild(cuadro);
+  stage.appendChild(marco);
 }
 
 /** Un capítulo por id ('presupuestos') o por número desde 1 (6, o '6' como en ?escena=6). */
