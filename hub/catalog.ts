@@ -227,16 +227,9 @@ export const catalog: TrailerEntry[] = [
   },
   {
     id: 'handy-usuario', enabled: true, title: 'HANDY · USUARIO', category: 'Producto',
-    logline: 'Handy conecta a quien tiene un problema en casa con especialistas verificados de Mar del Plata: el especialista pone su precio, vos elegís y seguís todo en la app. Un tráiler de 90 segundos para iPad, sin que nadie hable.',
-    tags: ['4:3 para iPad', 'tocá para pausar', 'escenas con etiqueta', 'personajes en SVG', 'app en HTML/CSS', 'solo transform y opacity'],
+    logline: 'Handy conecta a quien tiene un problema en casa con especialistas verificados de Mar del Plata: el especialista pone su precio, vos elegís y seguís todo en la app. Un spot de 70 segundos para iPad, en el pulso de un pop en Do mayor, sin que nadie hable.',
+    tags: ['4:3 para iPad', 'tocá para pausar', 'escenas en el pulso', 'cámara por claves', 'golpes de palabras', 'los Handys bailan', 'solo transform y opacity'],
     status: 'kit', palette: ['#cfcfcf', '#1f57a8', '#f5f59a'], motif: 'handy',
-    path: 'trailers/handy-usuario/index.html', poster: 52, preview: 18, duration: 90, scenes: 10,
-  },
-  {
-    id: 'handy-usuario-remix', enabled: true, title: 'HANDY USUARIO REMIX', category: 'Producto',
-    logline: 'El tráiler de Handy cortado como un spot: nueve escenas del original al doble de velocidad y en el pulso, golpes de palabras, tres drops de pop en Do mayor y un final nuevo con los Handys bailando. 56 segundos.',
-    tags: ['remix', '56 s', '4:3 para iPad', 'escenas al doble de velocidad', 'cámara por claves', 'tres drops', 'golpes de palabras', 'los Handys bailan'],
-    status: 'kit', palette: ['#F8FFA0', '#1F57A8', '#FFC21A'], motif: 'handy',
-    path: 'trailers/handy-usuario-remix/index.html', poster: 55, preview: 8, duration: 56, scenes: 12,
+    path: 'trailers/handy-usuario/index.html', poster: 69.5, preview: 10, duration: 70, scenes: 12,
   },
 ];

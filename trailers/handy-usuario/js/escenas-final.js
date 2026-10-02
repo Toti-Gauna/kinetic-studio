@@ -1,7 +1,9 @@
-/* HANDY USUARIO REMIX — el final ('hdr-final'), DROP 3: 46–56 s (devuelve o.dur = 10). La última escena de la película.
+/* HANDY · App de usuario — el final ('hdr-final'), DROP 3 (devuelve o.dur = 10). La última escena de la película.
+   Escrita a 120 BPM con tiempos de 46 a 56 s: js/trailer.js la corre a través de 'hdr-corte' LENTO = 1,25 veces más
+   lenta (96 BPM, 57,5–70 s en la película). Los tiempos de abajo son los de la escritura; en la película, T + (t − 46)·1,25.
    Los cinco Handys entran de un salto con el golpe, se arman en la fila de handys-grupo.png (filaHandys, como el cierre
    del original en escenas-d.js) y BAILAN AL PULSO: 120 BPM, un tiempo = 0,5 s, compases en 46 · 48 · 50 · 52 · 54.
-   Cada brinco aterriza justo en un tiempo (el aplastón es el acento); arriba se arma el logo, la fecha y el sello REMIX.
+   Cada brinco aterriza justo en un tiempo (el aplastón es el acento); arriba se arman el logo y la fecha.
 
      46,0   DROP 3 (la música pega el golpe y el gancho entero): destello, temblor de cámara, la escena entra con un
             "punch" de escala y dos aros que se abren desde atrás de la fila. Los Handys salen disparados desde abajo
@@ -20,10 +22,8 @@
             del texto; si no, el texto va centrado debajo del logo, como en el cierre).
      49,3   se agachan todos y saltan alto con los brazos arriba (festejo; el engranaje da una vuelta entera)…
    Frase 2 (50–54)
-     50,0   …y caen en el tiempo fuerte: el logo late y entra el sello REMIX (Trailer.remix.sello) a la derecha de
-            "Handy", a 40 px de la «y»; el golpe empuja el logo a la izquierda (50,04–50,44: hasta acá iba solo y
-            centrado) y logo + sello quedan centrados. 50,5 todos se hamacan para afuera; 50,7 el caño y la lamparita
-            saludan (saludo).
+     50,0   …y caen en el tiempo fuerte: el logo late (campanitas Do Mi Sol). 50,5 todos se hamacan para afuera;
+            50,7 el caño y la lamparita saludan (saludo).
      51,0 · 51,5   brincos cruzados: caño y lamparita en 51,0, engranaje y llave en 51,5; la gota rebota en cada tiempo;
             el engranaje se mece en los tiempos como un metrónomo.
      52,0   todos juntos (el logo late) · 52,5–53,0 la ola: brincan de izquierda a derecha en semicorcheas (las letras
@@ -37,10 +37,8 @@
    con lo más bajo de los pies justo en PISO (948): sentarEnElPiso() mide la suela de cada dibujo (la gota, que en el
    dibujo flota debajo del pico, acá baila en el piso, así el caño puede aplastarse sin pisarla); la sombra va
    centrada en el piso. Arriba, el logo y la línea centrados en la zona libre (el mismo armado del cierre, con el logo
-   más grande). El sello REMIX va a la derecha de la palabra "Handy", encima de la bajada, con su borde a 40 px de la
-   «y» (SELLO_HUECO; el ancho sale de Trailer.remix.medirSello): logo + sello son un bloque y el logo se corre a la
-   izquierda para que el bloque quede centrado en 720, como la línea, el par texto + QR y la fila (sin QR, el bloque
-   va de x ≈ 314 a 1125; antes del sello, el logo solo va centrado y el sello lo empuja a ese lugar). Los brincos son de esta escena (brinco: despega `aire` s antes del tiempo y aterriza en él);
+   más grande), centrados en 720 como el par texto + QR y la fila. Los brincos son de esta escena (brinco: despega
+   `aire` s antes del tiempo y aterriza en él);
    los saltos altos, el festejo y el saludo son los de src/handy/handys-anim.ts, ubicados para que su aterrizaje caiga
    en el tiempo.
    Cada personaje anima su .hd-handy (y, escala, rotación) y su caja (.hdr-f-h: solo la entrada desde abajo); `agenda`
@@ -147,8 +145,6 @@ const SALTO_ALTO = { gota: 54, cano: 56, engranaje: 96, lamparita: 70, llave: 96
 /** zona de arriba (logo + texto + QR), entre el margen seguro y la fila */
 const ZONA = { y0: 72, y1: FILA_Y0 - 26 };
 const TEXTO = 'Mar del Plata · Llegamos el 28/10';
-/** el sello REMIX del final: escala, giro (°) y separación (px) entre el final de "Handy" y el borde de la calcomanía */
-const SELLO_ESCALA = 0.9, SELLO_ROT = -8, SELLO_HUECO = 40;
 
 /** entrada desde abajo: [salida (s después del golpe), cuánto sube por encima de su lugar, corrimiento x de partida] */
 const VUELO = {
@@ -307,30 +303,8 @@ Trailer.recipe('hdr-final', (D, T, o) => {
     Object.assign(D.$('svg', qrEl).style, { left: px(PAD), top: px(PAD) });
     gsap.set(qrEl, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' });
   }
-  // el sello REMIX y el logo son un solo bloque: la calcomanía va SELLO_HUECO px a la derecha del final de "Handy",
-  // encima de la bajada, y el logo se corre a la izquierda para que logo + sello queden centrados en 720 (como la línea
-  // y la fila). Ancho de la calcomanía: Trailer.remix.medirSello (la píldora sin girar; si falta, 375 × 128 a escala 1).
-  const conSello = !!(Trailer.remix && Trailer.remix.sello);
-  const vb = LOGO_INFO.viewBox.amplia, k = LOGO_W / vb.w;
-  const finPalabra = (LOGO_INFO.palabra.x + LOGO_INFO.palabra.w - vb.x) * k; // desde el borde izquierdo del logo
-  let selloDx = 0, anchoBloque = LOGO_W;
-  if (conSello) {
-    const pildora = Trailer.remix.medirSello
-      ? Trailer.remix.medirSello({ escala: SELLO_ESCALA })
-      : { w: 375 * SELLO_ESCALA, h: 128 * SELLO_ESCALA };
-    const a = Math.abs(SELLO_ROT) * Math.PI / 180;
-    // media extensión horizontal de la píldora girada (es un estadio: la parte recta girada + el radio)
-    const medio = ((pildora.w - pildora.h) / 2) * Math.cos(a) + pildora.h / 2;
-    // la sombra azul (corrida 9, 11 px en la calcomanía, girada con ella) asoma a la derecha
-    const sombraX = (9 * Math.cos(a) + 11 * Math.sin(a)) * SELLO_ESCALA;
-    selloDx = finPalabra + SELLO_HUECO + medio;
-    anchoBloque = Math.max(LOGO_W, selloDx + medio + sombraX);
-  }
-  const logoX = Math.round(720 - anchoBloque / 2);
-  Object.assign(logoEl.style, { left: px(logoX), top: px(logoY), width: px(LOGO_W), height: px(LOGO_H) });
-  // hasta que pega el sello, el logo va solo y centrado en 720 (corrido `empujon` px); el sello lo empuja a su lugar
-  const empujon = Math.round(720 - LOGO_W / 2) - logoX;
-  gsap.set(logoEl, { transformOrigin: '50% 60%', x: empujon });
+  Object.assign(logoEl.style, { left: px(Math.round(720 - LOGO_W / 2)), top: px(logoY), width: px(LOGO_W), height: px(LOGO_H) });
+  gsap.set(logoEl, { transformOrigin: '50% 60%' });
   const letras = LETRAS.map(l => D.$(`.hd-logo-letra[data-letra="${l}"]`, logoEl));
   const bajada = D.$('.hd-logo-bajada', logoEl);
   LETRAS.forEach((l, i) => {
@@ -339,8 +313,6 @@ Trailer.recipe('hdr-final', (D, T, o) => {
   });
   gsap.set(bajada, { opacity: 0, y: 40 });
   prepararTitular(txt);
-  // el sello REMIX (centro, px del escenario): su borde izquierdo a SELLO_HUECO px de la «y», a la altura de la palabra
-  const SELLO = { x: Math.round(logoX + selloDx), y: Math.round(logoY + 0.2 * LOGO_H - 2), rot: SELLO_ROT, escala: SELLO_ESCALA };
 
   // ── agenda: avisa si dos movimientos de la misma pista de un personaje se pisan
   const agenda = {};
@@ -467,15 +439,10 @@ Trailer.recipe('hdr-final', (D, T, o) => {
   D.sfx('whoosh', B(8) - 0.625, 0.4, 0.06);
 
   // ════════ Frase 2 (50–54)
-  // 50,0 · caen en el tiempo fuerte: el logo late y entra el sello REMIX
+  // 50,0 · caen en el tiempo fuerte: el logo late
   latido(tl, logoEl, B(8), 1.05);
   D.sfx('plip', B(8), 0.07, 330);
   [HZ.C6, HZ.E6, HZ.G6].forEach((f, i) => D.sfx('bell', B(8) + i * 0.125, f, 0.025, 1));
-  if (conSello) {
-    Trailer.remix.sello(D, B(8), null, SELLO);
-    // el golpe del sello empuja el logo a la izquierda: logo + sello quedan centrados
-    tl.to(logoEl, { x: 0, duration: 0.4, ease: 'back.out(1.6)' }, B(8) + 0.04);
-  }
 
   // 50,5 · todos se hamacan para afuera · 50,7 el caño y la lamparita saludan
   IZQ.forEach(tipo => hamacar(tipo, B(9), -1));
