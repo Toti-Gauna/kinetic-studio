@@ -13,8 +13,9 @@
      salirDedo(tl, dedo, at, { dur, dx, dy })         sale hacia abajo a la derecha y se apaga → duración
      centro(el, ref) → { x, y }                       centro de `el` en coordenadas de `ref` (layout, sin transforms)
    Sangrado (layout.ts): en una pantalla más alta que 4:3 (el iPad vertical) se ve el escenario debajo del cuadro, así que
-   entrarDedo y salirDedo estiran su viaje (dx y dy, en la misma dirección) en el sangrado de abajo: el dedo entra y se va
-   por el borde de la pantalla, no se prende ni se apaga a la vista debajo del cuadro. En 4:3 y apaisado no cambia nada.
+   entrarDedo y salirDedo estiran su viaje (dx y dy, en la misma dirección) por el sangrado de abajo: el dedo arranca y
+   termina más allá del borde de la pantalla, no esperando a la vista debajo del cuadro (se prende y se apaga mientras
+   viaja, como siempre). En 4:3 y apaisado no cambia nada.
    Ejemplo: const t = tocar(D.tl, dedo, p.x, p.y, T + 2); D.tl.to(ficha, { scale: .94, … }, t.toque); D.sfx('tap', t.toque).
    Ganchos: .hd-dedo · .hd-dedo-mano · .hd-dedo-onda. */
 import { gsap } from 'gsap';
