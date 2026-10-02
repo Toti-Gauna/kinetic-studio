@@ -305,6 +305,10 @@ Trailer.recipe('hdr-final', (D, T, o) => {
   }
   Object.assign(logoEl.style, { left: px(Math.round(720 - LOGO_W / 2)), top: px(logoY), width: px(LOGO_W), height: px(LOGO_H) });
   gsap.set(logoEl, { transformOrigin: '50% 60%' });
+  // en el lockup la palabra "Handy" va alineada a la izquierda sobre la bajada, que es más ancha: acá va centrada
+  // sobre la bajada (unidades del viewBox), así la palabra queda en el centro del cuadro como la bajada y la línea
+  const { palabra: P, bajada: { amplia: BJ } } = LOGO_INFO;
+  gsap.set(D.$('.hd-logo-palabra', logoEl), { x: BJ.x + BJ.w / 2 - (P.x + P.w / 2) });
   const letras = LETRAS.map(l => D.$(`.hd-logo-letra[data-letra="${l}"]`, logoEl));
   const bajada = D.$('.hd-logo-bajada', logoEl);
   LETRAS.forEach((l, i) => {
