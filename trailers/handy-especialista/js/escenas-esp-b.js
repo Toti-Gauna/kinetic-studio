@@ -37,7 +37,7 @@
      2,0   → 23,75   se oscurece el inicio y sube la hoja "Tu presupuesto". 2,25: "Vos ponés el precio."
      2,375–3,0 → 24,22–25,0   Mano de obra $ 32.000: un dígito por semicorchea (con el cursor que titila).
      3,125–3,4375 → 25,16–25,55  Materiales $ 13.000, de corrido (fusas; un clic por semicorchea).
-     3,5   → 25,625  Total $ 45.000: golpe.
+     3,5   → 25,625  Total $ 45.000: golpe · 3,625 debajo, "Comisión Handy 10 % · recibís $ 40.500".
      3,75  → 25,94   el dedo toca "Enviar presupuesto"; 3,875 entra la tarjeta "Presupuesto enviado" y 4,0 el tilde.
      5,0   → 27,5    el teléfono queda con "Presupuesto enviado" (el golpe "¿Te eligen?" barre desde ≈ 27,3).
    Reglas: solo transform y opacity; todo en D.tl en tiempos absolutos desde T (numéricos); estados iniciales con
@@ -497,6 +497,7 @@ Trailer.recipe('he-pedido', (D, T, o) => {
   const cursorMat = campo('materiales').querySelector('.hd-esp-cursor');
   const total = capaPresu.querySelector('.hd-esp-total');
   const montoTotal = total.querySelector('.hd-esp-monto');
+  const recibis = capaPresu.querySelector('.hd-esp-recibis');
   const enviar = capaPresu.querySelector('.hd-boton[data-accion="enviar-presupuesto"]');
   const enviado = capaPresu.querySelector('.hd-esp-enviado');
   const exitoVelo = enviado.querySelector('.hd-velo');
@@ -515,6 +516,7 @@ Trailer.recipe('he-pedido', (D, T, o) => {
   gsap.set(hoja, { yPercent: 100 });
   [montoMano, montoMat, montoTotal].forEach(prepararMonto);
   gsap.set([cursorMano, cursorMat], { opacity: 0 });
+  gsap.set(recibis, { opacity: 0, y: 10 });
   gsap.set(enviado, { opacity: 0 });
   gsap.set(exitoVelo, { opacity: 0 });
   gsap.set(exitoTarjeta, { scale: 0.6, opacity: 0 });
@@ -579,6 +581,8 @@ Trailer.recipe('he-pedido', (D, T, o) => {
   latido(tl, total, tTotal, 1.03);
   D.sfx('fold', tTotal, 0.16);
   [79, 84, 88].forEach((n, k) => D.sfx('bell', tTotal + k * 0.02, hz(n), 0.045, 1.6));
+  // 3,625 · debajo, la comisión de Handy (10 %) y lo que recibe: $ 40.500
+  tl.to(recibis, { opacity: 1, y: 0, duration: 0.35, ease: 'expo.out' }, tTotal + 0.125);
 
   // ── el dedo toca "Enviar presupuesto" (3,75 → 25,94) ──────────────────────
   entrarDedo(tl, dedo, pEnviar.x + 60, pEnviar.y + 120, T + 3.2, { dur: 0.35 });

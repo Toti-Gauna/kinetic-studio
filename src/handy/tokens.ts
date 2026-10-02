@@ -55,3 +55,12 @@ export function priceWithFee(budget: number): { budget: number; fee: number; tot
   const fee = Math.round(budget * HANDY_FEE);
   return { budget, fee, total: budget + fee };
 }
+
+/** Comisión de Handy sobre el presupuesto del especialista (la ve el especialista; el cliente paga aparte su 5 %). */
+export const HANDY_COMISION = 0.1;
+
+/** Lo que recibe el especialista de su presupuesto: 45000 → { comision: 4500, neto: 40500 }. */
+export function netoEspecialista(budget: number): { budget: number; comision: number; neto: number } {
+  const comision = Math.round(budget * HANDY_COMISION);
+  return { budget, comision, neto: budget - comision };
+}

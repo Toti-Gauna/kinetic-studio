@@ -28,13 +28,15 @@
        "Plomería" + .hd-esp-pedido-titulo "Pedido programado") · .hd-esp-filas > .hd-esp-fila[data-fila="fecha|trabajo|lugar"] ·
        .hd-boton[data-accion="mandar-presupuesto"] (x 32 y 654, 350×56) · .hd-boton[data-accion="ahora-no"] (y 720).
    hojaPresupuesto({ enviado = true })  escena 5 · [data-pantalla="presupuesto"]: hoja "Tu presupuesto" (bottomSheet: velo +
-       hoja gris que sube) con Mano de obra, Materiales, Llegada "Entre 16:06 y 16:30", Total y "Enviar presupuesto"; encima,
+       hoja gris que sube) con Mano de obra, Materiales, Llegada "Entre 16:06 y 16:30", Total, la línea "Comisión Handy 10 % ·
+       recibís $ 40.500" y "Enviar presupuesto"; encima,
        la capa de éxito "Presupuesto enviado" (con enviado false está, pero en opacity 0).
        .hd-velo · .hd-hoja (y 403, alto 493: gsap.set(hoja, { yPercent: 100 }) → 0) ·
        .hd-esp-campo[data-campo="mano-de-obra|materiales|llegada"] > .hd-esp-campo-etiqueta + .hd-esp-campo-caja (cajas blancas
-       x 202, 190×54, en y 518 · 584 · 650) > .hd-esp-monto + .hd-esp-cursor (cursor azul apagado: titilarlo con opacity) ·
-       .hd-esp-total (x 22 y 720, 370×66) > .hd-esp-monto[data-monto="total"] (golpe con scale; transformOrigin a la derecha
-       ya en el CSS) · .hd-boton[data-accion="enviar-presupuesto"] (x 22 y 804, 370×56) ·
+       x 202, 190×48, en y 518 · 576 · 634) > .hd-esp-monto + .hd-esp-cursor (cursor azul apagado: titilarlo con opacity) ·
+       .hd-esp-total (x 22 y 694, 370×62) > .hd-esp-monto[data-monto="total"] (golpe con scale; transformOrigin a la derecha
+       ya en el CSS) · .hd-esp-recibis (y 766: la comisión y lo que recibe; entra después del total) ·
+       .hd-boton[data-accion="enviar-presupuesto"] (x 22 y 806, 370×56) ·
        .hd-esp-enviado (= .hd-exito de usuario.ts) > .hd-velo + .hd-exito-tarjeta (x 34 y 280, 346×269) > .hd-exito-check
        (104 px, centro (207, 366)) + .hd-exito-titulo + .hd-exito-detalle. Construida con enviado true: apagar la capa con
        gsap.set(.hd-esp-enviado, { opacity: 0 }) y prenderla con opacity (+ pop de la tarjeta y del tilde con scale).
@@ -68,20 +70,21 @@
        .hd-esp-camino-panel (y 625, 414×271) > .hd-esp-camino-estado[data-estado="en-camino|llego"] (cruzarlos con opacity) >
        .hd-esp-camino-titulo + .hd-esp-camino-lugar · .hd-seg-llegada (x 26 y 729) · .hd-seg-btn[data-accion="ruta|chat"].
    pantallaTrabajo()                  escena 8 · [data-pantalla="trabajo"]: "Trabajo en curso" (En curso), Plomería · Carla M.,
-       cronómetro grande en 42:15, turno, detalle (Mano de obra · Materiales · Total) y "Terminar trabajo".
+       cronómetro grande en 42:15, turno, detalle (Mano de obra · Materiales · Comisión Handy (10 %) − $ 4.500 · Ganás
+       $ 40.500) y "Terminar trabajo".
        .hd-esp-en-curso > .hd-esp-en-curso-punto (titilar con opacity) · .hd-esp-trabajo-quien > .hd-esp-chip ·
        .hd-esp-crono-panel (x 22 y 219, 370×150) > .hd-crono (x 85 y 261, 245×94; ver ui/Cronometro.ts:
        .hd-crono-digito[data-i] > .hd-crono-tira movida con y; ponerCrono(crono, CRONO.inicio) al construir y
        saltarCrono(tl, crono, '18:49', at, { dur }) — dur 0 = salto seco) · .hd-esp-turno (y 385) ·
        .hd-desglose (y 584; ver ui/PriceBreakdown.ts) · .hd-boton[data-accion="terminar"] (x 22 y 800, 370×56).
    pantallaFin()                      escena 8 · [data-pantalla="fin"]: "¡Terminaste el trabajo!", el escenario vacío para
-       los Handys, "Ganaste $ 45.000", Plomería · Carla M. · Jue 15 oct, "Cobrás en tu CBU o alias" y "Volver al inicio".
+       los Handys, "Ganaste $ 40.500", Plomería · Carla M. · Jue 15 oct, "Cobrás en tu CBU o alias" y "Volver al inicio".
        .hd-esp-fin-titulo (y 130) · .hd-esp-fin-escenario (FIN_ESCENARIO: x 22 y 178, 370×344, celeste, radio 30; los
        Handys van adentro, en coordenadas de la caja, parados en FIN_ESCENARIO.piso = 300: la Gota de ≈ 150 y el Caño de
        ≈ 230 de alto entran; la caja no recorta) > .hd-esp-fin-piso (sombra del piso) · .hd-esp-fin-ganaste (y 548) >
        .hd-esp-monto[data-monto="ganaste"] (verde, 40 px) · .hd-esp-fin-detalle · .hd-esp-fin-cobro (y 650) ·
        .hd-boton[data-accion="volver"] (y 800).
-   avisoCobro()                       escena 9 · [data-pantalla="cobro"]: notificación arriba "Te transferimos $ 45.000" ·
+   avisoCobro()                       escena 9 · [data-pantalla="cobro"]: notificación arriba "Te transferimos $ 40.500" ·
        "a martin.r.plomero" con el ícono del banco. .hd-esp-cobro (x 12 y 54, 390×90: bajarla con y desde ≈ −150) >
        .hd-esp-cobro-icono + .hd-esp-cobro-titulo > .hd-esp-monto[data-monto="cobro"] + .hd-esp-cobro-alias.
        tarjetaCobro() da la notificación sola.
@@ -100,7 +103,7 @@ import '../css/base.css';
 import '../css/ui.css';
 import '../css/chat.css';
 import '../css/especialista.css';
-import { formatARS } from '../tokens.ts';
+import { formatARS, netoEspecialista, HANDY_COMISION } from '../tokens.ts';
 import { icon, type IconName } from '../icons.ts';
 import { appHeader } from '../ui/AppHeader.ts';
 import { bottomNav } from '../ui/BottomNav.ts';
@@ -146,11 +149,20 @@ export const PEDIDO = {
 
 const PRESU_MARTIN = PRESUPUESTOS[0];
 
-/** El presupuesto de Martín (PRESUPUESTOS[0] de usuario-chat.ts): lo que gana es el total, $ 45.000. */
+const TOTAL_MARTIN = PRESU_MARTIN.manoDeObra + PRESU_MARTIN.materiales;
+const NETO_MARTIN = netoEspecialista(TOTAL_MARTIN);
+
+/** El presupuesto de Martín (PRESUPUESTOS[0] de usuario-chat.ts): $ 45.000. Handy se queda con su comisión del 10 %
+    ($ 4.500) y Martín recibe $ 40.500 (el cliente paga aparte su tarifa de servicio del 5 %: eso es del tráiler de usuario). */
 export const PRESUPUESTO = {
   manoDeObra: PRESU_MARTIN.manoDeObra,
   materiales: PRESU_MARTIN.materiales,
-  total: PRESU_MARTIN.manoDeObra + PRESU_MARTIN.materiales,
+  total: TOTAL_MARTIN,
+  /** comisión de Handy (10 %) y lo que recibe Martín */
+  comision: NETO_MARTIN.comision,
+  neto: NETO_MARTIN.neto,
+  /** "10 %" */
+  porcentaje: `${Math.round(HANDY_COMISION * 100)} %`,
   /** como lo ve el especialista en su hoja */
   llegada: 'Entre 16:06 y 16:30',
   /** como se lo dice la app en camino */
@@ -322,6 +334,7 @@ export function hojaPresupuesto({ enviado = true }: { enviado?: boolean } = {}):
     + '<div class="hd-esp-campo" data-campo="llegada"><span class="hd-esp-campo-etiqueta">Llegada</span>'
     + `<span class="hd-esp-campo-caja hd-esp-campo-caja--texto">${icon('reloj', { size: 19, stroke: 2.3 })}<span>${PRESUPUESTO.llegada}</span></span></div>`
     + `<div class="hd-esp-total"><span class="hd-esp-total-etiqueta">Total</span>${montoSpans(PRESUPUESTO.total, 'total')}</div>`
+    + `<p class="hd-esp-recibis">Comisión Handy ${PRESUPUESTO.porcentaje} · recibís <b>${formatARS(PRESUPUESTO.neto)}</b></p>`
     + button({ texto: 'Enviar presupuesto', accion: 'enviar-presupuesto', icono: 'enviar' })
     + '</div>';
   const exito = `<div class="hd-exito hd-esp-enviado"${enviado ? '' : ' style="opacity:0"'}>`
@@ -355,7 +368,7 @@ export function tarjetaElegido(): string {
     + filaIcono('rubro', PEDIDO.icono, PEDIDO.rubro)
     + filaIcono('fecha', 'calendario', PEDIDO.fecha)
     + '</div>'
-    + `<div class="hd-esp-aviso-total"><span>Total</span>${montoSpans(PRESUPUESTO.total, 'total')}</div>`
+    + `<div class="hd-esp-aviso-total"><span>Tu presupuesto</span>${montoSpans(PRESUPUESTO.total, 'total')}</div>`
     + '</div></div>';
 }
 
@@ -469,8 +482,9 @@ export function pantallaTrabajo(): string {
       filas: [
         { etiqueta: 'Mano de obra', valor: PRESUPUESTO.manoDeObra },
         { etiqueta: 'Materiales', valor: PRESUPUESTO.materiales },
+        { etiqueta: `Comisión Handy (${PRESUPUESTO.porcentaje})`, valor: -PRESUPUESTO.comision, texto: `− ${formatARS(PRESUPUESTO.comision)}` },
       ],
-      total: { etiqueta: 'Total', valor: PRESUPUESTO.total },
+      total: { etiqueta: 'Ganás', valor: PRESUPUESTO.neto },
     })
     + '</div>'
     + `<div class="hd-pie">${button({ texto: 'Terminar trabajo', variante: 'exito', icono: 'tilde', accion: 'terminar' })}</div>`
@@ -489,7 +503,7 @@ export function pantallaFin(): string {
     + '<h2 class="hd-esp-fin-titulo">¡Terminaste el trabajo!</h2>'
     + `<div class="hd-esp-fin-escenario" style="left:${e.x}px;top:${e.y}px;width:${e.w}px;height:${e.h}px">`
     + `<span class="hd-esp-fin-piso" style="top:${e.piso}px"></span></div>`
-    + `<div class="hd-esp-fin-ganaste"><span>Ganaste</span>${montoSpans(PRESUPUESTO.total, 'ganaste')}</div>`
+    + `<div class="hd-esp-fin-ganaste"><span>Ganaste</span>${montoSpans(PRESUPUESTO.neto, 'ganaste')}</div>`
     + `<p class="hd-esp-fin-detalle">${PEDIDO.rubro} · ${CLIENTE.nombre} · ${PEDIDO.dia}</p>`
     + '<div class="hd-tarjeta hd-esp-fin-cobro">'
     + `<span class="hd-tarjeta-icono">${svg(BANCO, 24, 2)}</span>`
@@ -507,7 +521,7 @@ export function tarjetaCobro(): string {
     + `<span class="hd-esp-cobro-icono">${svg(BANCO, 28, 2)}</span>`
     + '<div class="hd-esp-cobro-textos">'
     + '<div class="hd-esp-cobro-app"><span>Handy</span><span>ahora</span></div>'
-    + `<div class="hd-esp-cobro-titulo">Te transferimos ${montoSpans(PRESUPUESTO.total, 'cobro')}</div>`
+    + `<div class="hd-esp-cobro-titulo">Te transferimos ${montoSpans(PRESUPUESTO.neto, 'cobro')}</div>`
     + `<div class="hd-esp-cobro-alias">a <b>${ALIAS}</b></div>`
     + '</div></div>';
 }

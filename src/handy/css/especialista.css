@@ -276,7 +276,7 @@
 .hd-esp-pedido-botones { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
 
 /* ── 3 · Hoja "Tu presupuesto" ──────────────────────────────────────────── */
-.hd-esp-presu { display: flex; flex-direction: column; gap: 12px; }
+.hd-esp-presu { display: flex; flex-direction: column; gap: 10px; }
 .hd-esp-campo { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .hd-esp-campo-etiqueta { font: 800 17px/1.2 var(--hd-font); color: #3D3D3D; }
 .hd-esp-campo-caja {
@@ -287,7 +287,7 @@
   gap: 2px;
   flex: none;
   width: 190px;
-  height: 54px;
+  height: 48px;
   padding: 0 18px;
   border-radius: 16px;
   background: #FFFFFF;
@@ -310,8 +310,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 66px;
-  margin-top: 4px;
+  height: 62px;
+  margin-top: 2px;
   padding: 0 20px;
   border-radius: 20px;
   background: var(--hd-azul-claro);
@@ -319,7 +319,10 @@
 }
 .hd-esp-total-etiqueta { font: 800 21px/1 var(--hd-font); }
 .hd-esp-total .hd-esp-monto { font: 800 30px/1 var(--hd-font); letter-spacing: -0.015em; transform-origin: 100% 50%; }
-.hd-esp-presu .hd-boton { margin-top: 6px; }
+/* la comisión de Handy (10 %) y lo que recibe el especialista, debajo del total */
+.hd-esp-recibis { margin: -2px 0 0; text-align: right; font: 700 15.5px/1.2 var(--hd-font); color: #3D3D3D; }
+.hd-esp-recibis b { font-weight: 800; color: var(--hd-azul); }
+.hd-esp-presu .hd-boton { margin-top: 2px; }
 /* "Presupuesto enviado": la tarjeta de éxito de la app de usuario, con un velo más liviano (va sobre la hoja) */
 .hd-esp-enviado .hd-velo { background: rgba(8, 12, 20, 0.28); }
 .hd-esp-enviado .hd-exito-tarjeta { top: 280px; }

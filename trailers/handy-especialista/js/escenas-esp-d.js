@@ -10,20 +10,20 @@
      0,25 → 42,81   el titular "Todo queda en Handy." (en dos líneas, columna izquierda centrada en y 540).
      0,5  → 43,13   el cronómetro corre en saltos, uno por tiempo: 00:00 → 06:40 → 13:25 → 20:10 → 27:45 → 35:00 → 42:15
                     (3,0 → 46,25); el punto de "En curso" late en cada tiempo.
-     1,0  → 43,75   entra el detalle: Mano de obra $ 32.000 (1,25), Materiales $ 13.000 (1,5), Total $ 45.000 (1,75)
-                    y golpe del total (2,0 → 45,0).
+     1,0  → 43,75   entra el detalle: Mano de obra $ 32.000 (1,25), Materiales $ 13.000 (1,5), Comisión Handy (10 %)
+                    − $ 4.500 (1,75), Ganás $ 40.500 (2,0) y su golpe (2,0 → 45,0).
      3,0  → 46,25   el cronómetro llega a 42:15: late el panel; la hora salta a 16:54. Entra el dedo.
      3,5  → 46,88   toca "Terminar trabajo" (se aprieta).
      3,625→ 47,03   "¡Terminaste el trabajo!": la pantalla de fin se prende y sus piezas caen en cascada; 3,75 el Caño
                     asoma en el escenario celeste, 4,0 la Gota se forma en su pico y 4,25 cae a su lugar (4,5).
-     4,5  → 48,13   "Ganaste" y los dígitos de $ 45.000, uno por semicorchea; la Gota y el Caño se agachan y saltan con
+     4,5  → 48,13   "Ganaste" y los dígitos de $ 40.500, uno por semicorchea; la Gota y el Caño se agachan y saltan con
                     cara de festejo…
-     5,0  → 48,75   …y caen en el golpe de "Ganaste $ 45.000" (el monto late, acorde de campanas). 5,25 la tarjeta "Cobrás
+     5,0  → 48,75   …y caen en el golpe de "Ganaste $ 40.500" (el monto late, acorde de campanas). 5,25 la tarjeta "Cobrás
                     en tu CBU o alias", 5,375 "Volver al inicio" y sale el titular.
      6,0  → 50,0    cuadro final: pantallaFin() completa, los dos Handys quietos y felices (contrato con 'he-cobro').
    Escena 9 — cobro (arranca de ese cuadro; el golpe del resumen la tapa a las 52,5)
      0,0  → 50,0    titular "Cobrás en tu CBU o alias." (arriba en la columna izquierda) y baja la notificación "Te
-                    transferimos $ 45.000 · a martin.r.plomero" (0,25 → 50,31: ding y la hora pasa a 17:10).
+                    transferimos $ 40.500 · a martin.r.plomero" (0,25 → 50,31: ding y la hora pasa a 17:10).
      0,5  → 50,63   velo y la reseña de Carla (pop); 0,75–1,25 las cinco estrellas, una por semicorchea (campanas que
                     suben); 1,0 el texto "¡Excelente! Rápido y prolijo.".
      1,0  → 51,25   los cinco Handys saltan a cuadro desde abajo, del centro hacia afuera en semicorcheas (abajo de la
@@ -33,7 +33,8 @@
 
    Contratos: entrada de la 8 = teléfono en PHONE_XY con pantallaEnCamino({ estado: 'llego' }), phoneFrame claro, hora
    HORA_LLEGO (16:12, la de la llegada de he-camino), sin titular. Salida de la 8 = entrada de la 9: teléfono en
-   PHONE_XY, pantallaFin() con la Gota y el Caño parados en el escenario (handysFin), "Ganaste $ 45.000" completo, barra oscura a las HORAS.trabajo (16:54), sin
+   PHONE_XY, pantallaFin() con la Gota y el Caño parados en el escenario (handysFin), "Ganaste $ 40.500" completo, barra oscura a las
+   HORAS.trabajo (16:54), sin
    titular.
    Reglas: solo transform y opacity; todo en D.tl en tiempos absolutos desde T; estados iniciales con gsap.set; azar
    solo con D.rand. Clases propias con prefijo hed- (hed8- / hed9-), estilos inyectados una vez (#he-escenas-esp-d). */
@@ -266,7 +267,8 @@ Trailer.recipe('he-trabajo', (D, T, o) => {
     tl.to(punto, { opacity: 1, duration: 0.3, ease: 'power1.out' }, at + 0.12);
   }
 
-  // 1,0 · el detalle: el panel, Mano de obra (1,25), Materiales (1,5), Total (1,75) y su golpe (2,0)
+  // 1,0 · el detalle: el panel, Mano de obra (1,25), Materiales (1,5), Comisión Handy 10 % (1,75) y Ganás $ 40.500
+  // (2,0), con su golpe
   tl.to([rotulo, desglose], { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out', stagger: 0.06 }, tDetalle);
   [...filas, total].forEach((f, i) => {
     const at = tDetalle + 0.25 * (i + 1);
@@ -322,7 +324,7 @@ Trailer.recipe('he-trabajo', (D, T, o) => {
   });
   D.sfx('whoosh', tGolpe - 0.5, 0.35, 0.04);
 
-  // 5,0 · golpe: "Ganaste $ 45.000"
+  // 5,0 · golpe: "Ganaste $ 40.500"
   pulso(tl, monto, tGolpe, { escala: 1.22, origen: '0% 60%', vuelta: 0.5 });
   tl.to(finDetalle, { opacity: 1, y: 0, duration: 0.4, ease: 'expo.out' }, tGolpe);
   [[HZ.C5, 0.045], [HZ.E5, 0.04], [HZ.G5, 0.04], [HZ.C6, 0.035]].forEach(([f, v]) => D.sfx('bell', tGolpe, f, v, 1.6));
