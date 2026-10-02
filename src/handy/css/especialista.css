@@ -1,0 +1,631 @@
+/* Handy — interfaz de la app del especialista: interruptor, cronómetro, calendario y las pantallas de
+   pantallas/especialista.ts. Mismo lenguaje que la app de usuario (ui.css y chat.css): azules, radios, sombras, botones.
+   Medidas en px a 1:1 dentro de la pantalla de 414×896. Todo con prefijo hd- (hd-esp- en lo propio de las pantallas).
+   Sin filtros, sin blend modes, sin keyframes ni transiciones: las escenas animan solo transform y opacity. */
+
+.hd-interruptor, .hd-crono, .hd-calendario, .hd-esp-pedido, .hd-esp-aviso, .hd-esp-cobro, .hd-esp-resena {
+  box-sizing: border-box;
+}
+.hd-calendario *, .hd-esp-pedido *, .hd-esp-aviso *, .hd-esp-cobro *, .hd-esp-resena * { box-sizing: border-box; }
+
+/* ── Interruptor ────────────────────────────────────────────────────────── */
+.hd-interruptor {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  overflow: hidden;
+  isolation: isolate;
+}
+.hd-interruptor-apagado,
+.hd-interruptor-prendido {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: inherit;
+}
+.hd-interruptor-apagado { background: #C4C4C4; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.14); }
+.hd-interruptor-prendido { background: var(--hd-azul-handy); }
+.hd-interruptor-perilla {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
+}
+
+/* ── Cronómetro ─────────────────────────────────────────────────────────── */
+.hd-crono {
+  --hd-crono-fila: 90px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  font-family: var(--hd-font);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: inherit;
+}
+.hd-crono-digito { position: relative; display: block; flex: none; overflow: hidden; }
+.hd-crono-tira { position: absolute; left: 0; top: 0; right: 0; display: block; }
+.hd-crono-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--hd-crono-fila);
+}
+.hd-crono-sep {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 0.34em;
+  padding-bottom: 0.08em;
+}
+
+/* ── Calendario ─────────────────────────────────────────────────────────── */
+.hd-calendario {
+  width: 370px;
+  border-radius: 24px;
+  background: #DDDDDD;
+  overflow: hidden;
+  font-family: var(--hd-font);
+}
+.hd-cal-cabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 12px;
+  background: var(--hd-azul-claro);
+  color: #FFFFFF;
+}
+.hd-cal-mes { font: 800 19px/1 var(--hd-font); letter-spacing: -0.01em; }
+.hd-cal-flecha {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.16);
+}
+.hd-cal-semana,
+.hd-cal-grilla {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  column-gap: 6px;
+  padding: 0 12px;
+}
+.hd-cal-semana { padding-top: 12px; padding-bottom: 8px; }
+.hd-cal-dsem { text-align: center; font: 700 13px/1.2 var(--hd-font); color: #6B6B6B; }
+.hd-cal-grilla { row-gap: 7px; padding-bottom: 14px; }
+.hd-cal-dia,
+.hd-cal-hueco { height: 46px; }
+.hd-cal-dia {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: #FFFFFF;
+  color: var(--hd-tinta);
+  font: 700 15.5px/1 var(--hd-font);
+  font-variant-numeric: tabular-nums;
+}
+.hd-cal-marca {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  bottom: -3px;
+  left: -3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: 13px;
+  background: var(--hd-azul);
+  color: #FFFFFF;
+  box-shadow: 0 4px 10px -3px rgba(16, 40, 90, 0.55);
+  transform-origin: 50% 50%;
+}
+.hd-cal-marca-num { font: 800 15.5px/1 var(--hd-font); }
+.hd-cal-marca-icono { display: flex; }
+
+/* ── Piezas comunes de las pantallas ────────────────────────────────────── */
+/* monto con un span por carácter (los dígitos pueden entrar de a uno) */
+.hd-esp-monto { position: relative; display: inline-flex; white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* las teclas del monto (prepararMonto / escribirMonto): capas alineadas a la derecha, encima de los caracteres apagados */
+.hd-esp-monto-paso { position: absolute; right: 0; top: 0; white-space: nowrap; }
+.hd-esp-car { display: inline-block; }
+/* filas con ícono (pedido, aviso) */
+.hd-esp-filas { display: flex; flex-direction: column; gap: 10px; }
+.hd-esp-fila { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.hd-esp-fila-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: #E5ECF7;
+  color: var(--hd-azul);
+}
+.hd-esp-fila-texto { min-width: 0; font: 700 16px/1.25 var(--hd-font); color: var(--hd-tinta); }
+.hd-esp-rubro-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 17px;
+  background: var(--hd-azul);
+  color: #FFFFFF;
+}
+.hd-esp-subtitulo {
+  margin: 0;
+  font: 800 21px/1.2 var(--hd-font);
+  letter-spacing: -0.01em;
+  color: var(--hd-azul);
+}
+.hd-esp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 14px 0 10px;
+  border-radius: 18px;
+  background: var(--hd-gris-ficha);
+  font: 700 15px/1 var(--hd-font);
+  color: var(--hd-tinta);
+  white-space: nowrap;
+}
+.hd-esp-chip .hd-icon { color: var(--hd-azul); }
+.hd-esp-chip .hd-avatar { font-size: 10px; }
+
+/* ── 1 · Inicio del especialista ────────────────────────────────────────── */
+/* encabezado blanco con las esquinas de abajo redondeadas, encima del mapa */
+.hd-esp-inicio .hd-esp-header {
+  position: relative;
+  z-index: 3;
+  margin-top: calc(-1 * var(--hd-estado));
+  padding-top: calc(var(--hd-estado) + 4px);
+  border-radius: 0 0 28px 28px;
+  box-shadow: 0 6px 16px -8px rgba(16, 30, 64, 0.35);
+}
+.hd-esp-mapa { position: absolute; left: 0; width: 414px; z-index: 1; overflow: hidden; }
+.hd-esp-mapa > .hd-mapa { position: absolute; left: 0; top: 0; }
+/* el mapa "dormido" (Trabajando apagado): un velo claro encima; la escena lo apaga con opacity */
+.hd-esp-mapa-velo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(236, 236, 236, 0.62);
+}
+.hd-esp-yo {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  margin: -25px 0 0 -25px;
+  border-radius: 50%;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+.hd-esp-yo .hd-avatar { display: flex; }
+/* pulso alrededor de Martín: anillo azul con relleno suave; la escena anima scale (≈ .3 → 1) y opacity (→ 0) */
+.hd-esp-pulso {
+  box-sizing: border-box;
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  margin: -110px 0 0 -110px;
+  border: 3px solid rgba(48, 113, 255, 0.7);
+  border-radius: 50%;
+  background: rgba(48, 113, 255, 0.16);
+}
+/* ficha "Trabajando" flotando arriba a la derecha del mapa, como la de las pantallas originales */
+.hd-esp-trabajando {
+  position: absolute;
+  right: 14px;
+  top: 132px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 56px;
+  padding: 0 9px 0 16px;
+  border-radius: 28px;
+  background: #FFFFFF;
+  color: var(--hd-azul);
+  box-shadow: 0 6px 16px -6px rgba(16, 30, 64, 0.45), 0 1px 3px rgba(16, 30, 64, 0.12);
+}
+.hd-esp-trabajando-icono { display: flex; }
+/* quién es: Martín R., verificado (arriba a la izquierda del mapa, a la altura de la ficha "Trabajando") */
+.hd-esp-quien {
+  position: absolute;
+  left: 14px;
+  top: 132px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  height: 56px;
+  padding: 0 14px;
+  border-radius: 20px;
+  background: #FFFFFF;
+  box-shadow: 0 6px 16px -6px rgba(16, 30, 64, 0.45), 0 1px 3px rgba(16, 30, 64, 0.12);
+}
+.hd-esp-quien-nombre { display: flex; align-items: center; gap: 5px; font: 800 16px/1 var(--hd-font); color: var(--hd-azul); }
+.hd-esp-quien-detalle { font: 700 12.5px/1 var(--hd-font); color: var(--hd-tinta-suave); }
+.hd-esp-trabajando-texto { font: 800 18px/1 var(--hd-font); letter-spacing: -0.01em; margin-right: 3px; }
+.hd-esp-inicio .hd-nav { z-index: 4; }
+
+/* ── 2 · Tarjeta del pedido ─────────────────────────────────────────────── */
+.hd-esp-pedido-pin { z-index: 1; }
+.hd-esp-pedido {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 102px;
+  z-index: 2;
+  padding: 18px 18px 18px;
+  border-radius: 28px;
+  background: #FFFFFF;
+  font-family: var(--hd-font);
+  box-shadow: 0 18px 40px -14px rgba(8, 12, 20, 0.5), 0 2px 6px rgba(8, 12, 20, 0.12);
+}
+.hd-esp-pedido-cabeza {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1.5px solid #E3E3E3;
+}
+.hd-esp-pedido-titulos { min-width: 0; }
+.hd-esp-pedido-rubro { font: 700 15px/1.2 var(--hd-font); color: var(--hd-azul-claro); }
+.hd-esp-pedido-titulo { margin-top: 2px; font: 800 23px/1.15 var(--hd-font); letter-spacing: -0.015em; color: var(--hd-azul); }
+.hd-esp-pedido-botones { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+
+/* ── 3 · Hoja "Tu presupuesto" ──────────────────────────────────────────── */
+.hd-esp-presu { display: flex; flex-direction: column; gap: 10px; }
+.hd-esp-campo { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.hd-esp-campo-etiqueta { font: 800 17px/1.2 var(--hd-font); color: #3D3D3D; }
+.hd-esp-campo-caja {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  flex: none;
+  width: 190px;
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 16px;
+  background: #FFFFFF;
+  font: 800 23px/1 var(--hd-font);
+  letter-spacing: -0.01em;
+  color: var(--hd-tinta);
+}
+.hd-esp-campo-caja--texto { width: auto; gap: 8px; padding: 0 16px; font-size: 16.5px; letter-spacing: -0.005em; }
+.hd-esp-campo-caja--texto .hd-icon { color: var(--hd-azul); }
+/* cursor de escritura (apagado): la escena lo titila con opacity mientras entran los dígitos */
+.hd-esp-cursor {
+  display: block;
+  width: 2.5px;
+  height: 28px;
+  margin-left: 3px;
+  border-radius: 1px;
+  background: var(--hd-azul-handy);
+}
+.hd-esp-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 62px;
+  margin-top: 2px;
+  padding: 0 20px;
+  border-radius: 20px;
+  background: var(--hd-azul-claro);
+  color: #FFFFFF;
+}
+.hd-esp-total-etiqueta { font: 800 21px/1 var(--hd-font); }
+.hd-esp-total .hd-esp-monto { font: 800 30px/1 var(--hd-font); letter-spacing: -0.015em; transform-origin: 100% 50%; }
+/* la comisión de Handy (10 %) y lo que recibe el especialista, debajo del total */
+.hd-esp-recibis { margin: -2px 0 0; text-align: right; font: 700 15.5px/1.2 var(--hd-font); color: #3D3D3D; }
+.hd-esp-recibis b { font-weight: 800; color: var(--hd-azul); }
+.hd-esp-presu .hd-boton { margin-top: 2px; }
+/* "Presupuesto enviado": la tarjeta de éxito de la app de usuario, con un velo más liviano (va sobre la hoja) */
+.hd-esp-enviado .hd-velo { background: rgba(8, 12, 20, 0.28); }
+.hd-esp-enviado .hd-exito-tarjeta { top: 226px; }
+
+/* ── 4 · Aviso "¡Te eligieron!" ─────────────────────────────────────────── */
+.hd-esp-elegido-capa > .hd-velo { background: rgba(8, 12, 20, 0.42); }
+.hd-esp-elegido-capa > .hd-esp-aviso { position: absolute; left: 30px; right: 30px; top: 214px; }
+.hd-esp-aviso {
+  border-radius: 30px;
+  background: #FFFFFF;
+  overflow: hidden;
+  font-family: var(--hd-font);
+  box-shadow: 0 22px 46px -18px rgba(8, 12, 20, 0.6);
+}
+.hd-esp-aviso-cabeza {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 26px 20px 22px;
+  background: var(--hd-azul);
+  color: #FFFFFF;
+}
+.hd-esp-aviso-sello {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--hd-amarillo-alerta);
+  color: var(--hd-azul);
+}
+.hd-esp-aviso-titulo { font: 800 31px/1.1 var(--hd-font); letter-spacing: -0.02em; }
+.hd-esp-aviso-cuerpo { padding: 20px 22px 22px; }
+.hd-esp-aviso-cliente { display: flex; align-items: center; gap: 13px; margin-bottom: 16px; }
+.hd-esp-aviso-quien { font: 600 17px/1.3 var(--hd-font); color: var(--hd-tinta-suave); }
+.hd-esp-aviso-quien b { display: block; font-weight: 800; font-size: 19px; color: var(--hd-tinta); }
+.hd-esp-aviso-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1.5px solid #E3E3E3;
+  font: 800 18px/1 var(--hd-font);
+  color: var(--hd-tinta);
+}
+.hd-esp-aviso-total .hd-esp-monto { font-size: 30px; letter-spacing: -0.015em; color: var(--hd-azul); }
+
+/* ── 5 · Agenda ─────────────────────────────────────────────────────────── */
+.hd-esp-agenda-titulo { margin: 6px 0 14px; }
+.hd-esp-agenda .hd-esp-subtitulo { margin: 24px 0 12px; }
+.hd-esp-visita {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 22px;
+  background: var(--hd-gris-ficha);
+  font-family: var(--hd-font);
+}
+.hd-esp-visita-fecha {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 62px;
+  border-radius: 16px;
+  background: var(--hd-azul);
+  color: #FFFFFF;
+}
+.hd-esp-visita-dsem, .hd-esp-visita-mes { font: 700 13px/1.1 var(--hd-font); opacity: 0.85; }
+.hd-esp-visita-dia { font: 800 27px/1.05 var(--hd-font); letter-spacing: -0.02em; }
+.hd-esp-visita-textos { flex: 1; min-width: 0; }
+.hd-esp-visita-fila { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.hd-esp-visita-titulo { font: 800 17.5px/1.2 var(--hd-font); letter-spacing: -0.01em; color: var(--hd-tinta); white-space: nowrap; }
+.hd-esp-visita-monto { font: 800 17.5px/1.2 var(--hd-font); color: var(--hd-azul); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.hd-esp-visita-trabajo { margin-top: 3px; font: 600 14.5px/1.3 var(--hd-font); color: var(--hd-tinta-suave); }
+.hd-esp-visita-cliente {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 9px;
+  font: 700 14.5px/1 var(--hd-font);
+  color: var(--hd-tinta);
+}
+.hd-esp-visita-cliente .hd-avatar { font-size: 10.5px; }
+.hd-esp-visita-tipo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  height: 26px;
+  padding: 0 10px 0 8px;
+  border-radius: 13px;
+  background: #FFFFFF;
+  font: 700 12.5px/1 var(--hd-font);
+  color: var(--hd-azul);
+  white-space: nowrap;
+}
+
+/* ── 7 · En camino ──────────────────────────────────────────────────────── */
+.hd-esp-camino-panel { width: 414px; }
+.hd-esp-camino-estados { position: relative; height: 92px; margin: 0 -26px; }
+.hd-esp-camino-estado { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
+.hd-esp-camino-titulo {
+  position: absolute;
+  top: 31px;
+  left: 18px;
+  right: 18px;
+  font: 800 20px/1.2 var(--hd-font);
+  letter-spacing: -0.005em;
+  text-align: center;
+  white-space: nowrap;
+}
+.hd-esp-camino-lugar {
+  position: absolute;
+  top: 61px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font: 600 14.5px/1.2 var(--hd-font);
+  color: rgba(255, 255, 255, 0.82);
+}
+.hd-esp-camino-panel .hd-seg-fila { margin-top: 12px; }
+
+/* ── 8 · Trabajo en curso ───────────────────────────────────────────────── */
+.hd-esp-trabajo-cabeza { display: flex; align-items: center; justify-content: space-between; margin: 6px 0 12px; }
+.hd-esp-en-curso {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 15px;
+  background: #E3F4EA;
+  color: #178045;
+  font: 800 13.5px/1 var(--hd-font);
+  letter-spacing: 0.01em;
+}
+.hd-esp-en-curso-punto { display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--hd-verde); }
+.hd-esp-trabajo-quien { display: flex; gap: 10px; }
+.hd-esp-crono-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 18px;
+  padding: 18px 0 14px;
+  border-radius: 26px;
+  background: var(--hd-azul);
+  color: #FFFFFF;
+}
+.hd-esp-crono-rotulo { display: flex; align-items: center; gap: 8px; font: 700 15.5px/1 var(--hd-font); color: rgba(255, 255, 255, 0.86); }
+.hd-esp-crono-panel .hd-crono { margin-top: 4px; }
+.hd-esp-detalle-rotulo { margin-top: 18px; }
+.hd-esp-turno { margin-top: 16px; }
+
+/* ── 9 · Fin del trabajo ────────────────────────────────────────────────── */
+.hd-esp-fin-titulo {
+  margin: 14px 22px 0;
+  font: 800 28px/1.15 var(--hd-font);
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: var(--hd-azul);
+}
+.hd-esp-fin-escenario {
+  position: absolute;
+  border-radius: 30px;
+  background: #EAF0FA;
+}
+/* piso: una sombra chata donde paran los Handys */
+.hd-esp-fin-piso {
+  position: absolute;
+  left: 50px;
+  right: 50px;
+  height: 18px;
+  margin-top: -9px;
+  border-radius: 50%;
+  background: rgba(31, 87, 168, 0.12);
+}
+.hd-esp-fin-ganaste {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  top: 548px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  font: 800 25px/1 var(--hd-font);
+  letter-spacing: -0.015em;
+  color: var(--hd-tinta);
+}
+.hd-esp-fin-ganaste .hd-esp-monto { font-size: 40px; letter-spacing: -0.02em; color: var(--hd-verde); }
+.hd-esp-fin-detalle {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  top: 600px;
+  margin: 0;
+  text-align: center;
+  font: 600 15.5px/1.3 var(--hd-font);
+  color: var(--hd-tinta-suave);
+}
+
+/* dónde se cobra: tarjeta gris con el ícono del banco */
+.hd-esp-fin-cobro { position: absolute; left: 22px; right: 22px; top: 650px; }
+.hd-esp-fin-cobro .hd-tarjeta-icono { color: var(--hd-verde); }
+
+/* ── 10 · Cobro y reseña ────────────────────────────────────────────────── */
+.hd-esp-cobro-capa > .hd-esp-cobro { position: absolute; left: 12px; right: 12px; top: 54px; }
+.hd-esp-cobro {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px 14px 14px;
+  border-radius: 26px;
+  background: #FFFFFF;
+  font-family: var(--hd-font);
+  box-shadow: 0 16px 34px -12px rgba(8, 12, 20, 0.45), 0 1px 4px rgba(8, 12, 20, 0.12);
+}
+.hd-esp-cobro-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 58px;
+  height: 58px;
+  border-radius: 17px;
+  background: var(--hd-verde);
+  color: #FFFFFF;
+}
+.hd-esp-cobro-textos { flex: 1; min-width: 0; }
+.hd-esp-cobro-app {
+  display: flex;
+  justify-content: space-between;
+  font: 700 12.5px/1 var(--hd-font);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8A8A8A;
+}
+.hd-esp-cobro-titulo {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 6px;
+  font: 800 18.5px/1.15 var(--hd-font);
+  letter-spacing: -0.01em;
+  color: var(--hd-tinta);
+  white-space: nowrap;
+}
+.hd-esp-cobro-titulo .hd-esp-monto { color: var(--hd-verde); }
+.hd-esp-cobro-alias { margin-top: 4px; font: 600 15px/1.2 var(--hd-font); color: var(--hd-tinta-suave); }
+.hd-esp-cobro-alias b { font-weight: 700; color: var(--hd-azul); }
+
+.hd-esp-resena-capa > .hd-velo { background: rgba(8, 12, 20, 0.36); }
+.hd-esp-resena-capa > .hd-esp-resena { position: absolute; left: 30px; right: 30px; top: 300px; }
+.hd-esp-resena {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 22px 24px;
+  border-radius: 30px;
+  background: #FFFFFF;
+  font-family: var(--hd-font);
+  box-shadow: 0 22px 46px -18px rgba(8, 12, 20, 0.6);
+}
+.hd-esp-resena-cabeza { display: flex; align-items: center; gap: 13px; align-self: stretch; }
+.hd-esp-resena-nombre { font: 800 21px/1.15 var(--hd-font); letter-spacing: -0.01em; color: var(--hd-azul); }
+.hd-esp-resena-rubro { margin-top: 3px; font: 600 14.5px/1.2 var(--hd-font); color: var(--hd-tinta-suave); }
+.hd-esp-resena .hd-estrellas { margin: 18px 0 16px; }
+.hd-esp-resena-texto {
+  align-self: stretch;
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--hd-gris-ficha);
+  text-align: center;
+  font: 700 18px/1.3 var(--hd-font);
+  color: var(--hd-tinta);
+}

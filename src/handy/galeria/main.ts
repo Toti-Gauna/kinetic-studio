@@ -1,6 +1,6 @@
 /* Galería de componentes de Handy — solo para desarrollo, no se publica.
    npm run dev → http://localhost:5173/src/handy/galeria.html
-   ?seccion=logo|handys|app|chat muestra una sola sección · ?t=SEGUNDOS congela las demos animadas en ese segundo. */
+   ?seccion=logo|handys|app|chat|especialista muestra una sola sección · ?t=SEGUNDOS congela las demos animadas en ese segundo. */
 import { gsap } from 'gsap';
 import '../css/base.css';
 import './galeria.css';
@@ -9,8 +9,9 @@ import logo from './logo.ts';
 import handys from './handys.ts';
 import app from './app.ts';
 import chat from './chat.ts';
+import especialista from './especialista.ts';
 
-const SECCIONES: Seccion[] = [logo, handys, app, chat];
+const SECCIONES: Seccion[] = [logo, handys, app, chat, especialista];
 const q = new URLSearchParams(location.search);
 const solo = q.get('seccion');
 const root = document.getElementById('galeria')!;

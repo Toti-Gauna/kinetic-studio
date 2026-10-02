@@ -1,8 +1,9 @@
 /* Mapa ilustrado de la ciudad para el seguimiento, con aire de Mar del Plata: grilla de manzanas con edificación en el
    borde y pulmón en el medio, una plaza, una avenida y una diagonal, la costa con la avenida costera, la playa, una
    escollera y el mar. Paleta apagada de app de mapas; sin direcciones reales ni nombres de calles.
-   mapView({ ancho = 414, alto = 560, ruta = true, estado = 'en-camino', especialista = { iniciales: 'MR' }, className })
-     → string <div class="hd-mapa" data-estado="…">.
+   mapView({ ancho = 414, alto = 560, ruta = true, estado = 'en-camino', especialista = { iniciales: 'MR' }, marcadores = true,
+     className }) → string <div class="hd-mapa" data-estado="…">. marcadores: false → solo el fondo (sin radar, ruta, casa
+     ni especialista), para pantallas que ponen sus propios marcadores (inicio del especialista).
    Capas: .hd-mapa-fondo (svg estático) + .hd-mapa-capa (HTML encima: lo que se anima, sin repintar el svg).
    Coordenadas: px del mapa de 414×560 (MAPA). Con otro ancho/alto el mapa se recorta/extiende centrado: sumar
    (ancho − 414) / 2 y (alto − 560) / 2 a las coordenadas de MAPA_RUTA / MAPA_CASA.
@@ -36,6 +37,9 @@ export interface MapViewProps {
   estado?: EstadoSeguimiento;
   /** iniciales y color del especialista (default MR, naranja) */
   especialista?: { iniciales: string; color?: string };
+  /** false → solo el fondo: sin radar, ruta, casa ni especialista (.hd-mapa-capa vacía, para marcadores propios).
+      Default true. */
+  marcadores?: boolean;
   className?: string;
 }
 
@@ -263,11 +267,15 @@ function pinCasa(): string {
 }
 
 export function mapView({
-  ancho = MAPA.w, alto = MAPA.h, ruta = true, estado = 'en-camino', especialista = { iniciales: 'MR' }, className = '',
+  ancho = MAPA.w, alto = MAPA.h, ruta = true, estado = 'en-camino', especialista = { iniciales: 'MR' }, marcadores = true, className = '',
 }: MapViewProps = {}): string {
   const ox = (ancho - MAPA.w) / 2, oy = (alto - MAPA.h) / 2;
   const at = (p: PuntoMapa) => `left:${f1(p.x + ox)}px;top:${f1(p.y + oy)}px`;
   const cls = ['hd-mapa', className].filter(Boolean).join(' ');
+  if (!marcadores) {
+    return `<div class="${cls}" data-estado="${estado}" style="width:${ancho}px;height:${alto}px">`
+      + fondoSvg(ancho, alto) + '<div class="hd-mapa-capa"></div></div>';
+  }
 
   const tEsp = estado === 'llego' ? 1 : T_EN_CAMINO;
   // en camino se ve solo lo que falta recorrer (los puntos ya pasados quedan en 0, como en las apps de mapas)
