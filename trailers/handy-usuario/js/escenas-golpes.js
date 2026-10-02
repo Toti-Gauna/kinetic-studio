@@ -1,4 +1,6 @@
-/* HANDY USUARIO REMIX — golpes de palabras ('hdr-golpe') y el sello REMIX (Trailer.remix.sello).
+/* HANDY · App de usuario — golpes de palabras ('hdr-golpe').
+   Escritos a 120 BPM (un tiempo = 0,5 s; los tiempos de abajo son los de la escritura): js/trailer.js los corre a
+   través de 'hdr-corte' LENTO = 1,25 veces más lentos (96 BPM). En la película, T + (t − inicio)·1,25.
 
    'hdr-golpe'  { dur, salida, palabras: [{ texto, at, fondo, color, desde, mitad, sub, icono, handy, humor, lado, tamano }] }
      Tipografía a pantalla completa, en el pulso: cada palabra es dueña de un panel de color de borde a borde que
@@ -45,25 +47,7 @@
               corto); 45,75 queda quieto: es el cuadro limpio del que corta el golpe de las 46,0
    Contratos: la escena se ve desde T − ENTRA (el barrido) y se esconde en T + dur; devuelve exactamente o.dur.
 
-   Trailer.remix.sello(D, at, fin, { x, y, rot, escala, texto })  el sello REMIX
-     Una calcomanía: píldora amarillo lamparita con borde azul, "REMIX" en azul Inter 900 y una sombra azul corrida
-     (estática), inclinada `rot`° (default −8). Su propia sección (D.scene) encima de la escena de abajo.
-       at      pega: entra de escala 2,2 → 1 (back.out) con un tambaleo que se asienta, siete rayitas que saltan hacia arriba y afuera
-               y clap + boom moderados; en at + 0,5 un bump (con salida, vuelve antes de que arranque la salida)
-       fin     se va en SALE (0,3) s y termina justo en fin: fin − 0,3 toma envión (escala × 1,14, se echa para atrás y
-               baja 14 px, power2.out); fin − 0,2 sale revoleado hacia arriba a la derecha (x +90, y −110, gira +34°) y
-               se achica a 0 (power2.in). null = queda hasta el final de la película
-       x, y    centro en px del escenario (default 1100, 140: arriba a la derecha del wordmark "Handy" de la entrada, que a
-               las 10,75 encaja en x 320–820, y 136–262; la bajada empieza en y 290. La píldora mide 375 × 128 px a escala
-               1 sin girar, con Inter (384 × 139 con la sombra; Trailer.remix.medirSello() da la medida real); girada
-               −8° ocupa x 905–1295, y 50–230: a unos 85 px de la «y», sin tapar letras), escala (default 1), texto
-               (default 'REMIX')
-     Se usa a las 11,0 en la entrada (trailer.js: extra sello at 3, el tiempo después de que encaja el logo; se va
-     11,7–12,0) y en el final (sin fin).
-   Trailer.remix.medirSello({ texto, escala })  →  { w, h }: lo que mide la píldora (sin girar, sin la sombra).
-
-   Solo transform y opacity, todo en D.tl en tiempos absolutos, estados iniciales con gsap.set, sin azar. Clases hdr-g- y
-   hdr-sello-. */
+   Solo transform y opacity, todo en D.tl en tiempos absolutos, estados iniciales con gsap.set, sin azar. Clases hdr-g-. */
 import { gsap } from 'gsap';
 import { COLORS } from '../../../src/handy/tokens.ts';
 import { handy, anchoHandy } from '../../../src/handy/handys.ts';
@@ -86,15 +70,6 @@ const CSS = `
 .hdr-g-ficha { display: flex; align-items: center; justify-content: center; width: 70px; height: 70px; border-radius: 50%; }
 .hdr-g-ficha .hd-icon { width: 42px; height: 42px; }
 .hdr-g-handy { position: absolute; top: 0; }
-.hdr-sello { position: absolute; width: 0; height: 0; }
-.hdr-sello-golpe { position: absolute; left: 0; top: 0; }
-.hdr-sello-pildora { position: relative; padding: 16px 44px 18px; border: 7px solid ${COLORS.azul}; border-radius: 999px;
-  background: ${COLORS.amarillo}; color: ${COLORS.azul}; font: 900 80px/1 var(--hd-font); letter-spacing: 0.02em;
-  white-space: nowrap; }
-.hdr-sello-sombra { position: absolute; inset: 0; border-radius: 999px; background: ${COLORS.azul}; transform: translate(9px, 11px); }
-.hdr-sello-rayo { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }
-.hdr-sello-rayo i { position: absolute; left: 0; top: -6px; width: 44px; height: 12px; border-radius: 6px;
-  background: ${COLORS.azul}; transform-origin: 0% 50%; }
 `;
 if (!document.getElementById('hdr-escenas-golpes')) {
   const st = document.createElement('style');
@@ -276,81 +251,4 @@ Trailer.recipe('hdr-golpe', (D, T, o) => {
 
   D.hide(s, fin);
   return o.dur;
-});
-
-/* ═════════════════════════════ el sello REMIX ═════════════════════════════ */
-
-/** las rayitas del golpe: ángulo (°) y distancia al centro (salen del borde de la píldora, que es ancha). Solo hacia
-    arriba y a la derecha: abajo a la izquierda están las letras y la bajada del logo */
-const RAYOS = [[-160, 226], [-122, 120], [-90, 96], [-58, 120], [-22, 214], [8, 232], [36, 200]];
-/** lo que dura la salida del sello (envión 0,1 + revoleo 0,2), termina en `fin` */
-const SALE = 0.3;
-
-window.Trailer.remix = Object.assign(window.Trailer.remix || {}, {
-  /** lo que mide la píldora del sello (sin girar, sin la sombra), en px del escenario: { w, h }. Arma una copia
-      invisible en el escenario, la mide y la saca; para ubicar el sello antes de pegarlo (el final centra logo + sello). */
-  medirSello({ texto = 'REMIX', escala = 1 } = {}) {
-    const p = document.createElement('div');
-    p.className = 'hdr-sello-pildora';
-    p.textContent = texto;
-    Object.assign(p.style, { position: 'absolute', left: '0', top: '0', visibility: 'hidden' });
-    document.getElementById('stage').appendChild(p);
-    const r = { w: p.offsetWidth * escala, h: p.offsetHeight * escala };
-    p.remove();
-    return r;
-  },
-
-  /** el sello REMIX: pega en `at`, se va en `fin` (null = queda hasta el final). opts = { x, y, rot, escala, texto } */
-  sello(D, at, fin = null, opts = {}) {
-    const tl = D.tl;
-    const x = opts.x ?? 1100, y = opts.y ?? 140, rot = opts.rot ?? -8, escala = opts.escala ?? 1;
-    const texto = opts.texto ?? 'REMIX';
-    const s = D.scene('sello', `<div class="hdr-sello" style="left:${x}px;top:${y}px">
-        <div class="hdr-sello-golpe">
-          ${RAYOS.map(([ang]) => `<div class="hdr-sello-rayo" style="transform:rotate(${ang}deg)"><i></i></div>`).join('')}
-          <div class="hdr-sello-sombra"></div>
-          <div class="hdr-sello-pildora">${esc(texto)}</div>
-        </div>
-      </div>`);
-    const golpe = D.$('.hdr-sello-golpe', s);
-    const rayos = D.$$('.hdr-sello-rayo i', s);
-
-    gsap.set(golpe, { xPercent: -50, yPercent: -50, rotation: rot + 10, scale: escala * 2.2, autoAlpha: 0 });
-    rayos.forEach((r, i) => gsap.set(r, { x: RAYOS[i][1], scaleX: 0, opacity: 0 }));
-    // fuera de la película hasta su golpe (la sección se arma visible si at = 0)
-    if (at > 0) gsap.set(s, { autoAlpha: 0 });
-    D.show(s, at);
-
-    // pega desde la cámara y se asienta con un tambaleo
-    tl.to(golpe, { autoAlpha: 1, duration: 0.06, ease: 'none' }, at);
-    tl.to(golpe, { scale: escala, duration: 0.42, ease: 'back.out(1.6)' }, at);
-    tl.to(golpe, { rotation: rot - 4, duration: 0.16, ease: 'power2.out' }, at);
-    tl.to(golpe, { rotation: rot + 2.5, duration: 0.14, ease: 'sine.inOut' }, at + 0.16);
-    tl.to(golpe, { rotation: rot, duration: 0.24, ease: 'sine.out' }, at + 0.3);
-    // las rayitas saltan hacia afuera en el impacto
-    rayos.forEach((r, i) => {
-      const d = RAYOS[i][1];
-      tl.set(r, { opacity: 1 }, at + 0.07);
-      tl.to(r, { x: d + 40, duration: 0.3, ease: 'expo.out' }, at + 0.07);
-      tl.to(r, { scaleX: 1, duration: 0.1, ease: 'power2.out' }, at + 0.07);
-      tl.to(r, { scaleX: 0, opacity: 0, duration: 0.16, ease: 'power2.in' }, at + 0.17);
-    });
-    D.sfx('clap', at, 0.4);
-    D.sfx('boom', at, 0.3);
-
-    // un bump en el tiempo siguiente (si hay salida, vuelve antes de que arranque)
-    const vuelta = fin === null ? 0.32 : Math.min(0.32, fin - SALE - at - 0.55);
-    if (vuelta >= 0.12) bump(tl, golpe, at + 0.5, 1.07, escala, vuelta);
-
-    // se va en SALE s: toma envión (se infla y se echa para atrás) y sale revoleado hacia arriba a la derecha,
-    // girando y achicándose hasta desaparecer justo en `fin`
-    if (fin !== null) {
-      const e = fin - SALE;
-      tl.to(golpe, { scale: escala * 1.14, rotation: rot - 7, y: 14, duration: 0.1, ease: 'power2.out' }, e);
-      tl.to(golpe, { scale: 0, duration: 0.2, ease: 'power2.in' }, e + 0.1);
-      tl.to(golpe, { rotation: rot + 34, x: 90, y: -110, duration: 0.2, ease: 'power2.in' }, e + 0.1);
-      tl.to(golpe, { autoAlpha: 0, duration: 0.05, ease: 'none' }, fin - 0.05);
-      D.hide(s, fin);
-    }
-  },
 });

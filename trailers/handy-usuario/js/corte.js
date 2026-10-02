@@ -1,30 +1,33 @@
-/* HANDY USUARIO REMIX — el corte: una escena del tráiler original, acelerada y recortada.
-   Registra 'hdr-corte'. Corre una receta de escenas-a.js … escenas-d.js SIN CAMBIOS a otra velocidad:
+/* HANDY · App de usuario — el corte: una escena corrida a otra velocidad y recortada.
+   Registra 'hdr-corte'. Corre SIN CAMBIOS una receta de escenas-a.js … escenas-d.js (las escenas de la primera
+   versión, de 90 s) o de este tráiler (escenas-golpes.js, escenas-final.js) a otra velocidad:
 
      { type: 'hdr-corte', de: 'hd-presupuestos', base: 14, k: 0.5, hasta: 12, congela: 11.6, id, titulo, dur, … }
-       de      la receta original
-       base    lo que dura en el original (lo que devuelve: 8, 10, 14…)
-       k       cada segundo del original dura k segundos. Con 0,5 (el doble de rápido) cada tiempo del original
-               (0,5 s a 120 BPM) cae en una corchea (0,25 s): sus golpes, toques y "ding" siguen en el pulso.
+       de      la receta
+       base    lo que dura la receta como está escrita (lo que devuelve: 8, 10, 14…)
+       k       cada segundo de la receta dura k segundos. Las recetas están escritas a 120 BPM (un tiempo = 0,5 s) y el
+               tráiler va a 96 BPM (un tiempo = 0,625 s, una corchea = 0,3125 s): las de la primera versión van con
+               k = 0,625 (cada tiempo suyo cae en una corchea) y las de este tráiler con k = 1,25 (cada tiempo, en un
+               tiempo). Así sus golpes, toques y "ding" siguen en el pulso.
        hasta   segundos del original donde se corta (default base). La escena dura hasta × k (= dur).
-       congela segundos del original desde donde no arranca nada más (ni tweens ni sonidos): el cuadro queda quieto hasta
+       congela segundos de la receta desde donde no arranca nada más (ni tweens ni sonidos): el cuadro queda quieto hasta
                el corte. Para no cortar en medio de una salida (presupuestos: congela 11,6, hasta 12).
        empuje  cámara lenta y pareja durante la ventana: 1,03 = de escala 1 a 1,03; [a, b] = de a a b. Entre escenas
                seguidas que muestran lo mismo (el teléfono quieto en su lugar), la siguiente arranca donde terminó la
                anterior (confirmación [1, 1,02] → seguimiento [1,02, 1,045] → …): así el corte no salta.
        golpe   la escena entra con un "punch" de escala (inicio del empuje + golpe) → inicio del empuje (expo.out, 0,4 s).
        camara  movimientos de cámara por claves, en vez de empuje/golpe: [{ t, escala, foco: [x, y], dur, ease }]
-               t en segundos del remix desde el inicio de la escena; foco = el punto del escenario que queda en el
+               t en segundos de la película desde el inicio de la escena; foco = el punto del escenario que queda en el
                centro del cuadro ([720, 540] con escala 1 = sin cámara). Arranca en escala 1 y conviene que termine ahí.
        destello  flash al arrancar, para marcar un drop: un número (pico de opacidad, blanco, 0,5 s) o
                { pico, color, dur }.
-       extra   superposiciones de las escenas del remix: [{ tipo: 'sello', at, … }] llama a
-               Trailer.remix[tipo](D, T + at, fin, opciones) (at en segundos del remix desde el inicio de la escena).
+       queda   true: la escena no se esconde en el corte (la última de la película: su último cuadro queda quieto
+               bajo "Ver de nuevo").
 
    Cómo: la receta recibe una fachada de D (Object.create) cuyo tl lleva cada posición p a T + (p − T)·k y multiplica
    duration, delay, repeatDelay y stagger por k. Lo que arrancaría en el corte o después (o después de `congela`) no se
    agrega: ni tweens, ni sonidos, ni temblores; un show/hide después del corte queda en el corte. Así nada arranca fuera
-   de su ventana, y el último cuadro de cada escena es el que había en el original en `hasta` (o en `congela`). Los
+   de su ventana, y el último cuadro de cada escena es el que tenía la receta en `hasta` (o en `congela`). Los
    sonidos no se estiran (son voces): la cola de uno que arranca antes del corte puede seguir sonando un poco después.
    Las posiciones tienen que ser números (las recetas del original usan tiempos absolutos): una etiqueta o una posición
    relativa ('<', '+=0,2') corta el armado con un error, en vez de quedar sin acelerar.
@@ -98,7 +101,7 @@
     secciones.forEach(s => {
       // una escena que en el original arrancaba la película se ve desde el armado (gsap.set): acá espera su turno
       if (T > 0) gsap.set(s, { autoAlpha: 0 });
-      D.hide(s, fin);
+      if (!o.queda) D.hide(s, fin);
       if (o.camara) { camara(D, s, T, o.camara); return; }
       if (!o.golpe && e0 === 1 && e1 === 1) return;
       D.tl.set(s, { scale: e0 + (o.golpe || 0) }, T);
@@ -110,11 +113,6 @@
       const d = typeof o.destello === 'number' ? { pico: o.destello } : o.destello;
       D.flash(T, d.pico ?? 1, d.dur ?? 0.5, d.color);
     }
-    (o.extra || []).forEach(x => {
-      const fn = Trailer.remix && Trailer.remix[x.tipo];
-      if (!fn) throw new Error(`hdr-corte: no existe la superposición "${x.tipo}"`);
-      fn(D, T + (x.at || 0), fin, x);
-    });
     return dur;
   });
 })();

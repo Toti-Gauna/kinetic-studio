@@ -1,4 +1,9 @@
-/* HANDY USUARIO REMIX — la partitura (cfg.music de js/trailer.js). Estilos y gancho: js/recipes-music.js.
+/* HANDY · App de usuario — la partitura (cfg.music de js/trailer.js). Estilos y gancho: js/recipes-music.js.
+
+   ESCRITA a 120 BPM en los tiempos de abajo; el tráiler va LENTO = 1,25 veces más lento: PARTITURA multiplica cada
+   tiempo (from, to, anchor, hookOctDesde) por LENTO y el tempo baja a 96 BPM, así la música sigue a la imagen (las
+   escenas pasan por 'hdr-corte' con el mismo LENTO, ver js/trailer.js). En la película: 0–3 → 0–3,75 · 8 → 10 ·
+   24 → 30 · 46 → 57,5 · 56 → 70.
 
    120 BPM · 1 compás = 2 s · todo en la grilla de semicorcheas. Pop en Do mayor (C – G – Am – F), salvo el
    arranque: el problema (0–8) va en La menor (Am – F – Dm – G) y el drop de los 8 s sube a Do mayor (del
@@ -48,7 +53,10 @@ const LLAMADO = [[0, 72, 2], [2, 74, 2], [4, 76, 2], [6, 79, 2], [8, 81, 2], [24
 // el final: las cinco notas en semicorcheas, una octava arriba, sobre el acorde de Do
 const FIRMA = [[0, 84, 1], [1, 86, 1], [2, 88, 1], [3, 91, 1], [4, 93, 12]];
 
-export const PARTITURA = {
+/** cuánto más lento va el tráiler que como está escrito (120 → 96 BPM). js/trailer.js lo usa para las escenas. */
+export const LENTO = 1.25;
+
+const ESCRITA = {
   bpm: 120, volume: 0.8,
   parts: [
     // ── el problema, en La menor (0–8)
@@ -75,4 +83,16 @@ export const PARTITURA = {
     { from: 46, to: 54, style: 'coro', chords: [C, G, Am, F], hookOct: [0, 12], hookOctDesde: 48, lleno: true, volume: 1.25 },
     { from: 54, to: 56, style: 'final', chords: [C], hook: FIRMA, hookVol: 0.05 },
   ],
+};
+
+/** la partitura escrita, LENTO veces más lenta: los tiempos × LENTO y el tempo ÷ LENTO (las notas caen en los mismos
+    tiempos de la música, que ahora duran 0,625 s) */
+export const PARTITURA = {
+  ...ESCRITA,
+  bpm: ESCRITA.bpm / LENTO,
+  parts: ESCRITA.parts.map(p => {
+    const q = { ...p };
+    ['from', 'to', 'anchor', 'hookOctDesde'].forEach(f => { if (typeof q[f] === 'number') q[f] *= LENTO; });
+    return q;
+  }),
 };

@@ -2,9 +2,25 @@
    Every sound is synthesized live with the Web Audio API: no audio files.
    Each voice is fire-and-forget and is triggered from the master GSAP timeline.
    SFX.render() plays the same score into an OfflineAudioContext (faster than real time) for
-   exports: every voice reads its start time from now(), which is the event's time offline. */
+   exports: every voice reads its start time from now(), which is the event's time offline.
+
+   HANDY — lo que cambia esta copia:
+   - SFX.play(atraso, voz, args): el timeline llama a cada voz por acá (D.sfx en js/engine.js). En vivo pone el
+     reloj de la voz (vt) en ctx.currentTime + ADELANTO (0,03 s) − atraso, nunca antes de ctx.currentTime: el
+     atraso del ticker (0–17 ms, distinto en cada nota) se descuenta y todas las notas quedan corridas lo mismo,
+     30 ms (como la latencia de salida: no se nota contra la imagen). Offline render() ya puso vt en el tiempo del
+     evento y play() llama a la voz tal cual: el render no cambia.
+   - pad() guarda { g, oscs, t0, fade, v } y padStop() calcula el nivel del pad en su tiempo (el ataque es
+     exponencial: 0,0001 · (v / 0,0001)^k, k = (t − t0) / fade) y lo apaga desde ahí. Antes usaba
+     cancelAndHoldAtTime, que en Chromium no deja un punto de espera si el ataque ya terminó: la rampa de salida
+     arrancaba desde el fin del ataque y el pad se cortaba de golpe (~ −36 dB) en t. Si el ataque sigue en
+     curso, se reprograma el mismo ataque cortado en t (sin saltos, sin cancelAndHold: funciona igual offline,
+     donde las voces se programan hasta 0,25 s antes, y en navegadores sin cancelAndHoldAtTime).
+   - stopAll() corta también los pads programados con adelanto que todavía no arrancaron. */
 window.SFX = (() => {
   const VOL = 0.85;
+  /** en vivo, cuánto antes de sonar se programa cada voz (s): cubre el atraso del ticker */
+  const ADELANTO = 0.03;
   let ctx = null, out, verb, noiseBuf, muted = false, analyser = null;
   let vt = null, offline = false, seed = 1;
   const pads = new Map();
@@ -441,7 +457,7 @@ window.SFX = (() => {
     n.loop = true;
     n.connect(f);
     n.start(t);
-    pads.set(id, { g, oscs: [n] });
+    pads.set(id, { g, oscs: [n], t0: t, fade, v });
   }
 
   // Typewriter key: a papery click plus a small body thump
@@ -492,17 +508,33 @@ window.SFX = (() => {
       o.start(t);
       oscs.push(o);
     }));
-    pads.set(id, { g, oscs });
+    pads.set(id, { g, oscs, t0: t, fade, v });
   }
 
+  /** apaga un pad (o hiss) desde su nivel en t = now(): el tiempo del evento, no el de la tanda offline */
   function padStop(id, fade = 1.5) {
     const p = pads.get(id);
     if (!p || !ctx) return;
     pads.delete(id);
     const t = now(), gp = p.g.gain;
-    // hold the automated level at t (offline, gain.value doesn't follow the automation)
-    if (gp.cancelAndHoldAtTime) gp.cancelAndHoldAtTime(t);
-    else { gp.cancelScheduledValues(t); gp.setValueAtTime(Math.max(gp.value, 0.0001), t); }
+    if (t <= p.t0) {
+      // todavía no arrancó (programado con adelanto): nunca suena
+      gp.cancelScheduledValues(p.t0);
+      p.oscs.forEach(o => o.stop(p.t0));
+      return;
+    }
+    // el nivel en t sobre el ataque exponencial (no se lee gain.value: offline no sigue la automatización, y
+    // cancelAndHoldAtTime no deja punto de espera en Chromium si el ataque ya terminó)
+    const k = Math.min(1, (t - p.t0) / p.fade), lvl = 0.0001 * Math.pow(p.v / 0.0001, k);
+    if (k < 1) {
+      // el ataque sigue en curso: se reprograma igual pero cortado en t (la misma curva hasta lvl, sin saltos)
+      gp.cancelScheduledValues(p.t0);
+      gp.setValueAtTime(0.0001, p.t0);
+      gp.exponentialRampToValueAtTime(lvl, t);
+    } else {
+      gp.cancelScheduledValues(t);
+      gp.setValueAtTime(lvl, t);
+    }
     gp.exponentialRampToValueAtTime(0.0001, t + fade);
     p.oscs.forEach(o => o.stop(t + fade + 0.05));
   }
@@ -552,8 +584,18 @@ window.SFX = (() => {
     if (out) out.gain.setTargetAtTime(m ? 0 : VOL, ctx.currentTime, 0.04);
   }
 
-  return {
-    init, render, kick, hat, clap, boom, bell, bass, whoosh, riser, braam, crash, tick, key, glitch, beep, zap, hiss, plip, bubbles, swell, flutter, cry, fold, pad, padStop, stopAll,
+  /** una voz del timeline (D.sfx): `atraso` = cuánto pasó el cabezal del tiempo del evento cuando corrió el callback */
+  function play(atraso, name, args) {
+    const fn = api[name];
+    // offline (o dentro de otra voz) el reloj ya está puesto en el tiempo exacto del evento
+    if (vt != null || offline || !ctx) return fn(...args);
+    const t = ctx.currentTime;
+    vt = Math.max(t, t + ADELANTO - Math.max(0, atraso || 0));
+    try { return fn(...args); } finally { vt = null; }
+  }
+
+  const api = {
+    init, render, play, kick, hat, clap, boom, bell, bass, whoosh, riser, braam, crash, tick, key, glitch, beep, zap, hiss, plip, bubbles, swell, flutter, cry, fold, pad, padStop, stopAll,
     setMuted,
     isMuted: () => muted,
     analyser: () => analyser,
@@ -562,4 +604,5 @@ window.SFX = (() => {
     suspend: () => ctx && ctx.suspend(),
     resume: () => ctx && ctx.resume(),
   };
+  return api;
 })();
