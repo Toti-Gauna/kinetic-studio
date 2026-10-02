@@ -32,8 +32,8 @@
      2,0  → 52,5    corte (lo tapa 'hdr-golpe').
 
    Contratos: entrada de la 8 = teléfono en PHONE_XY con pantallaEnCamino({ estado: 'llego' }), phoneFrame claro, hora
-   HORAS.camino (16:04), sin titular. Salida de la 8 = entrada de la 9: teléfono en PHONE_XY, pantallaFin() con la Gota y
-   el Caño parados en el escenario (handysFin), "Ganaste $ 45.000" completo, barra oscura a las HORAS.trabajo (16:54), sin
+   HORA_LLEGO (16:12, la de la llegada de he-camino), sin titular. Salida de la 8 = entrada de la 9: teléfono en
+   PHONE_XY, pantallaFin() con la Gota y el Caño parados en el escenario (handysFin), "Ganaste $ 45.000" completo, barra oscura a las HORAS.trabajo (16:54), sin
    titular.
    Reglas: solo transform y opacity; todo en D.tl en tiempos absolutos desde T; estados iniciales con gsap.set; azar
    solo con D.rand. Clases propias con prefijo hed- (hed8- / hed9-), estilos inyectados una vez (#he-escenas-esp-d). */
@@ -155,10 +155,13 @@ function ubicarTitular(el, cy) {
 /** los saltos del cronómetro, uno por tiempo desde 0,5 (el último, 42:15, en 3,0) */
 const SALTOS_CRONO = ['06:40', '13:25', '20:10', '27:45', '35:00', CRONO.final];
 
+/** la hora del teléfono en el corte desde he-camino (escenas-esp-c.js termina con Martín recién llegado, 16:12) */
+const HORA_LLEGO = '16:12';
+
 Trailer.recipe('he-trabajo', (D, T, o) => {
   const tl = D.tl;
   const s = D.scene('trabajo', `<div class="hed hd-ui">
-      ${phoneFrame({ pantalla: pantallaEnCamino({ estado: 'llego' }) + pantallaTrabajo() + pantallaFin(), hora: HORAS.camino, estado: 'claro' })}
+      ${phoneFrame({ pantalla: pantallaEnCamino({ estado: 'llego' }) + pantallaTrabajo() + pantallaFin(), hora: HORA_LLEGO, estado: 'claro' })}
       ${titular({ texto: 'Todo queda|en Handy.', tamano: TIT.tamano, ancho: TIT.ancho, className: 'hed8-tit' })}
     </div>`);
 
