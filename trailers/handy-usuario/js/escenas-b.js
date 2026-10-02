@@ -31,6 +31,10 @@
      44,5  el dedo toca "Pedir presupuestos" y se va; 45,0 sale el titular.
      46,0  cuadro de contrato con el grupo C: el teléfono en PHONE_XY con pantallaFecha() en su estado final, sin dedo
            ni titular.
+   Sangrado (src/handy/layout.ts): en pantallas que no son 4:3 la película se ve más allá del cuadro de 1440×1080, así
+   que lo que entra o sale de cuadro arranca o termina afuera de lo que se ve (afuera()): los Handys entran desde el
+   borde de la pantalla y se van por abajo hasta pasarlo, y el teléfono de la escena 4 espera debajo del borde de abajo.
+   En 4:3 el sangrado es 0 y todo queda como antes.
    Solo transform y opacity, todo en D.tl en tiempos absolutos desde T, estados iniciales con gsap.set. */
 import { handy, filaHandys, HANDY_INFO } from '../../../src/handy/handys.ts';
 import { idle, saludo, salto, humor, parpadeo, entrarSaltando } from '../../../src/handy/handys-anim.ts';
@@ -40,7 +44,7 @@ import { finger, prepararDedo, entrarDedo, tocar, salirDedo, centro } from '../.
 import { ponerRueda, girarRueda } from '../../../src/handy/ui/DateWheel.ts';
 import { titular, prepararTitular, entraTitular, saleTitular } from '../../../src/handy/ui/Headline.ts';
 import { pantallaInicio, hojaTipoTrabajo, pantallaFecha, FECHA } from '../../../src/handy/pantallas/usuario.ts';
-import { HEADLINE, PHONE_XY } from '../../../src/handy/layout.ts';
+import { HEADLINE, PHONE_XY, afuera } from '../../../src/handy/layout.ts';
 
 /* ───────────── utilidades ───────────── */
 
@@ -200,7 +204,8 @@ Trailer.recipe('hd-entrada', (D, T, o) => {
   // ── entran saltando (18,0–20,0) ────────────────────────────────────────────
   const listos = {}; // cuándo termina la entrada de cada uno (ya asentado)
   hs.forEach(h => {
-    const fuera = h.lado < 0 ? -(h.left + h.ancho + 20) : D.W + 20 - h.left; // recién afuera: aparecen enseguida
+    // recién afuera de lo que se ve (el cuadro más el sangrado): aparecen enseguida, desde el borde de la pantalla
+    const fuera = h.lado < 0 ? -(h.left + h.ancho + 20 + afuera('x')) : D.W + 20 + afuera('x') - h.left;
     const aterriza = T + h.llega;
     // el caño arranca justo en el golpe; los demás, cuando les toca para caer en su tiempo
     const arranque = h.tipo === 'cano' || h.tipo === 'engranaje' ? T : aterriza - saltitos(h.altura, h.saltos).suelos.at(-1);
@@ -268,8 +273,9 @@ Trailer.recipe('hd-entrada', (D, T, o) => {
   hs.forEach((h, k) => {
     // el saltito no llega a la bajada del logo: el caño y la lamparita, que son los altos, saltan menos
     const altura = { cano: 25, lamparita: 50 }[h.tipo] ?? 85;
-    // cae hasta que la cabeza pasa el borde de abajo, contando el estirón de la caída (scaleY 1,1 desde los pies)
-    salirPorAbajo(tl, el[h.tipo], tSale[h.tipo], { altura, caida: D.H - h.top + h.altura * 0.12 + 40 });
+    // cae hasta que la cabeza pasa el borde de abajo de lo que se ve (con el sangrado), contando el estirón de la
+    // caída (scaleY 1,1 desde los pies)
+    salirPorAbajo(tl, el[h.tipo], tSale[h.tipo], { altura, caida: D.H - h.top + h.altura * 0.12 + 40 + afuera('y') });
     D.sfx('plip', tSale[h.tipo] + 0.1, 0.05, h.voz * 1.4);
   });
   D.sfx('whoosh', T + 7.0, 0.7, 0.12);
@@ -306,8 +312,8 @@ Trailer.recipe('hd-inicio', (D, T, o) => {
   const flip = palabraHacia({ x: LOGO.x, y: LOGO.y, width: LOGO.width }, { x: b.x, y: b.y, width: b.w, tagline: 'compacta' });
   const pPlomeria = centro(plomeria, tel);
 
-  // estados iniciales: teléfono abajo, fuera de cuadro; el contenido de la pantalla apagado
-  gsap.set(tel, { y: D.H + 40 });
+  // estados iniciales: teléfono abajo, fuera de lo que se ve (con el sangrado); el contenido de la pantalla apagado
+  gsap.set(tel, { y: D.H + 40 + afuera('y') });
   gsap.set(logoHeader, { opacity: 0 });
   gsap.set(titulos, { opacity: 0, y: 16 });
   gsap.set([...rubros, ...accesos], { opacity: 0, scale: 0.6 });

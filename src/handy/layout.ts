@@ -33,7 +33,7 @@ export const PHONE_XY = { x: PHONE_HOME.cx - PHONE.w / 2, y: PHONE_HOME.cy - PHO
      aparece desde el borde de la pantalla, no desde una línea en el medio.
    Se mide UNA vez, la primera vez que se pide (al construir la película) y queda fijo: si después la ventana se
    ensancha, lo que pase del sangrado medido queda tapado por el gris (como antes). En 4:3 vale { x: 0, y: 0 } y la
-   película es exactamente la de siempre. */
+   película es exactamente la de siempre. Fuera de un tráiler (la galería de componentes: no hay #stage) también vale 0. */
 
 /** Tope del sangrado medido (px del escenario), por si la pantalla es muy angosta o muy ancha. */
 const SANGRADO_MAX = 1200;
@@ -42,6 +42,7 @@ let sangradoMedido: { x: number; y: number } | null = null;
 /** Cuánto se ve del escenario fuera del cuadro de 1440×1080, de cada lado (px del escenario). Medido una vez. */
 export function sangrado(): { readonly x: number; readonly y: number } {
   if (!sangradoMedido) {
+    if (!document.getElementById('stage')) return (sangradoMedido = Object.freeze({ x: 0, y: 0 }));
     const vw = window.innerWidth || STAGE.w, vh = window.innerHeight || STAGE.h;
     const s = Math.min(vw / STAGE.w, vh / STAGE.h);
     const lado = (v: number) => Math.min(SANGRADO_MAX, Math.max(0, Math.ceil(v)));

@@ -17,7 +17,8 @@
      'he-problema'  escena 2 · problema  escrita 0–5 (película 3,75–10)  "Presupuestás. Esperás. Te dejan en visto."
        El espejo de los grupos del tráiler de usuario: tres chats de mensajería genéricos (grupoMensajeria, sin marcas)
        de Martín con clientes y una llamada perdida entran desde la derecha y se apilan; un reloj gira las agujas y la
-       hora salta 09:15 → 13:05 → 18:30 → 23:40.
+       hora salta 09:15 → 13:05 → 18:30 → 23:40. Las tarjetas esperan y la caída termina más allá del borde de la
+       pantalla, no del cuadro (afuera() de src/handy/layout.ts: en 4:3 es 0 y queda como siempre).
          0       "Referido de Ana" entra; 0,25 el presupuesto ($ 40.000, dos tildes grises) + "Presupuestás."
          0,625   el reloj corre a las 13:05
          0,875   "Cliente nuevo": 1,125 "Te paso el presupuesto." · escribiendo… · 1,5 "Lo consulto y te aviso."
@@ -27,6 +28,8 @@
          3,5     "Te dejan en visto.": las tildes del presupuesto se ponen azules y aparece "Visto"
          3,75 · 4 · 4,25   tic… tic… tic… (solo el reloj)
          4,375   todo se cae; desde ~4,85 escrito (película ~9,8) el escenario queda gris y vacío hasta el drop (10,0)
+   Sangrado (pantallas que no son 4:3): el fondo de las dos es el #bg del reproductor, que ya lo cubre, y el gancho no
+   tiene nada afuera del cuadro.
    Reglas: solo transform y opacity; todo en D.tl en tiempos absolutos desde T; estados iniciales con gsap.set;
    sin from/fromTo ni azar. Clases propias con prefijo he-a1- / he-a2-. */
 import { gsap } from 'gsap';
@@ -37,7 +40,7 @@ import { burbujaEscribiendo, tildesSvg } from '../../../src/handy/ui/ChatBubble.
 import { phoneFrame } from '../../../src/handy/ui/PhoneFrame.ts';
 import { grupoMensajeria } from '../../../src/handy/pantallas/usuario-chat.ts';
 import { icon } from '../../../src/handy/icons.ts';
-import { PHONE } from '../../../src/handy/layout.ts';
+import { PHONE, afuera } from '../../../src/handy/layout.ts';
 import { formatARS } from '../../../src/handy/tokens.ts';
 
 /* ───────────────────────── estilos de las dos escenas ───────────────────────── */
@@ -293,7 +296,8 @@ Trailer.recipe('he-problema', (D, T, o) => {
 
   // ── estados iniciales ──
   const tarjetas = [referido, nuevo, consorcio, llamada];
-  gsap.set(tarjetas, { x: 760, rotation: 9 });                                // afuera, a la derecha
+  // afuera, a la derecha: más allá del borde de la pantalla (+ sangrado), no estacionadas a la vista en el sangrado
+  gsap.set(tarjetas, { x: 760 + afuera('x'), rotation: 9 });
   D.$$('.hd-grupo-lista > .hd-burbuja > .hd-burbuja-cuerpo', s).forEach(c => { // los mensajes (no el "escribiendo…")
     const sale = c.closest('.hd-burbuja').getAttribute('data-lado') === 'saliente';
     gsap.set(c, { opacity: 0, scale: 0.3, transformOrigin: sale ? '100% 0%' : '0% 0%' });
@@ -400,10 +404,12 @@ Trailer.recipe('he-problema', (D, T, o) => {
   });
 
   // ── todo se cae (4,375 escrito = película 9,22) y queda el gris vacío antes del drop ──
+  // caen hasta pasar el borde de abajo de lo que se ve (+ sangrado: en vertical sobra pantalla abajo), no el del
+  // cuadro: no quedan tiradas a la vista debajo
   const cae = T + 4.375;
   const caer = (el, at, rot, dy = 1150) => {
     tl.to(el, { y: '-=14', duration: 0.08, ease: 'power2.out' }, at);
-    tl.to(el, { y: dy, rotation: rot, duration: 0.3, ease: 'power2.in' }, at + 0.08);
+    tl.to(el, { y: dy + afuera('y'), rotation: rot, duration: 0.3, ease: 'power2.in' }, at + 0.08);
   };
   caer(llamada, cae, -9);
   caer(consorcio, cae + 0.025, 10);

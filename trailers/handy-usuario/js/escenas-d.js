@@ -18,9 +18,10 @@
    Escena 9 — reseña (golpe a las 80,0)
      80,0   el teléfono va al centro y sube la hoja "¿Cómo fue tu experiencia con Martín?" (sus piezas en cascada).
      81,0   el dedo toca la quinta estrella: se completan las cinco, una por medio tiempo, con campanas ascendentes.
-     82,5   toca "Enviar": los Handys saltan a cuadro alrededor del teléfono (la gota cae del caño), papelitos de
-            colores salen de atrás del teléfono y cada uno festeja (cara de festejo, brazos arriba, salto; el engranaje
-            gira en el aire). A las 84,95 están todos quietos en su lugar, como arranca la 10.
+     82,5   toca "Enviar": los Handys saltan a cuadro alrededor del teléfono, desde abajo del borde de la pantalla (la
+            gota cae del caño), papelitos de colores salen de atrás del teléfono y cada uno festeja (cara de festejo,
+            brazos arriba, salto; el engranaje gira en el aire). A las 84,95 están todos quietos en su lugar, como
+            arranca la 10.
    Escena 10 — cierre (golpe a las 85,0; termina la película)
      85,0   el teléfono se levanta apenas y cae; los Handys se juntan al centro a saltitos, en la fila de handys-grupo.png.
      85,9   arriba entra el logo letra por letra y la bajada · 86,75 "Mar del Plata · Llegamos el 28/10".
@@ -32,10 +33,14 @@
    deja así la escena 7); a las 80,0 el teléfono en PHONE_XY con el inicio (17:10); a las 85,0 el teléfono al centro con la
    reseña completa y los Handys parados alrededor; el cuadro de las 90,0 queda quieto.
    El QR sale de D.cfg.qrUrl (QR_URL en js/trailer.js; en desarrollo ?qr=<url> la pisa).
+   Sangrado (src/handy/layout.ts): estas escenas no tienen fondo propio (el gris de #bg ya llega al borde de la
+   pantalla) ni recortes del tamaño del cuadro (los papelitos que suben más allá del cuadro siguen en el sangrado). Lo
+   único que espera afuera son los Handys de la 9: debajo del cuadro más el sangrado de abajo (afuera('y')), para que
+   en una pantalla más alta que 4:3 no se los vea esperando. En 4:3 el sangrado es 0 y todo queda como siempre.
    Solo transform y opacity, todo en D.tl en tiempos absolutos desde T, estados iniciales con gsap.set, azar con D.rand. */
 import { gsap } from 'gsap';
 import { COLORS, SCREEN } from '../../../src/handy/tokens.ts';
-import { PHONE } from '../../../src/handy/layout.ts';
+import { PHONE, afuera } from '../../../src/handy/layout.ts';
 import { icon } from '../../../src/handy/icons.ts';
 import { handyLogo, logoAlto, LETRAS, LOGO_INFO } from '../../../src/handy/logo.ts';
 import { qrSvg, qrModulos } from '../../../src/handy/qr.ts';
@@ -440,11 +445,14 @@ Trailer.recipe('hd-resena', (D, T, o) => {
   const p5 = centro(D.$$('.hd-estrella', estrellas)[4], tel);
   const pE = centro(enviar, tel);
 
-  // ── Handys (cajas ya corridas a los costados del teléfono centrado): escondidos debajo del cuadro
+  // ── Handys (cajas ya corridas a los costados del teléfono centrado): escondidos debajo de lo que se ve, el cuadro
+  //    más el sangrado de abajo (en una pantalla más alta que 4:3, si no, se los ve esperando abajo del cuadro); el
+  //    salto llega igual a su lugar en el mismo tiempo, solo que desde el borde de la pantalla
   const caja = tipo => D.$(`.hdd-h[data-tipo="${tipo}"]`, s);
   const cuerpo = tipo => D.$('.hd-handy', caja(tipo));
   const SALTAN = [['cano', 2.55], ['lamparita', 2.67], ['engranaje', 2.79], ['llave', 2.91]];
-  for (const [tipo] of SALTAN) gsap.set(caja(tipo), { y: 1080 - POS[tipo].y + 40 });
+  const abajo = afuera('y');
+  for (const [tipo] of SALTAN) gsap.set(caja(tipo), { y: 1080 - POS[tipo].y + 40 + abajo });
   // la gota se forma en el pico del caño y cae hasta su lugar de la fila
   const goteo = puntoGoteo(POS.cano.h);
   const gotaDx = POS.cano.x - DL + goteo.x - (POS.gota.x - DL + POS.gota.w / 2);
