@@ -1,0 +1,13 @@
+/* Escenas provisorias (js/escenas-base.js): una tarjeta por escena hasta que llegue la de verdad.
+   Medidas en px del escenario (1440×1080). Colores de src/handy/css/base.css. */
+.hd-ph {
+  width: 1040px; padding: 64px 72px 56px; border-radius: 40px; background: var(--hd-blanco);
+  font-family: var(--hd-font); color: var(--hd-tinta); text-align: left;
+  box-shadow: 0 10px 30px rgba(20, 20, 20, .08);
+}
+.hd-ph-linea { font-size: 64px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; white-space: nowrap; }
+.hd-ph-linea b { color: var(--hd-azul); font-weight: 800; }
+.hd-ph-linea span { color: var(--hd-tinta-suave); font-weight: 600; }
+.hd-ph-nota { margin-top: 18px; font-size: 26px; font-weight: 500; color: var(--hd-tinta-suave); }
+.hd-ph-barra { margin-top: 40px; height: 10px; border-radius: 5px; background: var(--hd-gris-ficha); overflow: hidden; }
+.hd-ph-barra i { display: block; height: 100%; background: var(--hd-azul); border-radius: 5px; }

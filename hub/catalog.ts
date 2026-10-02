@@ -232,4 +232,11 @@ export const catalog: TrailerEntry[] = [
     status: 'kit', palette: ['#cfcfcf', '#1f57a8', '#f5f59a'], motif: 'handy',
     path: 'trailers/handy-usuario/index.html', poster: 69.5, preview: 10, duration: 70, scenes: 12,
   },
+  {
+    id: 'handy-especialista', enabled: true, title: 'HANDY · ESPECIALISTA', category: 'Producto',
+    logline: 'La misma historia del tráiler de usuario, del otro lado: Martín, plomero verificado, activa la app, recibe un pedido cerca, pone su precio, lo eligen, trabaja con su agenda en orden y cobra en su CBU o alias. 70 segundos para iPad.',
+    tags: ['4:3 para iPad', 'tocá para pausar', 'la misma historia, del otro lado', 'escenas en el pulso', 'golpes de palabras', 'los Handys bailan', 'solo transform y opacity'],
+    status: 'kit', palette: ['#1f57a8', '#f5f59a', '#cfcfcf'], motif: 'handy',
+    path: 'trailers/handy-especialista/index.html', poster: 69.5, preview: 30, duration: 70, scenes: 12,
+  },
 ];
