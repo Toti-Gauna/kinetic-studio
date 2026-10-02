@@ -1,9 +1,12 @@
-/* HANDY · App de usuario — el final ('hdr-final'), DROP 3 (devuelve o.dur = 10). La última escena de la película.
+/* HANDY · App del especialista — el final ('hdr-final'), DROP 3 (devuelve o.dur = 10). La última escena de la película.
+   Es la copia del final del tráiler de usuario (trailers/handy-usuario/js/escenas-final.js) con una línea más arriba de
+   la fecha: "Sumate como especialista." (el titular grande) y "Mar del Plata · Llegamos el 28/10" (más chico, debajo);
+   la coreografía de los Handys, el logo y el cuadro quieto del final son los mismos.
    Escrita a 120 BPM con tiempos de 46 a 56 s: js/trailer.js la corre a través de 'hdr-corte' LENTO = 1,25 veces más
    lenta (96 BPM, 57,5–70 s en la película). Los tiempos de abajo son los de la escritura; en la película, T + (t − 46)·1,25.
    Los cinco Handys entran de un salto con el golpe, se arman en la fila de handys-grupo.png (filaHandys, como el cierre
    del original en escenas-d.js) y BAILAN AL PULSO: 120 BPM, un tiempo = 0,5 s, compases en 46 · 48 · 50 · 52 · 54.
-   Cada brinco aterriza justo en un tiempo (el aplastón es el acento); arriba se arman el logo y la fecha.
+   Cada brinco aterriza justo en un tiempo (el aplastón es el acento); arriba se arman el logo y las dos líneas.
 
      46,0   DROP 3 (la música pega el golpe y el gancho entero): destello, temblor de cámara, la escena entra con un
             "punch" de escala y dos aros que se abren desde atrás de la fila. Los Handys salen disparados desde abajo
@@ -18,8 +21,9 @@
      48,0   la bajada "Soluciones, no problemas". Llamada y respuesta: la izquierda (gota, caño) brinca en 48,0 y 49,0,
             la derecha (engranaje, lamparita, llave) en 48,5; el grupo que no salta se hamaca hacia el otro (poco: los
             vecinos están cerca; cuánto, en HAMACA).
-     49,0   "Mar del Plata · Llegamos el 28/10" (titular) · 49,5 el QR, si D.cfg.qrUrl tiene algo (tarjeta blanca al lado
-            del texto; si no, el texto va centrado debajo del logo, como en el cierre).
+     49,0   "Sumate como especialista." (titular grande; película 61,25) · 49,5 "Mar del Plata · Llegamos el 28/10" (más
+            chico, debajo; 61,88) · 49,75 el QR (62,19), si D.cfg.qrUrl tiene algo (tarjeta blanca al lado de las dos líneas, que van alineadas a la
+            izquierda; si no, las dos líneas van centradas debajo del logo).
      49,3   se agachan todos y saltan alto con los brazos arriba (festejo; el engranaje da una vuelta entera)…
    Frase 2 (50–54)
      50,0   …y caen en el tiempo fuerte: el logo late (campanitas Do Mi Sol). 50,5 todos se hamacan para afuera;
@@ -31,13 +35,16 @@
      53,4   cara de festejo, se agachan y saltan alto (el engranaje con otra vuelta)…
      54,0   GOLPE FINAL (la música toca el acorde): caen todos en la pose de la fila; destello suave, latido del logo,
             temblor corto.
-     54,5–56,0 todo quieto: es el cuadro que queda bajo "↺ Ver de nuevo" (franja y > 960 entre x 470 y 970 libre).
+     54,5–56,0 todo quieto (película 68,125–70): es el cuadro que queda bajo "↺ Ver de nuevo" (franja y > 960 entre
+            x 470 y 970 libre).
 
    Composición: la fila de handys-grupo.png, centrada en 720, con 6 px más de aire entre vecinos (SEPARAR) y cada uno
    con lo más bajo de los pies justo en PISO (948): sentarEnElPiso() mide la suela de cada dibujo (la gota, que en el
    dibujo flota debajo del pico, acá baila en el piso, así el caño puede aplastarse sin pisarla); la sombra va
-   centrada en el piso. Arriba, el logo y la línea centrados en la zona libre (el mismo armado del cierre, con el logo
-   más grande), centrados en 720 como el par texto + QR y la fila. Los brincos son de esta escena (brinco: despega
+   centrada en el piso. Arriba, en la zona libre entre el margen seguro (72) y la fila (ZONA), el logo y las dos líneas
+   apiladas y centrados en 720 (o, con QR, el logo arriba y abajo el par líneas + QR, centrado en 720), como la fila.
+   Logo y líneas no salen de la ZONA (no tocan a los Handys) y la franja y > 960 entre x 470 y 970 queda libre.
+   Los brincos son de esta escena (brinco: despega
    `aire` s antes del tiempo y aterriza en él);
    los saltos altos, el festejo y el saludo son los de src/handy/handys-anim.ts, ubicados para que su aterrizaje caiga
    en el tiempo.
@@ -142,9 +149,10 @@ const CON_SOMBRA = TIPOS;
 const HAMACA = { gota: [8, 8], cano: [3, 2], engranaje: [2, 2], lamparita: [2, 1.5], llave: [6, 2] };
 /** el salto alto de cada uno (px): el caño y la lamparita, más bajos para no llegar al texto */
 const SALTO_ALTO = { gota: 54, cano: 56, engranaje: 96, lamparita: 70, llave: 96 };
-/** zona de arriba (logo + texto + QR), entre el margen seguro y la fila */
+/** zona de arriba (logo + las dos líneas + QR), entre el margen seguro y la fila */
 const ZONA = { y0: 72, y1: FILA_Y0 - 26 };
 const TEXTO = 'Mar del Plata · Llegamos el 28/10';
+const SUMATE = 'Sumate como especialista.';
 
 /** entrada desde abajo: [salida (s después del golpe), cuánto sube por encima de su lugar, corrimiento x de partida] */
 const VUELO = {
@@ -216,8 +224,10 @@ Trailer.recipe('hdr-final', (D, T, o) => {
   const qrLado = modulos ? modulos * Math.max(4, Math.floor(176 / modulos)) : 0;
   const qr = url ? qrSvg(url, { size: qrLado, color: COLORS.azul }) : '';
   const conQr = !!qr;
-  const LOGO_W = conQr ? 600 : 680;
-  const TXT = conQr ? 50 : 58;
+  const LOGO_W = conQr ? 560 : 600;
+  /** "Sumate como especialista." (el titular) y la fecha (más chica) */
+  const TXT1 = conQr ? 58 : 64;
+  const TXT2 = conQr ? 38 : 42;
 
   // ── papelitos del drop (puestos con D.rand: siempre los mismos)
   const papelitos = Array.from({ length: N_PAPELITOS }, (_, i) => ({
@@ -239,7 +249,8 @@ Trailer.recipe('hdr-final', (D, T, o) => {
       <div class="hdr-f-confeti">${papelitos.map(p =>
         `<i class="hdr-f-c" data-forma="${p.forma}" style="left:${px(p.x0)};top:${px(PISO - 120)};color:${p.color}"></i>`).join('')}</div>
       <div class="hdr-f-logo">${handyLogo({ width: LOGO_W, split: true })}</div>
-      ${titular({ texto: TEXTO, tamano: TXT, ancho: 1296, alinear: conQr ? 'left' : 'center', className: 'hdr-f-txt' })}
+      ${titular({ texto: SUMATE, tamano: TXT1, ancho: 1296, alinear: conQr ? 'left' : 'center', className: 'hdr-f-sumate' })}
+      ${titular({ texto: TEXTO, tamano: TXT2, ancho: 1296, alinear: conQr ? 'left' : 'center', className: 'hdr-f-txt' })}
       ${conQr ? `<div class="hdr-f-qr">${qr}</div>` : ''}
       <div class="hdr-f-sombras">${CON_SOMBRA.map(tipo => {
         const p = POS[tipo], pies = piesHandy(tipo, p.h);
@@ -276,30 +287,42 @@ Trailer.recipe('hdr-final', (D, T, o) => {
   const conf = D.$$('.hdr-f-c', s);
   conf.forEach((el, i) => gsap.set(el, { x: 0, y: 0, rotation: papelitos[i].giro0, opacity: 0 }));
 
-  // ── logo, texto y QR: medidos y ubicados en la zona de arriba (el armado del cierre)
+  // ── logo, las dos líneas y el QR: medidos y ubicados en la zona de arriba
   const logoEl = D.$('.hdr-f-logo', s);
   const LOGO_H = logoAlto(LOGO_W);
+  const sumate = D.$('.hdr-f-sumate', s);
   const txt = D.$('.hdr-f-txt', s);
-  const palabras = D.$$('.hd-tit-palabra', txt);
-  const anchoTxt = palabras[palabras.length - 1].offsetLeft + palabras[palabras.length - 1].offsetWidth - palabras[0].offsetLeft;
-  const altoTxt = txt.offsetHeight;
+  /** ancho de la tinta de un titular de una línea (de la primera palabra a la última) */
+  const anchoDe = el => {
+    const p = D.$$('.hd-tit-palabra', el);
+    return p[p.length - 1].offsetLeft + p[p.length - 1].offsetWidth - p[0].offsetLeft;
+  };
+  const anchoBloque = Math.max(anchoDe(sumate), anchoDe(txt));
+  const alto1 = sumate.offsetHeight, alto2 = txt.offsetHeight;
+  /** aire entre las dos líneas */
+  const GAP_L = conQr ? 10 : 14;
+  const altoBloque = alto1 + GAP_L + alto2;
   const qrEl = conQr ? D.$('.hdr-f-qr', s) : null;
   let logoY;
   if (!conQr) {
-    // logo arriba y la línea abajo, todo centrado
-    const GAP = 34, alto = LOGO_H + GAP + altoTxt;
+    // logo arriba y las dos líneas abajo, todo centrado
+    const GAP = 30, alto = LOGO_H + GAP + altoBloque;
     logoY = Math.round((ZONA.y0 + ZONA.y1) / 2 - alto / 2) + 6;
-    Object.assign(txt.style, { left: '72px', top: px(logoY + LOGO_H + GAP) });
+    Object.assign(sumate.style, { left: '72px', top: px(logoY + LOGO_H + GAP) });
+    Object.assign(txt.style, { left: '72px', top: px(logoY + LOGO_H + GAP + alto1 + GAP_L) });
   } else {
-    // logo centrado arriba; abajo, la línea y la tarjeta del QR lado a lado, el par centrado
+    // logo centrado arriba; abajo, las dos líneas (alineadas a la izquierda) y la tarjeta del QR lado a lado, el par centrado
     const PAD = 16, CARD = qrLado + 2 * PAD, GAP_H = 44, GAP_V = 28;
-    const anchoPar = anchoTxt + GAP_H + CARD;
+    const anchoPar = anchoBloque + GAP_H + CARD;
     const x0 = Math.round(720 - anchoPar / 2);
-    const alto = LOGO_H + GAP_V + CARD;
+    const altoPar = Math.max(CARD, altoBloque);
+    const alto = LOGO_H + GAP_V + altoPar;
     logoY = Math.round((ZONA.y0 + ZONA.y1) / 2 - alto / 2);
     const yPar = logoY + LOGO_H + GAP_V;
-    Object.assign(txt.style, { left: px(x0), top: px(Math.round(yPar + CARD / 2 - altoTxt / 2)), width: px(Math.ceil(anchoTxt) + 4) });
-    Object.assign(qrEl.style, { left: px(x0 + anchoPar - CARD), top: px(yPar), width: px(CARD), height: px(CARD) });
+    const yBloque = Math.round(yPar + altoPar / 2 - altoBloque / 2);
+    Object.assign(sumate.style, { left: px(x0), top: px(yBloque), width: px(Math.ceil(anchoBloque) + 4) });
+    Object.assign(txt.style, { left: px(x0), top: px(yBloque + alto1 + GAP_L), width: px(Math.ceil(anchoBloque) + 4) });
+    Object.assign(qrEl.style, { left: px(x0 + anchoPar - CARD), top: px(Math.round(yPar + altoPar / 2 - CARD / 2)), width: px(CARD), height: px(CARD) });
     Object.assign(D.$('svg', qrEl).style, { left: px(PAD), top: px(PAD) });
     gsap.set(qrEl, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' });
   }
@@ -316,6 +339,7 @@ Trailer.recipe('hdr-final', (D, T, o) => {
     gsap.set(letras[i], { scale: 0, svgOrigin: `${b.x + b.w / 2} ${LOGO_INFO.lineaBase.palabra}` });
   });
   gsap.set(bajada, { opacity: 0, y: 40 });
+  prepararTitular(sumate);
   prepararTitular(txt);
 
   // ── agenda: avisa si dos movimientos de la misma pista de un personaje se pisan
@@ -403,14 +427,17 @@ Trailer.recipe('hdr-final', (D, T, o) => {
   DER.forEach(tipo => { hamacar(tipo, B(4), -1); hamacar(tipo, B(6), -1); });
   IZQ.forEach(tipo => hamacar(tipo, B(5), 1));
 
-  // 49,0 · "Mar del Plata · Llegamos el 28/10" · 49,5 el QR
-  entraTitular(tl, txt, B(6), { dur: 0.8, stagger: 0.05 });
+  // 49,0 · "Sumate como especialista." · 49,5 "Mar del Plata · Llegamos el 28/10" · 49,75 el QR
+  entraTitular(tl, sumate, B(6), { dur: 0.8, stagger: 0.06 });
   D.sfx('whoosh', B(6) - 0.125, 0.45, 0.05);
   D.sfx('bell', B(6) + 0.25, HZ.G5, 0.035, 1.2);
+  entraTitular(tl, txt, B(7), { dur: 0.7, stagger: 0.04 });
+  D.sfx('bell', B(7) + 0.125, HZ.E5, 0.025, 1);
   if (qrEl) {
-    tl.to(qrEl, { opacity: 1, duration: 0.2, ease: 'power1.out' }, B(7));
-    tl.to(qrEl, { scale: 1, duration: 0.55, ease: 'back.out(1.8)' }, B(7));
-    D.sfx('fold', B(7), 0.08);
+    const tQr = B(7) + 0.25;
+    tl.to(qrEl, { opacity: 1, duration: 0.2, ease: 'power1.out' }, tQr);
+    tl.to(qrEl, { scale: 1, duration: 0.55, ease: 'back.out(1.8)' }, tQr);
+    D.sfx('fold', tQr, 0.08);
   }
 
   // 49,3 · se agachan y saltan alto con los brazos arriba: caen en el 50,0 (el engranaje da una vuelta entera)
