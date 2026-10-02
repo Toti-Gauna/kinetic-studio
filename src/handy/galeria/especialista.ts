@@ -41,16 +41,16 @@ const seccion: Seccion = {
   render(root, tl) {
     root.innerHTML = [
       bloque('Pantallas (1:1, 414×896 dentro del marco de 438×920)', [
-        telefono('1 · pantallaInicioEsp({ trabajando: false })', pantallaInicioEsp({ trabajando: false }), { hora: HORAS.manana }),
-        telefono('1 · pantallaInicioEsp() · Trabajando', pantallaInicioEsp(), { hora: HORAS.manana }),
-        telefono('2 · + tarjetaPedido()', pantallaInicioEsp() + tarjetaPedido(), { hora: HORAS.manana }),
-        telefono('3 · + hojaPresupuesto({ enviado: false })', pantallaInicioEsp() + tarjetaPedido() + hojaPresupuesto({ enviado: false }), { hora: HORAS.manana }),
-        telefono('3 · hojaPresupuesto() · enviado', pantallaInicioEsp() + tarjetaPedido() + hojaPresupuesto(), { hora: HORAS.manana }),
+        telefono('1 · pantallaInicioEsp({ trabajando: false })', pantallaInicioEsp({ trabajando: false }), { hora: HORAS.pedido }),
+        telefono('1 · pantallaInicioEsp() · Trabajando', pantallaInicioEsp(), { hora: HORAS.pedido }),
+        telefono('2 · + tarjetaPedido()', pantallaInicioEsp() + tarjetaPedido(), { hora: HORAS.pedido }),
+        telefono('3 · + hojaPresupuesto({ enviado: false })', pantallaInicioEsp() + tarjetaPedido() + hojaPresupuesto({ enviado: false }), { hora: HORAS.pedido }),
+        telefono('3 · hojaPresupuesto() · enviado', pantallaInicioEsp() + tarjetaPedido() + hojaPresupuesto(), { hora: HORAS.pedido }),
         telefono('4 · + avisoElegido()', pantallaInicioEsp() + avisoElegido(), { hora: HORAS.manana }),
         telefono('5 · pantallaAgenda()', pantallaAgenda(), { hora: HORAS.manana }),
         telefono('6 · pantallaChatCliente()', pantallaChatCliente(), { hora: HORAS.chat }),
         telefono("7 · pantallaEnCamino() · phoneFrame({ estado: 'claro' })", pantallaEnCamino(), { hora: HORAS.camino, estado: 'claro' }),
-        telefono("7 · pantallaEnCamino({ estado: 'llego' })", pantallaEnCamino({ estado: 'llego' }), { hora: HORAS.camino, estado: 'claro' }),
+        telefono("7 · pantallaEnCamino({ estado: 'llego' })", pantallaEnCamino({ estado: 'llego' }), { hora: HORAS.llego, estado: 'claro' }),
         telefono('8 · pantallaTrabajo()', pantallaTrabajo(), { hora: HORAS.trabajo }),
         telefono('9 · pantallaFin() (con Gota y Caño de muestra)', pantallaFin() + `<div class="hd-capa">${handysFin()}</div>`, { hora: HORAS.trabajo }),
         telefono('10 · pantallaFin() + resenaCliente() + avisoCobro()', pantallaFin() + resenaCliente() + avisoCobro(), { hora: HORAS.cobro }),

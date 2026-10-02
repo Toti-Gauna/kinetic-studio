@@ -12,7 +12,7 @@
          1,25                  los dos miran el teléfono
          1,5 · 2 · 2,5         la llave golpea el pie en los tiempos (tic)
          1,75 → 2,25           un brillo cruza la pantalla apagada: no hay nada
-         2,5 → 3               se inclinan hacia el teléfono, esperando; parpadean
+         2,25 → 2,7            se inclinan hacia el teléfono, esperando; parpadean (2,4 · 2,7)
          3                     corte seco (no hay salida: el corte la tapa)
      'he-problema'  escena 2 · problema  escrita 0–5 (película 3,75–10)  "Presupuestás. Esperás. Te dejan en visto."
        El espejo de los grupos del tráiler de usuario: tres chats de mensajería genéricos (grupoMensajeria, sin marcas)

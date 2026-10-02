@@ -138,7 +138,9 @@
 
 /* ── Piezas comunes de las pantallas ────────────────────────────────────── */
 /* monto con un span por carácter (los dígitos pueden entrar de a uno) */
-.hd-esp-monto { display: inline-flex; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.hd-esp-monto { position: relative; display: inline-flex; white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* las teclas del monto (prepararMonto / escribirMonto): capas alineadas a la derecha, encima de los caracteres apagados */
+.hd-esp-monto-paso { position: absolute; right: 0; top: 0; white-space: nowrap; }
 .hd-esp-car { display: inline-block; }
 /* filas con ícono (pedido, aviso) */
 .hd-esp-filas { display: flex; flex-direction: column; gap: 10px; }
@@ -245,6 +247,24 @@
   box-shadow: 0 6px 16px -6px rgba(16, 30, 64, 0.45), 0 1px 3px rgba(16, 30, 64, 0.12);
 }
 .hd-esp-trabajando-icono { display: flex; }
+/* quién es: Martín R., verificado (arriba a la izquierda del mapa, a la altura de la ficha "Trabajando") */
+.hd-esp-quien {
+  position: absolute;
+  left: 14px;
+  top: 132px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  height: 56px;
+  padding: 0 14px;
+  border-radius: 20px;
+  background: #FFFFFF;
+  box-shadow: 0 6px 16px -6px rgba(16, 30, 64, 0.45), 0 1px 3px rgba(16, 30, 64, 0.12);
+}
+.hd-esp-quien-nombre { display: flex; align-items: center; gap: 5px; font: 800 16px/1 var(--hd-font); color: var(--hd-azul); }
+.hd-esp-quien-detalle { font: 700 12.5px/1 var(--hd-font); color: var(--hd-tinta-suave); }
 .hd-esp-trabajando-texto { font: 800 18px/1 var(--hd-font); letter-spacing: -0.01em; margin-right: 3px; }
 .hd-esp-inicio .hd-nav { z-index: 4; }
 
@@ -325,7 +345,7 @@
 .hd-esp-presu .hd-boton { margin-top: 2px; }
 /* "Presupuesto enviado": la tarjeta de éxito de la app de usuario, con un velo más liviano (va sobre la hoja) */
 .hd-esp-enviado .hd-velo { background: rgba(8, 12, 20, 0.28); }
-.hd-esp-enviado .hd-exito-tarjeta { top: 280px; }
+.hd-esp-enviado .hd-exito-tarjeta { top: 226px; }
 
 /* ── 4 · Aviso "¡Te eligieron!" ─────────────────────────────────────────── */
 .hd-esp-elegido-capa > .hd-velo { background: rgba(8, 12, 20, 0.42); }

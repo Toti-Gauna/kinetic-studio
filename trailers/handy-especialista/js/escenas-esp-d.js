@@ -5,7 +5,7 @@
    cada tiempo va escrito → película (T + t·1,25). Todos los golpes y sonidos caen en corcheas o semicorcheas escritas.
 
    Escena 8 — trabajo (arranca del cuadro final de 'he-camino': el teléfono en PHONE_XY con pantallaEnCamino({ estado:
-   'llego' }), encabezado azul y barra de estado clara a las 16:04)
+   'llego' }), encabezado azul y barra de estado clara a las 16:12)
      0,0  → 42,5    entra "Trabajo en curso" empujando al mapa desde la derecha (la barra de estado pasa a oscura, 16:12).
      0,25 → 42,81   el titular "Todo queda en Handy." (en dos líneas, columna izquierda centrada en y 540).
      0,5  → 43,13   el cronómetro corre en saltos, uno por tiempo: 00:00 → 06:40 → 13:25 → 20:10 → 27:45 → 35:00 → 42:15
@@ -32,7 +32,7 @@
      2,0  → 52,5    corte (lo tapa 'hdr-golpe').
 
    Contratos: entrada de la 8 = teléfono en PHONE_XY con pantallaEnCamino({ estado: 'llego' }), phoneFrame claro, hora
-   HORA_LLEGO (16:12, la de la llegada de he-camino), sin titular. Salida de la 8 = entrada de la 9: teléfono en
+   HORAS.llego (16:12, la de la llegada de he-camino), sin titular. Salida de la 8 = entrada de la 9: teléfono en
    PHONE_XY, pantallaFin() con la Gota y el Caño parados en el escenario (handysFin), "Ganaste $ 40.500" completo, barra oscura a las
    HORAS.trabajo (16:54), sin
    titular.
@@ -79,7 +79,7 @@ if (!document.getElementById('he-escenas-esp-d')) {
 /** px con dos decimales para los style inline */
 const px = n => `${Math.round(n * 100) / 100}px`;
 /** notas (Hz) */
-const HZ = { C4: 261.63, G4: 392, C5: 523.25, E5: 659.25, G5: 783.99, A5: 880, C6: 1046.5, D6: 1174.66, E6: 1318.51, G6: 1567.98 };
+const HZ = { C4: 261.63, G4: 392, C5: 523.25, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880, C6: 1046.5, D6: 1174.66, E6: 1318.51, G6: 1567.98 };
 /** columna del titular (como en las escenas de app del tráiler de usuario: x 110, 76 px) */
 const TIT = { x: 110, tamano: 76, ancho: 640 };
 
@@ -156,13 +156,11 @@ function ubicarTitular(el, cy) {
 /** los saltos del cronómetro, uno por tiempo desde 0,5 (el último, 42:15, en 3,0) */
 const SALTOS_CRONO = ['06:40', '13:25', '20:10', '27:45', '35:00', CRONO.final];
 
-/** la hora del teléfono en el corte desde he-camino (escenas-esp-c.js termina con Martín recién llegado, 16:12) */
-const HORA_LLEGO = '16:12';
 
 Trailer.recipe('he-trabajo', (D, T, o) => {
   const tl = D.tl;
   const s = D.scene('trabajo', `<div class="hed hd-ui">
-      ${phoneFrame({ pantalla: pantallaEnCamino({ estado: 'llego' }) + pantallaTrabajo() + pantallaFin(), hora: HORA_LLEGO, estado: 'claro' })}
+      ${phoneFrame({ pantalla: pantallaEnCamino({ estado: 'llego' }) + pantallaTrabajo() + pantallaFin(), hora: HORAS.llego, estado: 'claro' })}
       ${titular({ texto: 'Todo queda|en Handy.', tamano: TIT.tamano, ancho: TIT.ancho, className: 'hed8-tit' })}
     </div>`);
 
@@ -174,10 +172,10 @@ Trailer.recipe('he-trabajo', (D, T, o) => {
   gsap.set(trabajo, { x: SCREEN.w });
   gsap.set(fin, { autoAlpha: 0 });
 
-  // barras de estado: a = la del marco (16:04, clara, sobre el azul) · b 16:12 y c 16:54 oscuras, sobre blanco
+  // barras de estado: a = la del marco (16:12, clara, sobre el azul) · b 16:12 y c 16:54 oscuras, sobre blanco
   const isla = D.$('.hd-isla', pant);
   const barras = { a: D.$('.hd-barra-estado', pant) };
-  for (const [k, hora] of [['b', '16:12'], ['c', HORAS.trabajo]]) {
+  for (const [k, hora] of [['b', HORAS.llego], ['c', HORAS.trabajo]]) {
     barras[k] = barraEstado(hora, 'oscuro');
     pant.insertBefore(barras[k], isla);
     gsap.set(barras[k], { opacity: 0 });
@@ -327,7 +325,8 @@ Trailer.recipe('he-trabajo', (D, T, o) => {
   // 5,0 · golpe: "Ganaste $ 40.500"
   pulso(tl, monto, tGolpe, { escala: 1.22, origen: '0% 60%', vuelta: 0.5 });
   tl.to(finDetalle, { opacity: 1, y: 0, duration: 0.4, ease: 'expo.out' }, tGolpe);
-  [[HZ.C5, 0.045], [HZ.E5, 0.04], [HZ.G5, 0.04], [HZ.C6, 0.035]].forEach(([f, v]) => D.sfx('bell', tGolpe, f, v, 1.6));
+  // acorde de Fa mayor (Do · Fa · La · Do), el de la partitura en este compás
+  [[HZ.C5, 0.045], [HZ.F5, 0.04], [HZ.A5, 0.04], [HZ.C6, 0.035]].forEach(([f, v]) => D.sfx('bell', tGolpe, f, v, 1.6));
   D.sfx('kick', tGolpe, 0.12);
 
   // 5,25 · la tarjeta del cobro y "Volver al inicio" (recién ahora: el dedo ya se fue, no parece que lo toca)
@@ -402,6 +401,8 @@ Trailer.recipe('he-cobro', (D, T, o) => {
   const montoCobro = D.$('.hd-esp-monto[data-monto="cobro"]', cobro);
   gsap.set(aviso, { y: -170, opacity: 0 });
   gsap.set(montoCobro, { transformOrigin: '0% 60%' });
+  // lo que queda debajo de la notificación (el título "¡Terminaste el trabajo!" asomaría cortado por su borde de abajo)
+  const debajo = [D.$('.hd-esp-fin-titulo', tel), D.$('.hd-header-botones', tel)];
   const resena = D.$('[data-pantalla="resena-cliente"]', tel);
   const velo = D.$('.hd-velo', resena);
   const tarjeta = D.$('.hd-esp-resena', resena);
@@ -445,6 +446,7 @@ Trailer.recipe('he-cobro', (D, T, o) => {
   entraTitular(tl, tit, T, { stagger: 0.06 });
   tl.to(aviso, { opacity: 1, duration: 0.15, ease: 'power1.out' }, tAviso);
   tl.to(aviso, { y: 0, duration: 0.5, ease: 'back.out(1.4)' }, tAviso);
+  tl.to(debajo, { opacity: 0, duration: 0.2, ease: 'power1.out' }, tAviso + 0.0625);
   D.sfx('whoosh', tAviso, 0.3, 0.06);
   D.sfx('bell', tAviso + 0.25, HZ.C6, 0.06, 1.2);
   D.sfx('bell', tAviso + 0.375, HZ.E6, 0.05, 1.3);

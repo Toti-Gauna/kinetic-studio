@@ -9,8 +9,10 @@
                                                             (10 → el 0 del pie: para rodar de 9 a 0 hacia abajo)
      ponerCrono(el, '00:00')                                al construir: deja ese valor (gsap.set de las cuatro tiras)
      saltarCrono(tl, el, '12:40', at, { dur = .35, ease = 'power3.out', stagger = 0 })
-                                                            cada tira rueda hasta su dígito (dur 0 → tl.set: salto seco)
-                                                            → duración
+                                                            cada tira rueda hasta su dígito, siempre hacia adelante: si el
+                                                            dígito baja (6 → 3), rueda hasta el 0 del pie, vuelve arriba
+                                                            con un set y sigue hasta el 3 (dur 0 → tl.set: salto seco).
+                                                            Llamarla en orden de tiempo. → duración
    Ganchos: .hd-crono[data-fila][data-valor] · .hd-crono-digito[data-i="0|1|2|3"] (ventana: m m : s s, sin contar los dos
    puntos) · .hd-crono-tira (lo que se mueve) · .hd-crono-num[data-n="0…9"] (11 por tira) · .hd-crono-sep (los dos puntos: titilar con
    opacity). */
@@ -67,12 +69,14 @@ export function cronometro({ valor = '42:15', tamano = 80, className = '', id }:
 
 const tiras = (el: Element) => Array.from(el.querySelectorAll<HTMLElement>('.hd-crono-tira'));
 const filaDe = (el: Element) => Number((el as HTMLElement).dataset?.fila) || cronoFila();
+/** el dígito en el que quedó cada tira según lo armado hasta ahora (para rodar siempre hacia adelante) */
+const ultimo = new WeakMap<HTMLElement, number>();
 
 /** Al construir la escena: deja el cronómetro en `valor` ("mm:ss"). */
 export function ponerCrono(el: Element, valor: string): void {
   const fila = filaDe(el);
   const d = digitos(valor);
-  tiras(el).forEach((t, i) => gsap.set(t, { y: cronoY(d[i], fila) }));
+  tiras(el).forEach((t, i) => { gsap.set(t, { y: cronoY(d[i], fila) }); ultimo.set(t, d[i]); });
 }
 
 /** Lleva el cronómetro a `valor`: cada tira rueda hasta su dígito (con dur 0, un tl.set: salto seco). Devuelve la duración. */
@@ -83,8 +87,18 @@ export function saltarCrono(
   const fila = filaDe(el);
   const d = digitos(valor);
   tiras(el).forEach((t, i) => {
-    if (dur <= 0) tl.set(t, { y: cronoY(d[i], fila) }, at);
-    else tl.to(t, { y: cronoY(d[i], fila), duration: dur, ease }, at + i * stagger);
+    const antes = ultimo.get(t) ?? d[i], t0 = at + i * stagger;
+    ultimo.set(t, d[i]);
+    if (dur <= 0 || d[i] >= antes) {
+      if (dur <= 0) tl.set(t, { y: cronoY(d[i], fila) }, at);
+      else tl.to(t, { y: cronoY(d[i], fila), duration: dur, ease }, t0);
+      return;
+    }
+    // baja: rueda hasta el 0 del pie, salta arriba (mismo 0) y sigue hasta el dígito, repartiendo dur por la distancia
+    const d1 = dur * (10 - antes) / (10 - antes + d[i]);
+    tl.to(t, { y: cronoY(10, fila), duration: d1, ease: d[i] ? 'power1.in' : ease }, t0);
+    tl.set(t, { y: cronoY(0, fila) }, t0 + d1);
+    if (d[i]) tl.to(t, { y: cronoY(d[i], fila), duration: dur - d1, ease }, t0 + d1);
   });
   return dur <= 0 ? 0 : dur + stagger * 3;
 }

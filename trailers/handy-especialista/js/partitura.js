@@ -1,3 +1,5 @@
+// Copia sin cambios de trailers/handy-usuario/js/partitura.js (el tráiler del especialista tiene la misma forma). Los ejemplos
+// y los tiempos de los comentarios de abajo son los de aquel tráiler; los de este están en js/trailer.js y STORYBOARD.md.
 /* HANDY · App de usuario — la partitura (cfg.music de js/trailer.js). Estilos y gancho: js/recipes-music.js.
 
    ESCRITA a 120 BPM en los tiempos de abajo; el tráiler va LENTO = 1,25 veces más lento: PARTITURA multiplica cada

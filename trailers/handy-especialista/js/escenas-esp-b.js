@@ -15,15 +15,19 @@
      u 0     → 0      → 10,0    golpe del drop: los cinco Handys entran saltando y aterrizan en fila.
      u 2,5–4,5 → 1,25–2,25 → 11,56–12,81  cada uno salta y en lo alto tira su letra de "Handy" (H a n d y, una por tiempo).
      u 4,95–5,5 → 2,475–2,75 → 13,09–13,44  las letras se juntan en el wordmark, encajan (clac) y entra la bajada.
-     u 5,5–6,85 → 2,75–3,425  el orgullo: caras de festejo, la lamparita se enciende, el caño saluda.
-     u 6,85–7,9 → 3,425–3,95  saltan de a uno y se van por abajo.
-     u 7,25 → 3,625 → 14,53   NUEVO: la ficha azul "Para especialistas" salta debajo de la bajada (pop, back.out).
+     u 5,5–6,25 → 2,75–3,125  el orgullo: caras de festejo, la lamparita se enciende, el caño saluda (más corto que en el
+                              de usuario, para que la ficha de abajo se alcance a leer).
+     u 6,0–7,3 → 3,0–3,65     se van por abajo: primero el caño (se deja caer, sin saltito: su arco está donde salta la
+                              ficha) y después los demás, de a uno, con un saltito.
+     u 6,5 → 3,25 → 14,06     NUEVO: la ficha azul "Para especialistas" salta debajo de la bajada (pop, back.out); quieta
+                              desde ≈ 14,4 hasta el corte.
      4,0 → 15,0               queda el logo solo con la ficha (contrato con he-inicio).
    4 · inicio (15–21,25)
      0     → 15,0    match cut (el FLIP de 'hd-inicio', a la misma velocidad en pantalla): la bajada se recoge, el logo
                      vuela al encabezado de la app mientras sube el teléfono con el inicio del especialista APAGADO (mapa
                      dormido, interruptor gris); la ficha "Para especialistas" vuela y se convierte en la ficha "Trabajando".
-     0,5   → 15,625  aterrizan (tic); el logo del encabezado reemplaza al del escenario; salta el marcador MR.
+     0,5   → 15,625  aterrizan (tic); el logo del encabezado reemplaza al del escenario.
+     0,625 → 15,78   salta el marcador MR en el mapa y, arriba a la izquierda, la ficha "Martín R." (verificado, ★ 4,9).
      0,75  → 15,94   "Trabajás cuando querés."
      1,25  → 16,56   la cámara se acerca a la ficha "Trabajando" (escala 1,8); 1,5 entra el dedo.
      2,5   → 18,125  el dedo toca el interruptor: se prende (la perilla cruza, el azul se cruza con el gris), la ficha late,
@@ -35,7 +39,8 @@
      0,1875–0,5 → 21,48–21,875  el contenido de la tarjeta, de a uno; 0,25 → 21,56 "Te llegan pedidos cerca tuyo.".
      1,75  → 23,44   el dedo toca "Mandar presupuesto"; sale el titular.
      2,0   → 23,75   se oscurece el inicio y sube la hoja "Tu presupuesto". 2,25: "Vos ponés el precio."
-     2,375–3,0 → 24,22–25,0   Mano de obra $ 32.000: un dígito por semicorchea (con el cursor que titila).
+     2,375–3,0 → 24,22–25,0   Mano de obra $ 32.000: un dígito por semicorchea, como en una calculadora ($ 3 → $ 32 →
+                              … → $ 32.000, alineado a la derecha), con el cursor que titila.
      3,125–3,4375 → 25,16–25,55  Materiales $ 13.000, de corrido (fusas; un clic por semicorchea).
      3,5   → 25,625  Total $ 45.000: golpe · 3,625 debajo, "Comisión Handy 10 % · recibís $ 40.500".
      3,75  → 25,94   el dedo toca "Enviar presupuesto"; 3,875 entra la tarjeta "Presupuesto enviado" y 4,0 el tilde.
@@ -195,7 +200,7 @@ function ponerTitular(cont, texto) {
 
 /** El teléfono de las escenas de app, en PHONE_XY, con el dedo adentro (se mueve con él y no lo recorta la pantalla). */
 function armarTelefono(cont, pantalla) {
-  cont.insertAdjacentHTML('beforeend', phoneFrame({ pantalla, hora: HORAS.manana }));
+  cont.insertAdjacentHTML('beforeend', phoneFrame({ pantalla, hora: HORAS.pedido }));
   const tel = cont.querySelector('.hd-telefono');
   gsap.set(tel, { x: PHONE_XY.x, y: PHONE_XY.y });
   tel.insertAdjacentHTML('beforeend', finger());
@@ -321,10 +326,12 @@ Trailer.recipe('he-entrada', (D, T, o) => {
   M.sfx('fold', encaja, 0.2);
   [72, 76, 79].forEach((n, k) => M.sfx('bell', encaja + k * 0.02, hz(n + 12), 0.04, 2));
 
-  // ── el orgullo (u 5,5–6,85): caras de festejo, la lamparita se enciende, respiran y el caño saluda ──
+  // ── el orgullo (u 5,5–6,25): caras de festejo, la lamparita se enciende, respiran y el caño saluda ──
+  // salen de izquierda a derecha; el caño primero (u 6,0) y sin saltito: su arco está donde salta la ficha
   const tSale = {};
+  hs.filter(h => h.tipo !== 'cano').forEach((h, k) => { tSale[h.tipo] = T + 6.25 + k * 0.08; });
+  tSale.cano = T + 6.0;
   hs.forEach((h, k) => {
-    tSale[h.tipo] = T + 6.85 + k * 0.08; // salen de izquierda a derecha
     humor(tl, el[h.tipo], 'festejo', encaja + k * 0.04);
     idle(tl, el[h.tipo], finSalto[h.tipo], tSale[h.tipo] - finSalto[h.tipo], { amp: 0.03 });
   });
@@ -334,21 +341,21 @@ Trailer.recipe('he-entrada', (D, T, o) => {
     tl.to(rayos, { scale: 1.3, duration: 0.14, ease: 'power2.out', svgOrigin }, encaja);
     tl.to(rayos, { scale: 1, duration: 0.7, ease: 'elastic.out(1, 0.4)', svgOrigin }, encaja + 0.14);
   }
-  saludo(tl, el.cano, T + 5.7, { lado: 'izq', veces: 2 });
-  parpadeo(tl, el.llave, T + 6.2);
+  saludo(tl, el.cano, T + 5.5, { lado: 'izq', veces: 1 });
+  parpadeo(tl, el.llave, T + 5.9);
 
-  // ── saltan y se van por abajo (u 6,85–7,9) ────────────────────────────────
+  // ── saltan y se van por abajo (u 6,25–7,3) ────────────────────────────────
   hs.forEach(h => {
-    // el saltito no llega a la bajada del logo: el caño y la lamparita, que son los altos, saltan menos
-    const altura = { cano: 25, lamparita: 50 }[h.tipo] ?? 85;
+    // el saltito no llega a la bajada del logo ni a la ficha: el caño se deja caer y la lamparita salta menos
+    const altura = { cano: 0, lamparita: 50 }[h.tipo] ?? 85;
     // cae hasta que la cabeza pasa el borde de abajo, contando el estirón de la caída (scaleY 1,1 desde los pies)
     salirPorAbajo(tl, el[h.tipo], tSale[h.tipo], { altura, caida: D.H - h.top + h.altura * 0.12 + 40 });
     M.sfx('plip', tSale[h.tipo] + 0.1, 0.05, h.voz * 1.4);
   });
-  M.sfx('whoosh', T + 7.0, 0.7, 0.12);
+  M.sfx('whoosh', T + 6.4, 0.7, 0.12);
 
-  // ── "Para especialistas" (u 7,25 → escrito 3,625 → película 14,53): pop debajo de la bajada ──
-  const tFicha = T + 7.25;
+  // ── "Para especialistas" (u 6,5 → escrito 3,25 → película 14,06): pop debajo de la bajada ──
+  const tFicha = T + 6.5;
   tl.to(ficha, { opacity: 1, duration: 0.12, ease: 'power1.out' }, tFicha);
   tl.to(ficha, { scale: 1, duration: 0.5, ease: 'back.out(2.6)' }, tFicha);
   M.sfx('plip', tFicha, 0.07, 880);
@@ -381,6 +388,7 @@ Trailer.recipe('he-inicio', (D, T, o) => {
   const logoHeader = inicio.querySelector('.hd-header-logo');
   const velo = inicio.querySelector('.hd-esp-mapa-velo');
   const yo = inicio.querySelector('.hd-esp-yo');
+  const quien = inicio.querySelector('.hd-esp-quien');
   const trabajando = inicio.querySelector('.hd-esp-trabajando');
   const llave = trabajando.querySelector('.hd-interruptor');
   const pLlave = centro(llave, tel);
@@ -404,6 +412,7 @@ Trailer.recipe('he-inicio', (D, T, o) => {
   prepararPulso(inicio);
   gsap.set(trabajando, { opacity: 0 });
   gsap.set(yo, { scale: 0 });
+  gsap.set(quien, { opacity: 0, scale: 0.6, transformOrigin: '0% 50%' });
   gsap.set(logo, { transformOrigin: '0 0' });
   gsap.set(fichaEsc, { transformOrigin: '50% 50%' });
   gsap.set(mundo, { transformOrigin: '0 0', ...pose(1, [720, 540]) });
@@ -433,6 +442,8 @@ Trailer.recipe('he-inicio', (D, T, o) => {
   D.sfx('tick', llega, 0.06);
   // Martín aparece en el mapa (todavía dormido)
   tl.to(yo, { scale: 1, duration: 0.35, ease: 'back.out(2.6)' }, T + 0.625);
+  tl.to(quien, { opacity: 1, duration: 0.1, ease: 'power1.out' }, T + 0.625);
+  tl.to(quien, { scale: 1, duration: 0.4, ease: 'back.out(2.4)' }, T + 0.625);
   D.sfx('plip', T + 0.625, 0.05, 520);
 
   // ── titular (0,75 → 15,94) ────────────────────────────────────────────────
@@ -450,8 +461,9 @@ Trailer.recipe('he-inicio', (D, T, o) => {
   pulsar(tl, inicio, toque, { dur: 1.25, paso: 0.5 }); // anillos en 2,5 y 3,0
   D.sfx('tick', toque, 0.07);
   D.sfx('key', toque, 0.1);
-  // el mapa se despierta: tres campanas que suben (Do · Mi · Sol)
-  [84, 88, 91].forEach((n, k) => D.sfx('bell', toque + 0.125 * k, hz(n), 0.045, 1.4));
+  D.sfx('fold', toque, 0.1); // la perilla que cruza
+  // el mapa se despierta: tres campanas que suben, en Sol mayor como el pad de acá (Re · Sol · Si)
+  [86, 91, 95].forEach((n, k) => D.sfx('bell', toque + 0.125 * k, hz(n), 0.045, 1.4));
   D.sfx('plip', toque + 0.5, 0.04, 700);
   salirDedo(tl, dedo, toque + 0.25, { dur: 0.3, dx: 160, dy: 300 });
 
@@ -514,7 +526,10 @@ Trailer.recipe('he-pedido', (D, T, o) => {
   gsap.set([...filas, mandar, ahoraNo], { opacity: 0, y: 18 });
   gsap.set(velo, { opacity: 0 });
   gsap.set(hoja, { yPercent: 100 });
-  [montoMano, montoMat, montoTotal].forEach(prepararMonto);
+  // los montos se tipean como en una calculadora (prepararMonto); el total aparece de golpe (hasta entonces, apagado)
+  [montoMano, montoMat].forEach(prepararMonto);
+  const carsTotal = Array.from(montoTotal.querySelectorAll('.hd-esp-car'));
+  gsap.set(carsTotal, { opacity: 0, y: 14 });
   gsap.set([cursorMano, cursorMat], { opacity: 0 });
   gsap.set(recibis, { opacity: 0, y: 10 });
   gsap.set(enviado, { opacity: 0 });
@@ -573,14 +588,13 @@ Trailer.recipe('he-pedido', (D, T, o) => {
 
   // ── Total $ 45.000: golpe (3,5 → 25,625) ──────────────────────────────────
   const tTotal = T + 3.5;
-  const carsTotal = Array.from(montoTotal.querySelectorAll('.hd-esp-car[data-tipo="digito"], .hd-esp-car[data-tipo="punto"]'));
   tl.to(carsTotal, { opacity: 1, duration: 0.05, ease: 'none' }, tTotal);
   tl.to(carsTotal, { y: 0, duration: 0.3, ease: 'back.out(3)' }, tTotal);
   tl.set(montoTotal, { scale: 1.28 }, tTotal);
   tl.to(montoTotal, { scale: 1, duration: 0.4, ease: 'elastic.out(1, 0.5)' }, tTotal + 0.02);
   latido(tl, total, tTotal, 1.03);
   D.sfx('fold', tTotal, 0.16);
-  [79, 84, 88].forEach((n, k) => D.sfx('bell', tTotal + k * 0.02, hz(n), 0.045, 1.6));
+  [79, 83, 86].forEach((n, k) => D.sfx('bell', tTotal + k * 0.02, hz(n), 0.045, 1.6)); // Sol mayor
   // 3,625 · debajo, la comisión de Handy (10 %) y lo que recibe: $ 40.500
   tl.to(recibis, { opacity: 1, y: 0, duration: 0.35, ease: 'expo.out' }, tTotal + 0.125);
 
@@ -600,7 +614,7 @@ Trailer.recipe('he-pedido', (D, T, o) => {
   tl.to(exitoTarjeta, { scale: 1, duration: 0.4, ease: 'back.out(2.2)' }, tOk);
   tl.to(exitoCheck, { scale: 1, duration: 0.4, ease: 'back.out(3)' }, tOk + 0.125);
   D.sfx('whoosh', tOk, 0.3, 0.06);
-  D.sfx('bell', tOk + 0.125, hz(84), 0.06, 1.6);
+  D.sfx('bell', tOk + 0.125, hz(86), 0.06, 1.6);
   D.sfx('bell', tOk + 0.25, hz(91), 0.05, 1.8);
 
   D.hide(s, T + o.dur);

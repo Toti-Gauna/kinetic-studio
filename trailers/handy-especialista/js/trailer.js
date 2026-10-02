@@ -53,7 +53,7 @@ Trailer.run({
       salida: 'camara',
       palabras: [
         { texto: '¿Te', at: 0, fondo: 'azul', desde: 'der' },
-        { texto: 'eligen?', at: 1, fondo: 'amarillo', mitad: true, handy: 'engranaje', humor: 'preocupado', lado: 'der' },
+        { texto: 'eligen?', at: 1, fondo: 'amarillo', mitad: true, handy: 'engranaje', humor: 'preocupado', lado: 'der', tamano: 205 },
       ],
     }),
     // ── DROP 2: te eligieron (30–37,5), el chat y el camino, el trabajo y el cobro (37,5–52,5)

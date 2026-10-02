@@ -1,3 +1,5 @@
+// Copia sin cambios de trailers/handy-usuario/js/escenas-golpes.js (el tráiler del especialista tiene la misma forma). Los ejemplos
+// y los tiempos de los comentarios de abajo son los de aquel tráiler; los de este están en js/trailer.js y STORYBOARD.md.
 /* HANDY · App de usuario — golpes de palabras ('hdr-golpe').
    Escritos a 120 BPM (un tiempo = 0,5 s; los tiempos de abajo son los de la escritura): js/trailer.js los corre a
    través de 'hdr-corte' LENTO = 1,25 veces más lentos (96 BPM). En la película, T + (t − inicio)·1,25.

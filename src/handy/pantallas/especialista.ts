@@ -6,7 +6,7 @@
    Las pantallas (.hd-app) tienen fondo y tapan a las de abajo; las capas tarjetaPedido, hojaPresupuesto, avisoElegido,
    avisoCobro y resenaCliente son transparentes (van encima de otra pantalla). Todo se dibuja en su estado FINAL; la escena
    pone los estados iniciales con gsap.set al construir. Medidas en px de la pantalla (x, y desde su esquina; el .hd-pantalla
-   está a 12 px del borde del .hd-telefono). Barra de estado: HORAS (manana, camino, chat, trabajo, cobro).
+   está a 12 px del borde del .hd-telefono). Barra de estado: HORAS (pedido, manana, camino, chat, llego, trabajo, cobro).
 
    pantallaInicioEsp({ trabajando = true })   escena 4 · [data-pantalla="inicio-esp"]: encabezado blanco (logo, campana,
        ubicación; esquinas de abajo redondeadas sobre el mapa), mapa de Mar del Plata con Martín, ficha "Trabajando" con el
@@ -15,6 +15,7 @@
        .hd-esp-mapa (y 88, 414×720, debajo del encabezado) > .hd-mapa + .hd-esp-mapa-velo (velo claro: opacity 1 = dormido,
        0 = despierto) + .hd-esp-pulso[data-i="0|1"] (anillos de 220 px centrados en Martín, apagados: prepararPulso /
        pulsar) + .hd-esp-yo (avatar MR de 50 px, centro en INICIO_YO = (180, 350)) ·
+       .hd-esp-quien (ficha de quién es: x 14 y 132, alto 56; "Martín R." con el sello de verificado y "Plomería · ★ 4,9") ·
        .hd-esp-trabajando[data-prendido] (ficha: x 169 y 132, 231×56) > .hd-esp-trabajando-icono + .hd-esp-trabajando-texto +
        .hd-interruptor (x 327 y 141, 64×38; ver ui/Interruptor.ts: .hd-interruptor-apagado / -prendido se cruzan con
        opacity, .hd-interruptor-perilla corre x 0 → 26; ponerInterruptor / prenderInterruptor) ·
@@ -33,16 +34,19 @@
        la capa de éxito "Presupuesto enviado" (con enviado false está, pero en opacity 0).
        .hd-velo · .hd-hoja (y 403, alto 493: gsap.set(hoja, { yPercent: 100 }) → 0) ·
        .hd-esp-campo[data-campo="mano-de-obra|materiales|llegada"] > .hd-esp-campo-etiqueta + .hd-esp-campo-caja (cajas blancas
-       x 202, 190×48, en y 518 · 576 · 634) > .hd-esp-monto + .hd-esp-cursor (cursor azul apagado: titilarlo con opacity) ·
+       de 48 de alto en y 518 · 576 · 634: las de los montos, x 202 y 190 de ancho; la de Llegada, más ancha, con el reloj)
+       > .hd-esp-monto + .hd-esp-cursor (cursor azul apagado: titilarlo con opacity) ·
        .hd-esp-total (x 22 y 694, 370×62) > .hd-esp-monto[data-monto="total"] (golpe con scale; transformOrigin a la derecha
        ya en el CSS) · .hd-esp-recibis (y 766: la comisión y lo que recibe; entra después del total) ·
        .hd-boton[data-accion="enviar-presupuesto"] (x 22 y 806, 370×56) ·
-       .hd-esp-enviado (= .hd-exito de usuario.ts) > .hd-velo + .hd-exito-tarjeta (x 34 y 280, 346×269) > .hd-exito-check
-       (104 px, centro (207, 366)) + .hd-exito-titulo + .hd-exito-detalle. Construida con enviado true: apagar la capa con
+       .hd-esp-enviado (= .hd-exito de usuario.ts) > .hd-velo + .hd-exito-tarjeta (x 34 y 226, 346×269) > .hd-exito-check
+       (104 px, centro (207, 312)) + .hd-exito-titulo + .hd-exito-detalle. Construida con enviado true: apagar la capa con
        gsap.set(.hd-esp-enviado, { opacity: 0 }) y prenderla con opacity (+ pop de la tarjeta y del tilde con scale).
      Montos: .hd-esp-monto[data-monto][data-valor] > .hd-esp-car[data-i][data-tipo="signo|espacio|digito|punto"]: un span
-     por carácter ("$ 32.000" → $ · espacio · 3 · 2 · . · 0 · 0 · 0). prepararMonto(monto) esconde dígitos y puntos al
-     construir y escribirMonto(tl, monto, at, { paso = .125 }) los hace entrar de a uno (devuelve el momento de cada uno).
+     por carácter ("$ 32.000" → $ · espacio · 3 · 2 · . · 0 · 0 · 0). prepararMonto(monto) apaga esos caracteres (quedan
+     dando el ancho) y les pone encima las capas .hd-esp-monto-paso[data-k] ("$", "$ 3", "$ 32", … "$ 32.000", alineadas a
+     la derecha); escribirMonto(tl, monto, at, { paso = .125 }) pasa de una capa a la siguiente por tecla, como en una
+     calculadora (devuelve el momento de cada tecla). Para un monto que entra de golpe, apagar sus dígitos y puntos.
    avisoElegido()                     escena 6 · [data-pantalla="elegido"]: velo + tarjeta grande "¡Te eligieron!".
        .hd-velo · .hd-esp-aviso (x 30 y 214, 354×415; centro (207, 421)) > .hd-esp-aviso-cabeza (banda azul) >
        .hd-esp-aviso-sello (círculo amarillo con el ícono de festejo, centro (207, 274)) + .hd-esp-aviso-titulo ·
@@ -56,7 +60,7 @@
        .hd-esp-subtitulo (y 555) · .hd-esp-visita[data-id="carla"] (x 22 y 592, 370×125) > .hd-esp-visita-fecha +
        .hd-esp-visita-textos (+ .hd-esp-visita-tipo "Programado") · .hd-nav-item[data-tab="agenda"][data-activo].
    pantallaChatCliente()              escena 7 · [data-pantalla="chat-cliente"]: el espejo de pantallaChatEspecialista():
-       cabecera Carla M. (avatar CM) · "Plomería · Jue 15 oct", aviso "Tu número no se comparte", Martín a la derecha
+       cabecera Carla M. (avatar CM) · "Plomería · Jue 15 oct", aviso "Tu teléfono no se comparte", Martín a la derecha
        (salientes blancas con tildes) y Carla a la izquierda (azul) con la foto del caño.
        .hd-chat-panel · .hd-chat-cuerpo (ventana y 182–804) · .hd-chat-lista (583 de alto: entra sin desplazar) ·
        .hd-chip-sistema (y 196) · .hd-burbuja[data-id="hola"] (y 238) · [data-id="pide-foto"] (y 312) · [data-id="foto"]
@@ -97,7 +101,8 @@
    { nombre: 'Carla M.', nombreCorto, iniciales: 'CM', color }, PEDIDO { rubro, icono, tipo, dia, hora, fecha, trabajo,
    lugar, distancia }, PRESUPUESTO { manoDeObra, materiales, total, llegada, llegas, validez }, ALIAS, CBU, RESENA,
    CRONO { inicio: '00:00', final: '42:15' }, AGENDA, MENSAJES, HORAS, INICIO_MAPA, INICIO_YO, INICIO_CASA, FIN_ESCENARIO.
-   Ayudas: montoSpans(valor, clave) · prepararMonto / escribirMonto · prepararPulso / pulsar. */
+   Ayudas: montoSpans(valor, clave) · prepararMonto / escribirMonto (los montos se tipean como en una calculadora: $ 3 →
+   $ 32 → … → $ 32.000, alineados a la derecha) · prepararPulso / pulsar. */
 import { gsap } from 'gsap';
 import '../css/base.css';
 import '../css/ui.css';
@@ -110,6 +115,7 @@ import { bottomNav } from '../ui/BottomNav.ts';
 import { bottomSheet } from '../ui/BottomSheet.ts';
 import { button } from '../ui/Button.ts';
 import { avatar } from '../ui/Avatar.ts';
+import { selloVerificado } from '../ui/VerifiedBadge.ts';
 import { chatHeader } from '../ui/ChatHeader.ts';
 import { chatBubble } from '../ui/ChatBubble.ts';
 import { chatInput } from '../ui/ChatInput.ts';
@@ -170,7 +176,7 @@ export const PRESUPUESTO = {
   validez: '48 h',
 } as const;
 
-/** Cobro: alias ficticio y CBU enmascarado (si aparece). */
+/** Cobro: alias ficticio y CBU enmascarado (el CBU no aparece en el tráiler: queda por si una pantalla lo muestra). */
 export const ALIAS = 'martin.r.plomero';
 export const CBU = 'CBU •••• 4821';
 
@@ -191,8 +197,12 @@ export const MENSAJES = [
   { id: 'perfecto', de: 'martin', texto: 'Perfecto, ya sé qué llevar.', hora: '16:05' },
 ] as const;
 
-/** Horas sugeridas para la barra de estado (phoneFrame({ hora })). */
-export const HORAS = { manana: '10:41', camino: '16:04', chat: '16:05', trabajo: '16:54', cobro: '17:10' } as const;
+/** Horas de la barra de estado (phoneFrame({ hora })), las mismas del tráiler de usuario: el pedido llega y Martín manda su
+    presupuesto antes de las 10:04 (la hora en que le llega al cliente); a las 10:41 el cliente ya eligió; el chat es a las
+    16:05 y Martín llega a las 16:12. */
+export const HORAS = {
+  pedido: '10:03', manana: '10:41', camino: '16:04', chat: '16:05', llego: '16:12', trabajo: '16:54', cobro: '17:10',
+} as const;
 
 // ── geometría (px de la pantalla de 414×896) ───────────────────────────────
 
@@ -232,22 +242,31 @@ export function montoSpans(valor: number, clave: string): string {
   return `<span class="hd-esp-monto" data-monto="${esc(clave)}" data-valor="${valor}">${cars}</span>`;
 }
 
-/** Caracteres de un monto que "se escriben" (dígitos y puntos; el "$ " queda siempre). */
-const tecleables = (monto: Element) =>
-  Array.from(monto.querySelectorAll<HTMLElement>('.hd-esp-car[data-tipo="digito"], .hd-esp-car[data-tipo="punto"]'));
-
-/** Al construir: esconde los dígitos y puntos de un .hd-esp-monto (quedan en su lugar, con opacity 0 y 10 px abajo). */
+/** Al construir: deja el monto como un campo vacío ("$") y arma, encima, una capa por cada tecla — el valor que se va
+    formando, como en una calculadora: $ 3 → $ 32 → $ 320 → $ 3.200 → $ 32.000, alineado a la derecha (los puntos de
+    miles aparecen solos, nunca un "$ 32." a medio escribir). Los caracteres del monto quedan en su lugar (dan el ancho de
+    la caja) pero apagados. */
 export function prepararMonto(monto: Element): void {
-  gsap.set(tecleables(monto), { opacity: 0, y: 10 });
+  const el = monto as HTMLElement, valor = Number(el.dataset.valor) || 0;
+  const n = String(Math.round(valor)).length;
+  if (!el.querySelector('.hd-esp-monto-paso')) {
+    const pasos = Array.from({ length: n + 1 }, (_, k) =>
+      `<span class="hd-esp-monto-paso" data-k="${k}">${k ? esc(formatARS(Math.floor(valor / 10 ** (n - k)))) : '$'}</span>`).join('');
+    el.insertAdjacentHTML('beforeend', pasos);
+  }
+  gsap.set(el.querySelectorAll('.hd-esp-car'), { opacity: 0 });
+  el.querySelectorAll('.hd-esp-monto-paso').forEach((p, k) => gsap.set(p, { opacity: k ? 0 : 1, y: 0 }));
 }
 
-/** Los dígitos (y los puntos) del monto entran de a uno, uno por `paso` (default una semicorchea escrita: .125), con un
-    saltito. Devuelve los momentos absolutos de cada carácter (para un sonido por dígito). */
+/** Las teclas del monto, una por `paso` (default una semicorchea escrita: .125): cada una cambia a la capa siguiente con
+    un saltito. Devuelve el momento de cada tecla (para un sonido por dígito). */
 export function escribirMonto(tl: GSAPTimeline, monto: Element, at: number, { paso = 0.125 }: { paso?: number } = {}): number[] {
-  return tecleables(monto).map((c, i) => {
+  const pasos = Array.from(monto.querySelectorAll<HTMLElement>('.hd-esp-monto-paso'));
+  return pasos.slice(1).map((p, i) => {
     const t = at + i * paso;
-    tl.to(c, { opacity: 1, duration: 0.06, ease: 'none' }, t);
-    tl.to(c, { y: 0, duration: 0.3, ease: 'back.out(3)' }, t);
+    tl.set(pasos[i], { opacity: 0 }, t);
+    tl.set(p, { opacity: 1, y: 6 }, t);
+    tl.to(p, { y: 0, duration: 0.25, ease: 'back.out(3)' }, t);
     return t;
   });
 }
@@ -283,6 +302,10 @@ export function pantallaInicioEsp({ trabajando = true }: { trabajando?: boolean 
     + `<div class="hd-esp-mapa-velo" style="opacity:${trabajando ? 0 : 1}"></div>`
     + [0, 1].map(i => `<span class="hd-esp-pulso" data-i="${i}" style="${mapaY(yo)};opacity:0"></span>`).join('')
     + `<span class="hd-esp-yo" style="${mapaY(yo)}">${avatar({ iniciales: ESPECIALISTA.iniciales, color: ESPECIALISTA.color, tamano: 50, anillo: true })}</span>`
+    + '</div>'
+    + '<div class="hd-esp-quien">'
+    + `<span class="hd-esp-quien-nombre">${ESPECIALISTA.nombre}${selloVerificado(17)}</span>`
+    + `<span class="hd-esp-quien-detalle">${ESPECIALISTA.rubro} · ★ ${String(ESPECIALISTA.calificacion).replace('.', ',')}</span>`
     + '</div>'
     + `<div class="hd-esp-trabajando" data-prendido="${trabajando ? 1 : 0}">`
     + `<span class="hd-esp-trabajando-icono">${svg(MALETIN, 22, 2.2)}</span>`
@@ -405,7 +428,7 @@ export function pantallaAgenda(): string {
 // ── 6 · chat con la clienta ───────────────────────────────────────────────
 
 export function pantallaChatCliente(): string {
-  const lista = systemChip({ icono: 'candado', texto: 'Tu número no se comparte' })
+  const lista = systemChip({ icono: 'candado', texto: 'Tu teléfono no se comparte' })
     + MENSAJES.map(m => m.id === 'foto'
       ? chatBubble({ lado: 'entrante', foto: photoCard({ ancho: 200, alto: 240 }), texto: m.texto, hora: m.hora, id: m.id })
       : chatBubble({ lado: m.de === 'martin' ? 'saliente' : 'entrante', texto: m.texto, hora: m.hora, tildes: 'leido', id: m.id })).join('');
@@ -520,7 +543,7 @@ export function tarjetaCobro(): string {
   return '<div class="hd-esp-cobro">'
     + `<span class="hd-esp-cobro-icono">${svg(BANCO, 28, 2)}</span>`
     + '<div class="hd-esp-cobro-textos">'
-    + '<div class="hd-esp-cobro-app"><span>Handy</span><span>ahora</span></div>'
+    + '<div class="hd-esp-cobro-app"><span>Handy</span></div>'
     + `<div class="hd-esp-cobro-titulo">Te transferimos ${montoSpans(PRESUPUESTO.neto, 'cobro')}</div>`
     + `<div class="hd-esp-cobro-alias">a <b>${ALIAS}</b></div>`
     + '</div></div>';

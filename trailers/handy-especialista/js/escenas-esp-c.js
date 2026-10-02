@@ -1,7 +1,7 @@
 /* HANDY · App del especialista — escenas 6 y 7 (grupo C).
    Acá se registran (Trailer.recipe), reemplazando a las provisorias de escenas-esp-base.js:
      'he-elegido'  escena 6 · te eligieron  escrita 6 s → película 30–37,5   "¡Te eligieron!" → "Tu agenda, en orden."
-     'he-camino'   escena 7 · en camino     escrita 4 s → película 37,5–42,5 "Tu número no se comparte."
+     'he-camino'   escena 7 · en camino     escrita 4 s → película 37,5–42,5 "Tu teléfono no se comparte."
    Escritas a 120 BPM (un tiempo = 0,5 s, un compás = 2 s); js/trailer.js las corre con 'hdr-corte' LENTO = 1,25 veces
    más lentas: un tiempo escrito t cae en la película en T + t × 1,25. Los golpes y los sonidos van en corcheas (0,25) o
    semicorcheas (0,125) escritas. Abajo, cada tiempo va como "escrito → película".
@@ -24,8 +24,8 @@
      5,25  → 36,56  sale el titular: a las 6 → 37,5 queda solo el teléfono con la agenda (contrato con 'he-camino').
    Escena 7 — en camino
      0     → 37,5   el chat con Carla entra empujando a la agenda (la fila del logo queda quieta); la barra de estado pasa
-                    de 10:41 a 16:05. A la izquierda, "Jueves 15 de octubre" y "Tu número no se comparte."
-     0,25  → 37,81  el aviso del candado "Tu número no se comparte".
+                    de 10:41 a 16:05. A la izquierda, "Jueves 15 de octubre" y "Tu teléfono no se comparte."
+     0,25  → 37,81  el aviso del candado "Tu teléfono no se comparte".
      0,5 · 0,75 · 1 · 1,5 → 38,125 · 38,44 · 38,75 · 39,375  los mensajes con un "ding" cada uno: Martín "¡Hola! Estoy
                     a unas cuadras." · "¿Me mandás una foto…?" · Carla: la foto del caño (la gota cae) + "Es abajo de la
                     bacha." · Martín "Perfecto, ya sé qué llevar."
@@ -40,7 +40,7 @@
      30,0  el teléfono en PHONE_XY con pantallaInicioEsp({ trabajando: true }) (lo tapa el golpe "¿Te eligen?").
      37,5  el teléfono en PHONE_XY con pantallaAgenda() completa (hora 10:41), sin titular.
      42,5  el teléfono en PHONE_XY con pantallaEnCamino({ estado: 'llego' }) en su estado final, barra de estado
-           phoneFrame({ hora: '16:12', estado: 'claro' }); sin dedo ni titular.
+           phoneFrame({ hora: HORAS.llego (16:12), estado: 'claro' }); sin dedo ni titular.
    Solo transform y opacity, todo en D.tl en tiempos absolutos desde T (números), estados iniciales con gsap.set, azar
    solo con D.rand / D.rnd. Clases propias con prefijo he-c6- / he-c7-. */
 import { gsap } from 'gsap';
@@ -79,7 +79,7 @@ if (!document.getElementById('he-escenas-esp-c')) {
 /** el teléfono en su lugar de las escenas de app (x/y del transform de .hd-telefono) */
 const TEL = PHONE_XY;
 /** notas (Hz): Do mayor, la tonalidad de la música */
-const HZ = { G5: 783.99, A5: 880, B5: 987.77, C6: 1046.5, D6: 1174.66, E6: 1318.51, G6: 1567.98 };
+const HZ = { G5: 783.99, A5: 880, B5: 987.77, C6: 1046.5, D6: 1174.66, E6: 1318.51, F6: 1396.91, G6: 1567.98 };
 /** la pantalla corrida un 30 % cuando otra la empuja (como en iOS) */
 const PAR = Math.round(SCREEN.w * 0.3);
 
@@ -300,17 +300,15 @@ Trailer.recipe('he-elegido', (D, T, o) => {
 /* ════════════════════════════════════════════════════════════════════════════════════════════════════════════════
    Escena 7 · en camino (escrita 4 s → película 37,5–42,5)
    ════════════════════════════════════════════════════════════════════════════════════════════════════════════════ */
-/** hora del final (la llegada, dentro de "entre 16:06 y 16:30"): la barra de estado del corte con 'he-trabajo' */
-const HORA_LLEGO = '16:12';
 /** inversa de power1.inOut: en qué fracción del tiempo el pin pasa por la fracción t de la ruta */
 const inversa = t => (t < 0.5 ? Math.sqrt(t / 2) : 1 - Math.sqrt((1 - t) / 2));
 
 Trailer.recipe('he-camino', (D, T, o) => {
   const tl = D.tl;
   const s = D.scene('camino', `<div class="he-c7 hd-ui">
-      ${phoneFrame({ pantalla: pantallaEnCamino({ estado: 'llego' }) + pantallaAgenda() + pantallaChatCliente(), hora: HORA_LLEGO, estado: 'claro' })}
+      ${phoneFrame({ pantalla: pantallaEnCamino({ estado: 'llego' }) + pantallaAgenda() + pantallaChatCliente(), hora: HORAS.llego, estado: 'claro' })}
       ${titular({ texto: 'Jueves 15 de octubre', tamano: 46, className: 'he-c7-fecha' })}
-      ${titular({ texto: 'Tu número no|se comparte.', tamano: 76, className: 'he-c7-tit' })}
+      ${titular({ texto: 'Tu teléfono no|se comparte.', tamano: 76, className: 'he-c7-tit' })}
     </div>`);
 
   // ── teléfono: en camino (abajo, en su estado final) · agenda (como la deja la escena 6) · chat (fuera, a la derecha)
@@ -393,14 +391,14 @@ Trailer.recipe('he-camino', (D, T, o) => {
   tl.set(agenda, { autoAlpha: 0 }, tPush + 0.5);
   entra(tl, fecha, tPush);
 
-  // 0,25 → 37,81 · el candado y "Tu número no se comparte."
+  // 0,25 → 37,81 · el candado y "Tu teléfono no se comparte."
   tl.to(chip, { opacity: 1, scale: 1, duration: 0.3, ease: 'back.out(2.2)' }, tChip);
   D.sfx('plip', tChip, 0.06, 1300);
   entra(tl, tit, tChip);
   pulso(tl, chip, tChip + 1, { escala: 1.12 });
 
-  // 0,5 · 0,75 · 1 · 1,5 → los mensajes, uno por uno, con un "ding" cada uno (La – Do – Mi – Re sobre el Fa)
-  const dings = { 'hola': HZ.A5, 'pide-foto': HZ.C6, 'foto': HZ.E6, 'perfecto': HZ.D6 };
+  // 0,5 · 0,75 · 1 · 1,5 → los mensajes, uno por uno, con un "ding" cada uno (La – Do – Fa – Re sobre el Fa)
+  const dings = { 'hola': HZ.A5, 'pide-foto': HZ.C6, 'foto': HZ.F6, 'perfecto': HZ.D6 };
   MSJ.forEach(([id, dt]) => {
     const at = T + dt;
     tl.to(globo(id), { opacity: 1, duration: 0.1, ease: 'power1.out' }, at);

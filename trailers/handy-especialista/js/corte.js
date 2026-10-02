@@ -1,3 +1,5 @@
+// Copia sin cambios de trailers/handy-usuario/js/corte.js (el tráiler del especialista tiene la misma forma). Los ejemplos
+// y los tiempos de los comentarios de abajo son los de aquel tráiler; los de este están en js/trailer.js y STORYBOARD.md.
 /* HANDY · App de usuario — el corte: una escena corrida a otra velocidad y recortada.
    Registra 'hdr-corte'. Corre SIN CAMBIOS una receta de escenas-a.js … escenas-d.js (las escenas de la primera
    versión, de 90 s) o de este tráiler (escenas-golpes.js, escenas-final.js) a otra velocidad:

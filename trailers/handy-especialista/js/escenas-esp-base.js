@@ -4,7 +4,8 @@
    exactamente su duración ESCRITA (a 120 BPM; js/trailer.js las corre LENTO = 1,25 veces más lentas con 'hdr-corte'):
      3 + 5 + 4 + 5 + 5 + 6 + 4 + 6 + 2 = 40 s escritos (con los golpes y el final, 56 escritos = 70 s en la película).
    Las escenas de verdad se registran en escenas-esp-a.js … escenas-esp-d.js, que main.ts carga DESPUÉS: una receta
-   registrada con el mismo nombre reemplaza a la provisoria (Trailer.recipe pisa la anterior).
+   registrada con el mismo nombre reemplaza a la provisoria (Trailer.recipe pisa la anterior). Hoy las nueve están
+   reemplazadas: este archivo queda como andamio (si una escena nueva todavía no existe, se ve su tarjeta en su lugar).
    Solo transform y opacity, todo en el timeline maestro (D.tl) en tiempos absolutos desde T. */
 import '../css/escenas-base.css';
 
