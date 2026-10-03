@@ -239,4 +239,18 @@ export const catalog: TrailerEntry[] = [
     status: 'kit', palette: ['#1f57a8', '#f5f59a', '#cfcfcf'], motif: 'handy',
     path: 'trailers/handy-especialista/index.html', poster: 69.5, preview: 30, duration: 70, scenes: 12,
   },
+  {
+    id: 'handy-vertical', enabled: true, title: 'HANDY · ANUNCIO VERTICAL', category: 'Producto',
+    logline: 'Los dos lados de Handy en 30 segundos, para Reels, TikTok y Shorts: el que necesita pide, compara y elige; el que sabe recibe pedidos cerca, pone su precio y lo eligen. Para el que necesita, para el que sabe.',
+    tags: ['9:16 · 1080×1920', '30 segundos', 'usuario + especialista', 'golpes de palabras', 'zonas seguras de Reels', 'solo transform y opacity'],
+    status: 'kit', palette: ['#1f57a8', '#f5f59a', '#cfcfcf'], motif: 'handy',
+    path: 'trailers/handy-vertical/index.html', poster: 29.5, preview: 16, duration: 30, scenes: 7,
+  },
+  {
+    id: 'handy-anuncio', enabled: true, title: 'HANDY · ANUNCIO', category: 'Producto',
+    logline: 'El mismo anuncio de 30 segundos en 16:9, para YouTube y Meta: un gancho para los dos públicos, la app del usuario y la del especialista, y el cierre con el lanzamiento en Mar del Plata.',
+    tags: ['16:9 · 1920×1080', '30 segundos', 'usuario + especialista', 'golpes de palabras', 'listo para anuncios', 'solo transform y opacity'],
+    status: 'kit', palette: ['#cfcfcf', '#1f57a8', '#f5f59a'], motif: 'handy',
+    path: 'trailers/handy-anuncio/index.html', poster: 29.5, preview: 16, duration: 30, scenes: 7,
+  },
 ];

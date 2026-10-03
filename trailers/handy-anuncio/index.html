@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es" class="hd-player">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Handy — Anuncio</title>
+<meta name="description" content="Anuncio de Handy para YouTube y Meta: para el que necesita y para el que sabe. 30 segundos hechos 100% con código.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Handy">
+<meta name="theme-color" content="#CFCFCF">
+<meta name="format-detection" content="telephone=no">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231F57A8'/%3E%3Cpath d='M32 11c5 9 15 17 15 29a15 15 0 0 1-30 0c0-12 10-20 15-29z' fill='%238EC5FF'/%3E%3Ccircle cx='27' cy='40' r='2.6' fill='%23141414'/%3E%3Ccircle cx='37' cy='40' r='2.6' fill='%23141414'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- FONTS: keep in sync with `fonts` in js/trailer.js (Inter, variable 400–900). -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&display=block" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<!-- gris Handy desde el primer cuadro (en desarrollo, src/handy/css/player.css llega con el JS) -->
+<style>html, body, #viewport, #intro { background: #CFCFCF; }</style>
+</head>
+<body>
+
+<div id="viewport">
+  <div id="stage">
+    <div id="bg"></div>
+    <div id="wipe"></div>
+    <div id="camera"><canvas id="fx" width="1920" height="1080"></canvas></div>
+    <div class="bar" id="bar-top"></div>
+    <div class="bar" id="bar-bot"></div>
+    <div id="hud" class="mono" aria-hidden="true">
+      <i class="crop tl"></i><i class="crop tr"></i><i class="crop bl"></i><i class="crop br"></i>
+      <div class="hud-tl"><span class="rec"></span>REC <span class="dim">/</span> <span id="hud-brand"></span></div>
+      <div class="hud-tr" id="hud-scene">&nbsp;</div>
+      <div class="hud-bl">TC <span id="hud-tc">00:00:00:00</span></div>
+      <div class="hud-br">SC <span id="hud-num">00</span>/<span id="hud-total">00</span> <span class="dim">·</span> 24 FPS <span class="dim">·</span> <span id="hud-res">1920×1080</span></div>
+    </div>
+    <div id="flash"></div>
+    <div id="vignette"></div>
+    <div id="grain"></div>
+  </div>
+</div>
+
+<!-- Escena 0 (fuera del timeline): toda la pantalla es el botón. src/handy/player.ts pone el logo. -->
+<div id="intro">
+  <a id="intro-back" class="back" hidden></a>
+  <button id="play" type="button" aria-label="Tocá para empezar" disabled>
+    <span class="hd-intro-centro">
+      <span class="hd-intro-logo" id="hd-intro-logo"></span>
+      <span class="intro-state" id="intro-state">Cargando…</span>
+      <span class="intro-sub" id="intro-sub"></span>
+    </span>
+  </button>
+  <h1 class="intro-title" id="intro-title" hidden></h1>
+  <p class="intro-keys" id="intro-keys" hidden></p>
+</div>
+
+<div id="end"><div class="end-row"><button id="replay" type="button">↺&nbsp; Ver de nuevo</button><a id="end-back" class="end-back" hidden></a></div></div>
+
+<div id="ui">
+  <div id="ui-state"></div>
+  <div id="progress"><i></i></div>
+</div>
+<script type="module" src="./main.ts"></script>
+</body>
+</html>
