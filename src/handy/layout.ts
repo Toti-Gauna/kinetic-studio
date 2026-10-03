@@ -43,18 +43,26 @@ let sangradoMedido: { x: number; y: number } | null = null;
 export function sangrado(): { readonly x: number; readonly y: number } {
   if (!sangradoMedido) {
     if (!document.getElementById('stage')) return (sangradoMedido = Object.freeze({ x: 0, y: 0 }));
-    const vw = window.innerWidth || STAGE.w, vh = window.innerHeight || STAGE.h;
-    const s = Math.min(vw / STAGE.w, vh / STAGE.h);
+    const { w, h } = escenario();
+    const vw = window.innerWidth || w, vh = window.innerHeight || h;
+    const s = Math.min(vw / w, vh / h);
     const lado = (v: number) => Math.min(SANGRADO_MAX, Math.max(0, Math.ceil(v)));
-    sangradoMedido = Object.freeze({ x: lado((vw / s - STAGE.w) / 2), y: lado((vh / s - STAGE.h) / 2) });
+    sangradoMedido = Object.freeze({ x: lado((vw / s - w) / 2), y: lado((vh / s - h) / 2) });
   }
   return sangradoMedido;
 }
 
-/** Los bordes de lo que se ve, en coordenadas del escenario: izq ≤ 0, der ≥ 1440, arriba ≤ 0, abajo ≥ 1080. */
+/** El tamaño del escenario de la película: el que el engine anota en <html data-stage="WxH"> al arrancar (1440×1080
+    en los tráileres para iPad; 1080×1920 el vertical, 1920×1080 el de anuncios). Antes de eso, STAGE. */
+export function escenario(): { w: number; h: number } {
+  const m = /^(\d+)x(\d+)$/.exec(document.documentElement.dataset.stage || '');
+  return m ? { w: Number(m[1]), h: Number(m[2]) } : { w: STAGE.w, h: STAGE.h };
+}
+
+/** Los bordes de lo que se ve, en coordenadas del escenario: izq ≤ 0, der ≥ el ancho, arriba ≤ 0, abajo ≥ el alto. */
 export function visible(): { izq: number; der: number; arriba: number; abajo: number } {
-  const s = sangrado();
-  return { izq: -s.x, der: STAGE.w + s.x, arriba: -s.y, abajo: STAGE.h + s.y };
+  const s = sangrado(), { w, h } = escenario();
+  return { izq: -s.x, der: w + s.x, arriba: -s.y, abajo: h + s.y };
 }
 
 /** Cuánto hay que sumarle a una distancia "hasta el borde del cuadro" para que llegue al borde de lo que se ve:

@@ -70,7 +70,6 @@ const root = document.documentElement;
 
 root.classList.add('hd-player');
 if (!CONGELADO) root.dataset.hdEstado = 'intro';
-armarSangrado();
 const logo = document.getElementById('hd-intro-logo');
 if (logo) logo.innerHTML = handyLogo();
 
@@ -115,6 +114,7 @@ function indiceEn(t: number): number {
 window.Trailer.plugin({
   setup(_D, cfg) {
     capitulos.length = 0;
+    armarSangrado(); // acá el engine ya anotó el tamaño del escenario (data-stage): sirve también para el vertical
     if (import.meta.env.DEV) {
       const qr = q.get('qr');
       if (qr !== null) cfg.qrUrl = qr;
