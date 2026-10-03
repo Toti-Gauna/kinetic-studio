@@ -12,9 +12,14 @@
                                                       → { duracion, toque }: toque = momento absoluto del apretón
      salirDedo(tl, dedo, at, { dur, dx, dy })         sale hacia abajo a la derecha y se apaga → duración
      centro(el, ref) → { x, y }                       centro de `el` en coordenadas de `ref` (layout, sin transforms)
+   Sangrado (layout.ts): en una pantalla más alta que 4:3 (el iPad vertical) se ve el escenario debajo del cuadro, así que
+   entrarDedo y salirDedo estiran su viaje (dx y dy, en la misma dirección) por el sangrado de abajo: el dedo arranca y
+   termina más allá del borde de la pantalla, no esperando a la vista debajo del cuadro (se prende y se apaga mientras
+   viaja, como siempre). En 4:3 y apaisado no cambia nada.
    Ejemplo: const t = tocar(D.tl, dedo, p.x, p.y, T + 2); D.tl.to(ficha, { scale: .94, … }, t.toque); D.sfx('tap', t.toque).
    Ganchos: .hd-dedo · .hd-dedo-mano · .hd-dedo-onda. */
 import { gsap } from 'gsap';
+import { afuera } from '../layout.ts';
 import '../css/base.css';
 import '../css/ui.css';
 
@@ -91,11 +96,19 @@ export function prepararDedo(dedo: Element, x?: number, y?: number): void {
   gsap.set(parte(dedo, '.hd-dedo-onda'), { opacity: 0, scale: 0 });
 }
 
-/** Entra desde abajo a la derecha (x+dx, y+dy) hasta la yema en x,y. Devuelve la duración. */
+/** El viaje del dedo (dx, dy) estirado en la misma dirección por el sangrado de abajo (1 en 4:3 y apaisado). */
+function viaje(dx: number, dy: number): { dx: number; dy: number } {
+  const k = dy > 0 ? 1 + afuera('y') / dy : 1;
+  return { dx: dx * k, dy: dy * k };
+}
+
+/** Entra desde abajo a la derecha (x+dx, y+dy; con sangrado abajo, más lejos en la misma dirección) hasta la yema en
+    x,y. Devuelve la duración. */
 export function entrarDedo(
   tl: GSAPTimeline, dedo: Element, x: number, y: number, at: number,
   { dur = 0.7, dx = 150, dy = 260 }: { dur?: number; dx?: number; dy?: number } = {},
 ): number {
+  ({ dx, dy } = viaje(dx, dy));
   tl.set(dedo, { x: x + dx, y: y + dy, autoAlpha: 0 }, at);
   tl.to(dedo, { autoAlpha: 1, duration: 0.2, ease: 'power1.out' }, at);
   tl.to(dedo, { x, y, duration: dur, ease: 'expo.out' }, at);
@@ -127,11 +140,12 @@ export function tocar(
   return { duracion: viaje + 0.08 + mantener + 0.2, toque };
 }
 
-/** Sale hacia abajo a la derecha y se apaga. Devuelve la duración. */
+/** Sale hacia abajo a la derecha (con sangrado abajo, más lejos en la misma dirección) y se apaga. Devuelve la duración. */
 export function salirDedo(
   tl: GSAPTimeline, dedo: Element, at: number,
   { dur = 0.45, dx = 150, dy = 260 }: { dur?: number; dx?: number; dy?: number } = {},
 ): number {
+  ({ dx, dy } = viaje(dx, dy));
   tl.to(dedo, { x: `+=${dx}`, y: `+=${dy}`, duration: dur, ease: 'power3.in' }, at);
   tl.to(dedo, { autoAlpha: 0, duration: dur * 0.6, ease: 'power1.in' }, at + dur * 0.4);
   return dur;

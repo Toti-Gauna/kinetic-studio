@@ -36,11 +36,15 @@
    PHONE_XY, pantallaFin() con la Gota y el Caño parados en el escenario (handysFin), "Ganaste $ 40.500" completo, barra oscura a las
    HORAS.trabajo (16:54), sin
    titular.
+   Sangrado (src/handy/layout.ts): el fondo es el del escenario (#bg, ya llega al borde de la pantalla); lo que entra o
+   sale de afuera (los cinco Handys de la 9, que esperan debajo del cuadro; el dedo de la 8 lo resuelve ui/Finger.ts)
+   arranca o termina más allá del borde de lo que se ve (afuera('y')): en una pantalla vertical no esperan ni se apagan
+   a la vista. En 4:3, igual.
    Reglas: solo transform y opacity; todo en D.tl en tiempos absolutos desde T; estados iniciales con gsap.set; azar
    solo con D.rand. Clases propias con prefijo hed- (hed8- / hed9-), estilos inyectados una vez (#he-escenas-esp-d). */
 import { gsap } from 'gsap';
 import { COLORS, SCREEN } from '../../../src/handy/tokens.ts';
-import { PHONE, PHONE_XY } from '../../../src/handy/layout.ts';
+import { PHONE, PHONE_XY, afuera } from '../../../src/handy/layout.ts';
 import { phoneFrame } from '../../../src/handy/ui/PhoneFrame.ts';
 import { titular, prepararTitular, entraTitular, saleTitular } from '../../../src/handy/ui/Headline.ts';
 import { finger, prepararDedo, entrarDedo, tocar, salirDedo, centro } from '../../../src/handy/ui/Finger.ts';
@@ -420,10 +424,11 @@ Trailer.recipe('he-cobro', (D, T, o) => {
   pant.insertBefore(barra1, isla);
   gsap.set(barra1, { opacity: 0 });
 
-  // ── Handys del escenario: escondidos debajo del cuadro
+  // ── Handys del escenario: escondidos debajo del cuadro y del sangrado de abajo (en una pantalla vertical se verían
+  //    esperando debajo del cuadro); saltan desde ahí en el mismo tiempo
   const caja = tipo => D.$(`.hed9-handys .hed-h[data-tipo="${tipo}"]`, s);
   const cuerpo = tipo => D.$('.hd-handy', caja(tipo));
-  TIPOS9.forEach(tipo => gsap.set(caja(tipo), { y: 1080 - POS9[tipo].y + 30 }));
+  TIPOS9.forEach(tipo => gsap.set(caja(tipo), { y: 1080 - POS9[tipo].y + 30 + afuera('y') }));
 
   // ── papelitos: escondidos detrás del teléfono
   const conf = D.$$('.hed9-c', s);

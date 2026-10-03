@@ -1,5 +1,6 @@
 /* Handy — el reproductor de los tráileres de Handy (src/handy/player.ts lo importa).
-   Pisa el CSS base del kit (trailers/<id>/css/style.css): relleno gris Handy en pantallas que no son 4:3,
+   Pisa el CSS base del kit (trailers/<id>/css/style.css): el sangrado (la película se ve hasta el borde de la
+   pantalla cuando no es 4:3; sobre el gris Handy),
    capas de película apagadas (HUD, grano, viñeta, barras de cine, canvas #fx), la pantalla inicial (todo
    el fondo es el botón), la pantalla final sin velo (el último cuadro queda a la vista), la barra de
    progreso y la pantalla de pausa con los capítulos. Todo cuelga de html.hd-player (está en el
@@ -19,6 +20,18 @@
 }
 .hd-player #viewport { background: var(--hd-gris); }
 .hd-player[data-hd-estado="pausa"] body.idle { cursor: auto; }
+
+/* ---------- sangrado (player.ts armarSangrado, layout.ts sangrado): el escenario no recorta en su cuadro; recorta
+   #hd-marco, que es el cuadro más --hd-sx / --hd-sy de cada lado (lo que sobra de pantalla, medido al construir).
+   #hd-cuadro vuelve a ser el cuadro de 1440×1080 (mismas coordenadas de siempre). El fondo y el destello cubren el
+   sangrado; lo demás lo estira cada escena. En 4:3, --hd-sx = --hd-sy = 0 y todo queda como antes. ---------- */
+.hd-player #stage { overflow: visible; }
+.hd-player #hd-marco {
+  position: absolute; overflow: hidden;
+  inset: calc(-1 * var(--hd-sy, 0px)) calc(-1 * var(--hd-sx, 0px));
+}
+.hd-player #hd-cuadro { position: absolute; inset: var(--hd-sy, 0px) var(--hd-sx, 0px); }
+.hd-player #bg, .hd-player #wipe, .hd-player #flash { inset: calc(-1 * var(--hd-sy, 0px)) calc(-1 * var(--hd-sx, 0px)); }
 
 /* ---------- capas de película del kit que Handy no usa (#flash queda) ---------- */
 .hd-player #hud, .hd-player #grain, .hd-player #vignette, .hd-player .bar, .hd-player #fx { display: none !important; }

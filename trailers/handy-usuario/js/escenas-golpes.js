@@ -24,7 +24,11 @@
      salida  'camara': en el último tiempo la escena se tira contra la cámara (escala 1 → 3,4, power4.in) hacia la
              última palabra; el corte cae en el flash de la escena siguiente.
      Cada panel barre en ENTRA s y termina en su tiempo: el primero empieza un poquito antes de T, encima del último
-     cuadro de la escena anterior (que se esconde recién en T). Sin salida, la última tarjeta termina de moverse QUIETO
+     cuadro de la escena anterior (que se esconde recién en T). Sangrado (src/handy/layout.ts): el panel cubre también
+     lo que se ve fuera del cuadro (--hd-sx / --hd-sy) y espera y barre desde más allá del borde de la pantalla; la
+     palabra y el sub siguen centrados en el cuadro de 1440×1080 y el personaje se apoya en el borde de abajo de lo que
+     se ve (afuera('y')): en vertical asoma desde el borde de la pantalla.
+     En 4:3 el sangrado es 0 y todo queda como antes. Sin salida, la última tarjeta termina de moverse QUIETO
      (0,25) s antes del corte: el cuadro del que corta queda limpio. Sonido moderado (la música lleva el groove): un
      whoosh que llega al tiempo, un clap por palabra, low end en todas (boom 0,32 en la primera, bombo BOMBO = 0,45 en
      las demás: así pegan parejo aunque la música no traiga bombo, como en el quiebre 42–44; picos de 100 ms entre
@@ -53,13 +57,20 @@ import { COLORS } from '../../../src/handy/tokens.ts';
 import { handy, anchoHandy } from '../../../src/handy/handys.ts';
 import { humor, mirar } from '../../../src/handy/handys-anim.ts';
 import { icon } from '../../../src/handy/icons.ts';
+import { afuera } from '../../../src/handy/layout.ts';
 
 /* ───────────────────────── estilos ───────────────────────── */
 
+// el panel se estira hasta el borde de la pantalla (el sangrado, --hd-sx / --hd-sy de src/handy/player.ts) y su centro
+// vuelve al cuadro de 1440×1080: la palabra no se mueve. Como el panel es más grande, su xPercent / yPercent de ±100
+// (AFUERA) lo deja esperando más allá de lo que se ve, con el filo pegado afuera del borde de la pantalla.
 const CSS = `
 .hdr-g, .hdr-g-tarjeta, .hdr-g-panel, .hdr-g-centro { position: absolute; inset: 0; }
 .hdr-g { transform-origin: 50% 50%; }
+.hdr-g-panel { inset: calc(-1 * var(--hd-sy, 0px)) calc(-1 * var(--hd-sx, 0px)); }
 .hdr-g-panel.is-mitad { top: 540px; }
+.hdr-g-centro { inset: var(--hd-sy, 0px) var(--hd-sx, 0px); }
+.hdr-g-panel.is-mitad .hdr-g-centro { top: 0; }
 .hdr-g-filo { position: absolute; }
 .hdr-g-centro { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .hdr-g-palabra { display: inline-block; white-space: nowrap; font-family: var(--hd-font); font-weight: 900; line-height: 1;
@@ -92,7 +103,7 @@ const RONDA_FONDO = ['azul', 'amarillo', 'blanco', 'gris'];
 const RONDA_DESDE = ['der', 'abajo', 'izq', 'arriba'];
 /** la franja del filo va del lado que entra primero */
 const FILO = 34;
-/** dónde arranca el panel (fuera de cuadro, con su filo) según de dónde barre */
+/** dónde arranca el panel (fuera de lo que se ve, con su filo: el panel cubre el sangrado) según de dónde barre */
 const AFUERA = {
   der: { xPercent: 100, x: FILO }, izq: { xPercent: -100, x: -FILO },
   abajo: { yPercent: 100, y: FILO }, arriba: { yPercent: -100, y: -FILO },
@@ -127,8 +138,9 @@ function htmlTarjeta(p, i) {
   if (p.handy) {
     const ancho = anchoHandy(p.handy, ALTO_HANDY);
     const x = p.lado === 'izq' ? 70 : 1440 - 70 - ancho;
-    // los pies apoyan en el borde de abajo del cuadro (unos px adentro)
-    pj = `<div class="hdr-g-handy" style="left:${x.toFixed(1)}px;top:${1080 - 24 - ALTO_HANDY}px">`
+    // los pies apoyan en el borde de abajo de lo que se ve (unos px adentro): el del cuadro en 4:3 y apaisado; con
+    // sangrado abajo (pantalla vertical), el de la pantalla, así asoman desde el borde y no quedan flotando
+    pj = `<div class="hdr-g-handy" style="left:${x.toFixed(1)}px;top:${1080 - 24 - ALTO_HANDY + afuera('y')}px">`
       + handy(p.handy, { altura: ALTO_HANDY, humor: p.humor || 'feliz' }) + '</div>';
   }
   return { desde, html: `<div class="hdr-g-tarjeta" data-i="${i}">
@@ -176,6 +188,7 @@ Trailer.recipe('hdr-golpe', (D, T, o) => {
     gsap.set(c.palabra, { scale: 1.4, autoAlpha: 0 });
     gsap.set(c.letras, { yPercent: 38, opacity: 0 });
     if (c.sub) gsap.set(c.sub, { y: 34, autoAlpha: 0 });
+    // el personaje espera debajo de lo que se ve (su caja ya está apoyada en el borde de abajo de lo que se ve)
     if (c.pos) gsap.set(c.pos, { y: ALTO_HANDY + 60, rotation: palabras[i].lado === 'izq' ? 8 : -8 });
   });
 

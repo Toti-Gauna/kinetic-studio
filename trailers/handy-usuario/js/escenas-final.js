@@ -7,8 +7,8 @@
 
      46,0   DROP 3 (la música pega el golpe y el gancho entero): destello, temblor de cámara, la escena entra con un
             "punch" de escala y dos aros que se abren desde atrás de la fila. Los Handys salen disparados desde abajo
-            del cuadro (la gota y el caño desde la izquierda, la llave desde la derecha; el engranaje da una vuelta en el
-            aire), con cara de festejo, y papelitos de colores vuelan desde atrás de la fila.
+            de lo que se ve (la gota y el caño desde la izquierda, la llave desde la derecha; el engranaje da una vuelta
+            en el aire), con cara de festejo, y papelitos de colores vuelan desde atrás de la fila.
      46,5   aterrizan todos juntos en la fila, en el tiempo (aplastón). Los rayos de la lamparita laten en cada tiempo
             desde acá hasta el 54,0.
    Frase 1 (47–50)
@@ -43,7 +43,12 @@
    en el tiempo.
    Cada personaje anima su .hd-handy (y, escala, rotación) y su caja (.hdr-f-h: solo la entrada desde abajo); `agenda`
    avisa si dos movimientos del mismo personaje se pisan. Sonido: pies, campanas y "plips" bajitos (el groove es de la
-   música). Solo transform y opacity; todo en D.tl en tiempos absolutos desde T; estados iniciales con gsap.set; azar con
+   música).
+   Sangrado (src/handy/layout.ts): en una pantalla que no es 4:3 se ve el escenario fuera del cuadro. La escena no tiene
+   fondo propio (el #bg ya lo cubre) ni nada que recorte: los aros y los papelitos siguen de largo en el sangrado. Lo
+   que espera o termina abajo, afuera (los Handys antes de saltar, los papelitos al caer), va más allá de ABAJO =
+   visible().abajo, el borde de abajo de lo que se ve; en 4:3 vale 1080 y la película es la de siempre.
+   Solo transform y opacity; todo en D.tl en tiempos absolutos desde T; estados iniciales con gsap.set; azar con
    D.rand. Clases propias con prefijo hdr-f-. */
 import { gsap } from 'gsap';
 import { COLORS } from '../../../src/handy/tokens.ts';
@@ -52,6 +57,7 @@ import { humor, salto, festejo, saludo } from '../../../src/handy/handys-anim.ts
 import { handyLogo, logoAlto, LETRAS, LOGO_INFO } from '../../../src/handy/logo.ts';
 import { titular, prepararTitular, entraTitular } from '../../../src/handy/ui/Headline.ts';
 import { qrSvg, qrModulos } from '../../../src/handy/qr.ts';
+import { visible } from '../../../src/handy/layout.ts';
 
 /* ───────────────────────── estilos ───────────────────────── */
 
@@ -209,6 +215,9 @@ Trailer.recipe('hdr-final', (D, T, o) => {
   const B = n => T + n * 0.5; // el tiempo n de la escena (B(0) = 46,0 · B(16) = 54,0)
   const quieto = T + 8.5;     // 54,5: desde acá, nada se mueve
   sentarEnElPiso();
+  /** el borde de abajo de lo que se ve (layout.ts, medido al armar): 1080 en 4:3, más abajo si sobra pantalla arriba
+      y abajo (el sangrado del iPad vertical). Los Handys esperan y los papelitos se van más allá de ABAJO */
+  const ABAJO = visible().abajo;
 
   // ── el QR (como en el cierre): solo si hay URL
   const url = String(D.cfg.qrUrl || '').trim();
@@ -259,7 +268,8 @@ Trailer.recipe('hdr-final', (D, T, o) => {
   const caja = tipo => D.$(`.hdr-f-h[data-tipo="${tipo}"]`, s);
   const cuerpo = tipo => D.$('.hd-handy', caja(tipo));
   const sombra = tipo => (CON_SOMBRA.includes(tipo) ? D.$(`.hdr-f-sombra[data-tipo="${tipo}"] .hd-handy-sombra`, s) : null);
-  TIPOS.forEach(tipo => gsap.set(caja(tipo), { x: VUELO[tipo][2], y: 1080 - POS[tipo].y + 40 }));
+  // (esperan 40 px más abajo de lo que se ve: con sangrado abajo, más allá del sangrado, no en el borde del cuadro)
+  TIPOS.forEach(tipo => gsap.set(caja(tipo), { x: VUELO[tipo][2], y: ABAJO - POS[tipo].y + 40 }));
   CON_SOMBRA.forEach(tipo => gsap.set(sombra(tipo), { opacity: 0, scale: 0.4 }));
   const lamp = cuerpo('lamparita');
   const rayos = D.$('.hd-h-rayos', lamp);
@@ -351,18 +361,19 @@ Trailer.recipe('hdr-final', (D, T, o) => {
   });
   D.sfx('whoosh', T, 0.55, 0.12);
 
-  // los papelitos salen disparados para arriba y caen girando hasta salir por abajo del cuadro (antes de las 48,6)
+  // los papelitos salen disparados para arriba y caen girando hasta salir por abajo de lo que se ve (ABAJO), antes
+  // de las 48,6
   conf.forEach((el, i) => {
     const p = papelitos[i], t0 = T + 0.04 + p.t0, tCae = t0 + p.vuelo;
     tl.set(el, { opacity: 1 }, t0);
     tl.to(el, { x: p.dx * 0.6, y: -p.sube, rotation: p.giro0 + p.giro * 0.35, duration: p.vuelo, ease: 'power2.out' }, t0);
-    tl.to(el, { x: p.dx, y: 1080 - (PISO - 120) + 40, rotation: p.giro0 + p.giro, duration: p.cae, ease: 'power1.in' }, tCae);
+    tl.to(el, { x: p.dx, y: ABAJO - (PISO - 120) + 40, rotation: p.giro0 + p.giro, duration: p.cae, ease: 'power1.in' }, tCae);
     tl.to(el, { scaleX: -1, duration: p.flip, ease: 'sine.inOut', repeat: Math.floor(p.cae / p.flip) - 1, yoyo: true }, tCae);
     tl.set(el, { opacity: 0 }, tCae + p.cae);
   });
   D.sfx('bubbles', T, 7, 0.035);
 
-  // los Handys saltan a cuadro desde abajo (en semicorcheas) y aterrizan todos juntos en el 46,5
+  // los Handys saltan a cuadro desde abajo de lo que se ve (en semicorcheas) y aterrizan todos juntos en el 46,5
   const tAterriza = B(1);
   TIPOS.forEach(tipo => {
     const [dt, sobre] = VUELO[tipo], c = caja(tipo), el = cuerpo(tipo), t0 = T + dt, vuelo = tAterriza - t0;

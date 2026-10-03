@@ -45,6 +45,11 @@
      3,5   → 25,625  Total $ 45.000: golpe · 3,625 debajo, "Comisión Handy 10 % · recibís $ 40.500".
      3,75  → 25,94   el dedo toca "Enviar presupuesto"; 3,875 entra la tarjeta "Presupuesto enviado" y 4,0 el tilde.
      5,0   → 27,5    el teléfono queda con "Presupuesto enviado" (el golpe "¿Te eligen?" barre desde ≈ 27,3).
+   Sangrado (src/handy/layout.ts): en pantallas que no son 4:3 se ve más que el cuadro de 1440×1080, así que lo que
+   entra, sale o espera fuera de cuadro lo hace afuera de lo que se ve (afuera()): los Handys entran saltando desde el
+   borde de la pantalla y se van por abajo hasta pasarlo, el teléfono de la escena 4 espera debajo del borde de abajo
+   y, con la cámara de cerca, el titular se corre ese sangrado más a la izquierda (no asoma en el borde). En 4:3 el
+   sangrado es 0 y todo queda como antes.
    Reglas: solo transform y opacity; todo en D.tl en tiempos absolutos desde T (numéricos); estados iniciales con
    gsap.set; sin from/fromTo ni azar. Clases propias con prefijo he-b-. */
 import { gsap } from 'gsap';
@@ -58,7 +63,7 @@ import { ponerInterruptor, prenderInterruptor } from '../../../src/handy/ui/Inte
 import {
   pantallaInicioEsp, tarjetaPedido, hojaPresupuesto, prepararMonto, escribirMonto, prepararPulso, pulsar, HORAS,
 } from '../../../src/handy/pantallas/especialista.ts';
-import { HEADLINE, PHONE_XY } from '../../../src/handy/layout.ts';
+import { HEADLINE, PHONE_XY, afuera } from '../../../src/handy/layout.ts';
 
 /* ───────────── estilos ───────────── */
 
@@ -279,7 +284,8 @@ Trailer.recipe('he-entrada', (D, T, o) => {
   // ── entran saltando (u 0–2 → escrito 0–1) ─────────────────────────────────
   const listos = {}; // cuándo termina la entrada de cada uno (ya asentado)
   hs.forEach(h => {
-    const fuera = h.lado < 0 ? -(h.left + h.ancho + 20) : D.W + 20 - h.left; // recién afuera: aparecen enseguida
+    // recién afuera de lo que se ve (el cuadro más el sangrado): aparecen enseguida, desde el borde de la pantalla
+    const fuera = h.lado < 0 ? -(h.left + h.ancho + 20 + afuera('x')) : D.W + 20 + afuera('x') - h.left;
     const aterriza = T + h.llega;
     // el caño arranca justo en el golpe; los demás, cuando les toca para caer en su tiempo
     const arranque = h.tipo === 'cano' || h.tipo === 'engranaje' ? T : aterriza - saltitos(h.altura, h.saltos).suelos.at(-1);
@@ -348,8 +354,9 @@ Trailer.recipe('he-entrada', (D, T, o) => {
   hs.forEach(h => {
     // el saltito no llega a la bajada del logo ni a la ficha: el caño se deja caer y la lamparita salta menos
     const altura = { cano: 0, lamparita: 50 }[h.tipo] ?? 85;
-    // cae hasta que la cabeza pasa el borde de abajo, contando el estirón de la caída (scaleY 1,1 desde los pies)
-    salirPorAbajo(tl, el[h.tipo], tSale[h.tipo], { altura, caida: D.H - h.top + h.altura * 0.12 + 40 });
+    // cae hasta que la cabeza pasa el borde de abajo de lo que se ve (con el sangrado), contando el estirón de la
+    // caída (scaleY 1,1 desde los pies)
+    salirPorAbajo(tl, el[h.tipo], tSale[h.tipo], { altura, caida: D.H - h.top + h.altura * 0.12 + 40 + afuera('y') });
     M.sfx('plip', tSale[h.tipo] + 0.1, 0.05, h.voz * 1.4);
   });
   M.sfx('whoosh', T + 6.4, 0.7, 0.12);
@@ -369,6 +376,8 @@ Trailer.recipe('he-entrada', (D, T, o) => {
 
 /** cámara de la escena 4: escala y punto del escenario que queda en el centro del cuadro */
 const pose = (escala, [fx, fy]) => ({ scale: escala, x: 720 - escala * fx, y: 540 - escala * fy });
+/** escala de la cámara de cerca (la ficha "Trabajando" y Martín) */
+const CERCA = 1.8;
 
 Trailer.recipe('he-inicio', (D, T, o) => {
   const tl = D.tl;
@@ -403,9 +412,9 @@ Trailer.recipe('he-inicio', (D, T, o) => {
   const pT = enEscenario(trabajando, tel);
   const foco = [pT.x, pT.y + 70]; // el borde izquierdo del cuadro queda a la derecha del titular
 
-  // estados iniciales: teléfono abajo, fuera de cuadro; la app APAGADA (interruptor gris, mapa dormido); la ficha y el
-  // marcador de Martín apagados hasta que llega la ficha del escenario
-  gsap.set(tel, { y: D.H + 40 });
+  // estados iniciales: teléfono abajo, fuera de lo que se ve (con el sangrado); la app APAGADA (interruptor gris, mapa
+  // dormido); la ficha y el marcador de Martín apagados hasta que llega la ficha del escenario
+  gsap.set(tel, { y: D.H + 40 + afuera('y') });
   gsap.set(logoHeader, { opacity: 0 });
   ponerInterruptor(llave, false);
   gsap.set(velo, { opacity: 1 });
@@ -450,7 +459,11 @@ Trailer.recipe('he-inicio', (D, T, o) => {
   entraTitular(tl, tit, T + 0.75, ENTRA);
 
   // ── la cámara se acerca (1,25 → 16,56) y el dedo prende el interruptor (2,5 → 18,125) ──
-  tl.to(mundo, { ...pose(1.8, foco), duration: 0.25, ease: 'power3.inOut' }, T + 1.25);
+  tl.to(mundo, { ...pose(CERCA, foco), duration: 0.25, ease: 'power3.inOut' }, T + 1.25);
+  // de cerca, el titular queda a la izquierda del cuadro; con sangrado se corre ese sangrado más (en px del mundo, que
+  // está a escala CERCA) para quedar afuera de lo que se ve y no asomar en el borde. Vuelve con la cámara (3,0).
+  const corrido = afuera('x') / CERCA;
+  if (corrido > 0) tl.to(tit, { x: -corrido, duration: 0.25, ease: 'power3.inOut' }, T + 1.25);
   D.sfx('whoosh', T + 1.125, 0.35, 0.07);
   entrarDedo(tl, dedo, pLlave.x + 70, pLlave.y + 230, T + 1.5, { dur: 0.4 });
   const toque = tocar(tl, dedo, pLlave.x, pLlave.y, T + 2.2, { viaje: 0.3, mantener: 0.06 }).toque; // = T + 2,5
@@ -469,6 +482,7 @@ Trailer.recipe('he-inicio', (D, T, o) => {
 
   // ── la cámara vuelve (3,0–3,5 → 18,75–19,375) y el mapa sigue latiendo ────
   tl.to(mundo, { ...pose(1, [720, 540]), duration: 0.5, ease: 'expo.inOut' }, T + 3.0);
+  if (corrido > 0) tl.to(tit, { x: 0, duration: 0.5, ease: 'expo.inOut' }, T + 3.0);
   D.sfx('whoosh', T + 2.875, 0.45, 0.06);
   pulsar(tl, inicio, T + 3.5, { dur: 1.125, paso: 0.25 }); // anillos en 3,5 y 3,75: apagados antes del corte (4,875)
   D.sfx('plip', T + 3.5, 0.035, 620);

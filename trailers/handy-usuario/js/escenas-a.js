@@ -10,6 +10,9 @@
        con tildes grises, "Visto", respuestas que no sirven y un "¿Alguien?" que nadie lee. Un reloj gira las agujas y
        la hora salta 10:02 → 12:47 → 16:30 → 19:15 (capas de texto que se cruzan con opacidad). El titular entra en tres
        golpes (8,5 · 11,5 · 15 s) y a los 16,9 s todo se cae: a los 18 s el escenario queda gris y vacío.
+   Sangrado (src/handy/layout.ts): en pantallas que no son 4:3 se ve más allá del cuadro de 1440×1080. Lo que espera,
+   entra o sale "afuera" (las tarjetas a la derecha, el mundo del gancho a la izquierda, lo que se cae) suma afuera():
+   arranca y termina más allá del borde de la pantalla, no en el del cuadro. En 4:3 suma 0 y todo queda igual.
    Reglas: solo transform y opacity; todo en D.tl en tiempos absolutos desde T; estados iniciales con gsap.set;
    sin from/fromTo ni azar (los salpicones están puestos a mano). Clases propias con prefijo hd-a1- / hd-a2-. */
 import { gsap } from 'gsap';
@@ -18,6 +21,7 @@ import { humor, parpadeo, idle } from '../../../src/handy/handys-anim.ts';
 import { titular, prepararTitular, entraTitular, saleTitular } from '../../../src/handy/ui/Headline.ts';
 import { burbujaEscribiendo } from '../../../src/handy/ui/ChatBubble.ts';
 import { grupoMensajeria, GRUPOS_PROBLEMA } from '../../../src/handy/pantallas/usuario-chat.ts';
+import { afuera } from '../../../src/handy/layout.ts';
 
 /* ───────────────────────── estilos de las dos escenas ───────────────────────── */
 
@@ -262,10 +266,11 @@ Trailer.recipe('hd-gancho', (D, T, o) => {
   });
   parpadeo(tl, cano, golpe + 1.15);
 
-  // ── salida: sale el titular y los personajes se corren de cuadro (escenario gris a los 7,65 s) ──
+  // ── salida: sale el titular y los personajes se corren de cuadro (escenario gris a los 7,65 s); salen más allá
+  //    del borde de la pantalla (sangrado), no del cuadro ──
   saleTitular(tl, tit, T + 6.85, { dur: 0.45, stagger: 0.04 });
   tl.to(mundo, { x: 16, duration: 0.2, ease: 'power2.out' }, T + 6.95);
-  tl.to(mundo, { x: -1560, duration: 0.5, ease: 'power3.in' }, T + 7.15);
+  tl.to(mundo, { x: -1560 - afuera('x'), duration: 0.5, ease: 'power3.in' }, T + 7.15);
   D.sfx('whoosh', T + 7.1, 0.6, 0.14);
 
   D.hide(s, T + o.dur);
@@ -341,7 +346,7 @@ Trailer.recipe('hd-problema', (D, T, o) => {
   });
 
   // ── estados iniciales ──
-  gsap.set([vecinos, familia, futbol], { x: 760, rotation: 9 });            // afuera, a la derecha
+  gsap.set([vecinos, familia, futbol], { x: 760 + afuera('x'), rotation: 9 }); // afuera, a la derecha (y del sangrado)
   D.$$('.hd-grupo-lista > .hd-burbuja > .hd-burbuja-cuerpo', s).forEach(c => { // los mensajes (no el "escribiendo…")
     const sale = c.closest('.hd-burbuja').getAttribute('data-lado') === 'saliente';
     gsap.set(c, { opacity: 0, scale: 0.3, transformOrigin: sale ? '100% 0%' : '0% 0%' });
@@ -435,11 +440,12 @@ Trailer.recipe('hd-problema', (D, T, o) => {
     tl.to(card, { y: -10 - 4 * i, duration: T + 8.75 - desde, ease: 'sine.inOut' }, desde);
   });
 
-  // ── todo se cae (16,75 s) y queda el gris vacío desde los 17,55 s ──
+  // ── todo se cae (16,75 s) y queda el gris vacío desde los 17,55 s: cae más allá del borde de abajo de la pantalla
+  //    (el sangrado de abajo, con la pantalla vertical), no solo del cuadro ──
   const cae = T + 8.75;
   const caer = (el, at, rot, dy = 1150) => {
     tl.to(el, { y: '-=14', duration: 0.14, ease: 'power2.out' }, at);
-    tl.to(el, { y: dy, rotation: rot, duration: 0.6, ease: 'power2.in' }, at + 0.14);
+    tl.to(el, { y: dy + afuera('y'), rotation: rot, duration: 0.6, ease: 'power2.in' }, at + 0.14);
   };
   caer(futbol, cae, 10);
   caer(familia, cae + 0.05, -8);

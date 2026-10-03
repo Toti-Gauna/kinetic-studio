@@ -24,6 +24,10 @@
 
    Contratos de los cortes: a las 46,0 el teléfono está en PHONE_XY con pantallaFecha() en su estado final (lo deja así la
    escena 5); a las 60,0 las dos copias de esta escena muestran el mismo chat; a las 68,0, pantallaConfirmar() con el éxito.
+   Sangrado (src/handy/layout.ts): en una pantalla que no es 4:3 se ve el escenario más allá del cuadro. Lo que se va o
+   llega "de afuera" por abajo (el teléfono que cae a las 52,0, las tarjetas que caen) suma afuera('y') a su distancia:
+   sale y entra por el borde de la pantalla y no queda estacionado a la vista (el dedo lo resuelve ui/Finger.ts). En 4:3
+   suma 0.
    Solo transform y opacity, todo en D.tl en tiempos absolutos desde T, estados iniciales con gsap.set. */
 import { gsap } from 'gsap';
 import { formatARS, priceWithFee, HANDY_FEE, SCREEN } from '../../../src/handy/tokens.ts';
@@ -33,6 +37,7 @@ import { finger, prepararDedo, entrarDedo, tocar, salirDedo, centro } from '../.
 import { chatPresupuesto } from '../../../src/handy/ui/ChatPresupuesto.ts';
 import { pantallaFecha, pantallaConfirmar } from '../../../src/handy/pantallas/usuario.ts';
 import { pantallaPresupuestos, PRESUPUESTOS, presupuestoProps } from '../../../src/handy/pantallas/usuario-chat.ts';
+import { afuera } from '../../../src/handy/layout.ts';
 
 /** el teléfono en su lugar de las escenas de app (x/y del transform de .hd-telefono) */
 const TEL = TELEFONO_EN_CASA;
@@ -236,7 +241,8 @@ Trailer.recipe('hd-presupuestos', (D, T, o) => {
   tl.set(cartas, { autoAlpha: 1 }, tSale);
   tl.set(enTel.diego, { opacity: 0 }, tSale);
   tl.to(lista, { opacity: 0, duration: 0.2, ease: 'power1.out' }, tSale);
-  tl.to(tel, { y: 1180, rotation: 3, duration: 0.55, ease: 'power3.in' }, tSale);
+  // (cae más allá del borde de abajo de lo que se ve: ahí espera hasta las 58,2 sin asomar en el sangrado)
+  tl.to(tel, { y: 1180 + afuera('y'), rotation: 3, duration: 0.55, ease: 'power3.in' }, tSale);
   D.sfx('whoosh', tSale, 0.7, 0.2);
   const desfase = [0.14, 0.07, 0];   // Martín sale último y viaja más lejos
   const giro = [-5, -3, 2.5];
@@ -297,8 +303,8 @@ Trailer.recipe('hd-presupuestos', (D, T, o) => {
   // 57,35 · sale el titular y las otras dos caen (Diego primero: deja libre la columna del teléfono) · 57,95 vuelve el teléfono
   saleTitular(tl, L, tVuelve);
   saleTitular(tl, V, tVuelve + 0.08);
-  tl.to(cD, { x: 50, y: 880, rotation: 11, duration: 0.5, ease: 'power3.in' }, tVuelve);
-  tl.to(cL, { x: -40, y: 880, rotation: -9, duration: 0.5, ease: 'power3.in' }, tVuelve + 0.1);
+  tl.to(cD, { x: 50, y: 880 + afuera('y'), rotation: 11, duration: 0.5, ease: 'power3.in' }, tVuelve);
+  tl.to(cL, { x: -40, y: 880 + afuera('y'), rotation: -9, duration: 0.5, ease: 'power3.in' }, tVuelve + 0.1);
   tl.set([cL, cD], { autoAlpha: 0 }, tVuelve + 0.65);
   D.sfx('whoosh', tVuelve, 0.6, 0.15);
   tl.to(tel, { y: TEL.y, duration: 0.85, ease: 'expo.out' }, tTelVuelve);

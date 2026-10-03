@@ -41,6 +41,11 @@
      37,5  el teléfono en PHONE_XY con pantallaAgenda() completa (hora 10:41), sin titular.
      42,5  el teléfono en PHONE_XY con pantallaEnCamino({ estado: 'llego' }) en su estado final, barra de estado
            phoneFrame({ hora: HORAS.llego (16:12), estado: 'claro' }); sin dedo ni titular.
+   Sangrado (layout.ts: en pantallas que no son 4:3 se ve el escenario más allá del cuadro de 1440×1080): estas dos
+   escenas no tienen fondo propio (el gris es #bg, que ya lo cubre) ni nada que entre, salga o espere fuera del cuadro;
+   los empujes del chat y de "En camino" pasan adentro de la pantalla del teléfono, que recorta. Los papelitos suben
+   hasta y ≈ −25: en vertical siguen de largo en el sangrado de arriba, sin corte. Si agregás algo que entre "de
+   afuera", hacelo arrancar más allá de visible() / afuera().
    Solo transform y opacity, todo en D.tl en tiempos absolutos desde T (números), estados iniciales con gsap.set, azar
    solo con D.rand / D.rnd. Clases propias con prefijo he-c6- / he-c7-. */
 import { gsap } from 'gsap';
