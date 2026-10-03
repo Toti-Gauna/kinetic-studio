@@ -34,7 +34,7 @@ export function formato(D) {
   return {
     vertical, W: D.W, H: D.H, CX: D.W / 2, CY: D.H / 2,
     tel: { cx: 1380, cy: 540, escala: 1 },
-    titular: { x: 200, y: 540, ancho: 780, tamano: 100, alinear: 'left' },
+    titular: { x: 180, y: 540, ancho: 820, tamano: 124, alinear: 'left' },
     palabra: { ancho: 1640, tamano: 300 },
     seguro: { arriba: 70, abajo: 1010, izq: 120, der: 1800 },
     handy: 290,

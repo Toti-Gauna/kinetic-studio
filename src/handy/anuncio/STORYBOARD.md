@@ -31,11 +31,16 @@ partitura en `partitura.js`, escenas en `pelicula.js`, medidas de cada formato e
 |---|---|---|
 | 0–4 | `ha-golpe` (`gancho`) | Golpes de palabras, uno por tiempo de compás (0 · 1 · 2 · 3): **¿Se rompió** (azul) / **algo?** (amarillo, mitad de abajo, la Gota preocupada) · **¿Sabés** (blanco) / **arreglarlo?** (azul, mitad, la Llave). El anuncio arranca pegando: la primera palabra ya está en el cuadro 0. |
 | 4–6 | `ha-marca` (`marca`) | Destello. Los cinco Handys saltan a cuadro y forman el logo **Handy** + **Soluciones, no problemas** (versión corta de la entrada de los tráileres). |
-| 6–14 | `ha-usuario` (`usuario`) | El que necesita. Ficha arriba: **Si necesitás**. Titulares: **Pedí lo que necesitás.** (6–8,5: el inicio de la app, el dedo toca Plomería) → **Te llegan presupuestos.** (8,5–11: llegan los tres presupuestos: Martín R. $ 45.000, Lucía G. $ 48.500, Diego P. $ 51.000) → **Elegí el tuyo.** (11–14: el dedo toca Aceptar en el de Martín; **¡Pedido confirmado!**). |
+| 6–14 | `ha-usuario` (`usuario`) | El que necesita. Ficha arriba: **Si necesitás**. Titulares: **Pedí lo que necesitás.** (6–8,5: el inicio de la app, el dedo toca Plomería) → **Te llegan presupuestos.** (8,5–11: llegan los tres presupuestos: Martín R. $ 45.000, Lucía G. $ 48.500, Diego P. $ 51.000) → **Elegí el tuyo.** (11–14: el dedo toca Aceptar en el de Martín; **¡Pedido confirmado!**). Los presupuestos saltan del teléfono como tarjetas grandes (vertical: Lucía y Diego arriba, Martín adelante abajo; horizontal: el teléfono se corre al centro, el bloque del titular sube y quedan los tres en fila); la de Martín vuelve volando al chat. Ver `usuario.js`. |
 | 14–16 | `ha-golpe` (`giro`) | **¿Y si sos** (azul) / **especialista?** (amarillo, mitad, el Engranaje); sale tirándose contra la cámara. |
-| 16–24 | `ha-especialista` (`especialista`) | El que sabe. DROP (destello). Ficha: **Si sabés**. **Te llegan pedidos cerca.** (16–18,5: el inicio del especialista con Trabajando prendido; llega el pedido de Plomería · Jue 15 oct · 16:00) → **Vos ponés el precio.** (18,5–21: la hoja Tu presupuesto: $ 32.000 + $ 13.000 = **$ 45.000** · Comisión Handy 10 % · recibís **$ 40.500**) → **¡Te eligieron!** (21–24: el aviso de Carla M., papelitos). |
+| 16–24 | `ha-especialista` (`especialista`) | El que sabe. DROP (destello). Ficha: **Si sabés**. **Te llegan pedidos cerca.** (16–18,5: el inicio del especialista con Trabajando prendido; llega el pedido de Plomería · Jue 15 oct · 16:00) → **Vos ponés el precio.** (18,5–21: la hoja Tu presupuesto: $ 32.000 + $ 13.000 = **$ 45.000** · Comisión Handy 10 % · recibís **$ 40.500**; como en el celular la hoja se lee chiquita, del total sale una "lupa": una tarjeta grande con el total y la comisión, resaltada) → **¡Te eligieron!** (21–24: el aviso de Carla M., papelitos). |
 | 24–26 | `ha-golpe` (`remate`) | **Para el que necesita.** (azul, la Gota) · **Para el que sabe.** (amarillo, la Llave). |
 | 26–30 | `ha-final` (`final`) | Destello. Logo **Handy** · **Soluciones, no problemas**, los cinco Handys en fila festejan, **Mar del Plata · Llegamos el 28/10**. Desde 28,5 todo queda quieto (el último cuadro es la placa del anuncio). |
+
+Notas de las recetas (`golpes.js`, `marca.js`): en `ha-golpe`, `at` va en segundos desde T (una palabra por
+segundo) y la primera palabra del gancho ya está en el cuadro 0 (sin barrido); las frases largas que quedarían chicas
+en una línea van en dos, cortadas antes de la última palabra ("Para el que / necesita."). En `ha-final` vertical la
+línea va en dos renglones, sin el punto medio: **Mar del Plata** / **Llegamos el 28/10**.
 
 ## Componentes que se reusan
 `src/handy/ui/PhoneFrame.ts` (`phoneFrame`), `pantallas/usuario.ts`, `pantallas/usuario-chat.ts` (presupuestos),
