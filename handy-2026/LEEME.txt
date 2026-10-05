@@ -1,0 +1,3 @@
+Handy · pack de fotos de la demo (datos ficticios, pantallas ilustrativas)
+usuario/ y especialista/: pantallas/ (pantalla sola, ≈1140×2510), con-marco/ (dentro del celular), errores/ (Handys rotos), pestanas/.
+landing/: la landing completa en celular y escritorio.
