@@ -117,3 +117,16 @@ lado, **Cliente · La Perla** ("LP"). Ciudad: Mar del Plata, barrio **La Perla**
 
 Lo que no está en esta tabla (HandIA, pagos, contactos, notificaciones, cambiar fecha) se arma solo si una escena lo
 usa.
+
+## Estado (para retomar)
+- Hecho: la base de componentes y las pantallas de inicio (etapa 1, revisada dos rondas), y las pantallas de las
+  cinco tandas de la etapa 2: `usuario-pedido.ts` (opciones, describir, programar, buscando), `usuario-propuestas.ts`
+  (tarjeta de propuesta, propuestas, perfil, confirmar), `usuario-seguimiento.ts` (seguimiento, chat, terminado,
+  reseña, agenda), `especialista-pedido.ts` (aviso de pedido, tarjeta de pedido, Tu precio, aceptado),
+  `especialista-trabajo.ts` (te eligió, agenda, chat, en camino, trabajo, fin, cobros, reseña del cliente). Cada una
+  en la galería (`?seccion=app2026-ua` … `-eb`).
+- Falta: la revisión adversarial de uc, ea y eb y los arreglos de las cinco tandas (las de ua y ub encontraron
+  detalles menores); la etapa 3 (migrar las escenas de los cuatro tráileres a estas pantallas, con la historia de
+  arriba); revisar los tráileres en todos los formatos; borrar la biblioteca vieja; volver a exportar los MP4.
+- Ojo en worktrees: `node_modules` como symlink queda fuera de lo que sirve Vite y las fuentes empaquetadas dan 403;
+  hace falta `server.fs.allow` con la ruta real de `node_modules`.

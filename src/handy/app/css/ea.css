@@ -1,0 +1,226 @@
+/* Especialista · pedido y precio (app/especialista-pedido.ts). Medido en 03…10-e-precio/aceptado y
+   29-e-pedido-programado. Posiciones absolutas en px de la pantalla de 414×896 o relativas a su tarjeta. */
+
+/* ── tarjeta del pedido (29-e-pedido-programado, con la urgencia) ──────── */
+/* lo de arriba queda fijo; la cita crece --ap-ea-crece (20 por renglón extra) y empuja lo del medio; los botones y el pie
+   van desde --ap-ea-botones (los pone tarjetaPedido con medidasPedido) */
+.ap-ea-pedido { position: absolute; width: 382px; height: 402.9px; border-radius: 28px; --ap-ea-crece: 20px; --ap-ea-botones: 306px; }
+.ap-ea-pedido > * { position: absolute; }
+.ap-ea-pedido-icono { left: 19.6px; top: 21.1px; width: 51.2px; height: 54.2px; }
+.ap-ea-pedido-icono-canto,
+.ap-ea-pedido-icono-cara { position: absolute; left: 0; width: 51.2px; height: 51.3px; border-radius: 15px; }
+.ap-ea-pedido-icono-canto { top: 2.9px; background: var(--ap-azul-canto); }
+.ap-ea-pedido-icono-cara {
+  top: 0;
+  background: var(--ap-azul);
+  color: var(--ap-blanco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-ea-pedido-rotulo { left: 84.1px; top: 19.3px; font-size: 11.3px; line-height: 14.3px; letter-spacing: 0.15em; color: #5F6B84; }
+.ap-ea-pedido-titulo { left: 83.9px; top: 48.4px; font-size: 24px; font-stretch: 118%; white-space: nowrap; }
+.ap-ea-pedido-etiqueta { right: 82.4px; top: 36.6px; line-height: 0; }
+.ap-ea-pedido-etiqueta .ap-etiqueta { height: 19.6px; padding: 0 6.2px 0 5.6px; gap: 4px; }
+.ap-ea-pedido-etiqueta .ap-etiqueta-texto { font-size: 12.6px; }
+.ap-ea-pedido-cerrar {
+  left: 314.7px;
+  top: 23px;
+  width: 48.5px;
+  height: 48.5px;
+  border-radius: 50%;
+  background: var(--ap-gris-ficha);
+  color: var(--ap-tinta);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-ea-pedido-cita {
+  left: 19.6px;
+  top: 89.2px;
+  width: 344.2px;
+  height: calc(40.7px + var(--ap-ea-crece));
+  padding: 10.4px 12px 0 11.6px;
+  border-radius: 14px;
+  background: var(--ap-fondo-seccion);
+  font: 400 14.4px/19.5px var(--ap-font);
+  color: var(--ap-tinta-2);
+}
+.ap-ea-pedido-sugiere { left: 19.6px; top: calc(145.4px + var(--ap-ea-crece)); font: 600 12.8px/1 var(--ap-font); color: #5F6B84; white-space: nowrap; }
+.ap-ea-pedido-monto { left: 19.3px; top: calc(162.6px + var(--ap-ea-crece)); font-size: 33.5px; font-stretch: 105%; color: var(--ap-azul); white-space: nowrap; }
+.ap-ea-pedido-pones {
+  right: 18.2px;
+  top: calc(173.2px + var(--ap-ea-crece));
+  height: 21.8px;
+  padding: 0 7.8px 0 6.4px;
+  border-radius: 999px;
+  background: var(--ap-amarillo);
+  color: var(--ap-tinta);
+  display: flex;
+  align-items: center;
+  gap: 4.5px;
+  font: 700 12.6px/1 var(--ap-font);
+  white-space: nowrap;
+}
+.ap-ea-pedido-dato {
+  top: calc(211px + var(--ap-ea-crece));
+  height: 59px;
+  border-radius: 16px;
+  background: var(--ap-celeste);
+}
+.ap-ea-pedido-dato > span { position: absolute; left: 12.6px; white-space: nowrap; }
+.ap-ea-pedido-dato-rotulo { top: 10.4px; font: 600 11.8px/1 var(--ap-font); color: #5F6B84; }
+.ap-ea-pedido-dato-valor {
+  top: 30px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 15.1px/1 var(--ap-font);
+  color: var(--ap-azul);
+}
+.ap-ea-pedido-ubicacion {
+  left: 19.6px;
+  top: calc(284.3px + var(--ap-ea-crece));
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 14.2px/1 var(--ap-font);
+  color: var(--ap-tinta-2);
+  white-space: nowrap;
+}
+.ap-ea-pedido-ubicacion .ap-icono { color: var(--ap-rojo); }
+.ap-ea-pedido-aceptar { left: 19.6px; top: var(--ap-ea-botones); }
+.ap-ea-pedido-otro { left: 197.5px; top: var(--ap-ea-botones); }
+.ap-ea-pedido .ap-boton .ap-boton-cara { border-radius: 18px; padding: 0 12px; }
+.ap-ea-pedido .ap-boton-texto { font-size: 15.4px; }
+.ap-ea-pedido-otro .ap-boton-cara { white-space: normal; }
+.ap-ea-pedido-otro .ap-boton-texto { text-align: center; line-height: 16.5px; }
+.ap-ea-pedido-pie {
+  left: 0;
+  right: 0;
+  top: calc(var(--ap-ea-botones) + 64.8px);
+  margin: 0;
+  text-align: center;
+  font: 500 12.6px/1 var(--ap-font);
+  color: #5F6B84;
+}
+
+/* ── ruta del mapa (29): halos, puntitos, el yo y el pin ───────────────── */
+.ap-ea-ruta { position: absolute; left: 0; top: 0; width: 414px; height: 896px; pointer-events: none; }
+.ap-ea-ruta > * { position: absolute; }
+.ap-ea-ruta-puntos { left: 0; top: 0; display: block; overflow: visible; }
+.ap-ea-ruta-punto { stroke: #2457A6; stroke-width: 4.6px; stroke-linecap: round; fill: none; }
+/* halos: círculos centrados en su punto (el span mide 0×0 y está en el punto: escalar con el origen en el centro) */
+.ap-ea-ruta-halo { width: 0; height: 0; }
+.ap-ea-ruta-halo::before { content: ''; position: absolute; border-radius: 50%; }
+.ap-ea-ruta-halo[data-halo="yo"]::before { left: -38.5px; top: -38.5px; width: 77px; height: 77px; background: rgba(47, 107, 255, 0.045); }
+.ap-ea-ruta-halo[data-halo="pin"]::before { left: -34.5px; top: -34.5px; width: 69px; height: 69px; background: rgba(229, 57, 47, 0.045); }
+.ap-ea-ruta-yo { width: 0; height: 0; }
+.ap-ea-ruta-yo-punto {
+  position: absolute;
+  left: -9.2px;
+  top: -9.2px;
+  width: 18.4px;
+  height: 18.4px;
+  border-radius: 50%;
+  background: var(--ap-azul-vivo);
+  box-shadow: 0 0 0 4.2px var(--ap-blanco), 0 2px 6px 3px rgba(14, 29, 54, 0.12);
+}
+.ap-ea-ruta-pin { width: 0; height: 0; }
+.ap-ea-ruta-pin svg { position: absolute; left: -16px; top: -39.5px; display: block; overflow: visible; filter: none; }
+
+/* ── hoja "Tu precio" completa: ventana que recorta y cuerpo desplazable ── */
+/* la ventana va de lado a lado de la hoja, desde debajo del filete (y 175,3 de la pantalla) hasta abajo */
+.ap-ea-precio-ventana { position: absolute; left: -25.1px; top: -15px; width: 392.8px; height: 720.7px; overflow: hidden; }
+.ap-ea-precio-desplazable { position: absolute; left: 25.1px; top: 15px; width: 343.4px; height: 900px; }
+/* Recibís con los montos apilados y "Enviar presupuesto" debajo */
+/* el detalle va en semi negrita en 03-e-precio (ui/precio.css lo deja en 500) */
+.ap-ea-recibis .ap-precio-recibis-detalle { font-weight: 600; font-size: 12.7px; }
+.ap-precio-caja .ap-ea-precio-enviar { left: 0; top: 521.2px; }
+
+/* ── presupuesto enviado (10-e-aceptado) ───────────────────────────────── */
+.ap-ea-emblema { position: absolute; left: 207px; top: 223px; width: 0; height: 0; }
+.ap-ea-emblema > * { position: absolute; }
+.ap-ea-emblema-anillo { border-radius: 50%; }
+.ap-ea-emblema-anillo[data-anillo="3"] { left: -94.3px; top: -94.3px; width: 188.6px; height: 188.6px; box-shadow: inset 0 0 0 2.6px #E7ECF4; }
+.ap-ea-emblema-anillo[data-anillo="2"] { left: -81.1px; top: -81.1px; width: 162.2px; height: 162.2px; box-shadow: inset 0 0 0 2.6px #ADC0DD; }
+.ap-ea-emblema-anillo[data-anillo="1"] { left: -69.1px; top: -69.1px; width: 138.2px; height: 138.2px; box-shadow: inset 0 0 0 2.3px #D4DEEE; }
+.ap-ea-emblema-fondo {
+  left: -64px;
+  top: -64px;
+  width: 128px;
+  height: 128px;
+  border-radius: 24px;
+  background: var(--ap-gris-ficha);
+  transform: rotate(-4deg);
+}
+.ap-ea-emblema-handy { left: 4px; top: 6px; width: 0; height: 0; line-height: 0; }
+/* el engranaje va un poco inclinado, como en la foto (el giro fijo va adentro: la escena mueve .ap-ea-emblema-handy) */
+.ap-ea-emblema-giro { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%) rotate(12deg); transform-origin: 50% 50%; }
+
+.ap-ea-acept-rotulo { position: absolute; left: 0; right: 0; top: 320.9px; text-align: center; font-size: 11.4px; letter-spacing: 0.135em; color: #5F6B84; }
+.ap-ea-acept-titulo { position: absolute; left: 0; right: 0; top: 344px; text-align: center; }
+.ap-ea-acept-texto {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 414px;
+  text-align: center;
+  font: 400 15.3px/20.8px var(--ap-font);
+  color: #5B6780;
+}
+
+/* puntitos de "escribiendo": cada punto con su capa clara y la oscura encima */
+.ap-ea-escribiendo { position: absolute; left: 172.8px; top: 471.3px; width: 68px; height: 35.4px; border-radius: 999px; background: var(--ap-celeste); }
+.ap-ea-punto { position: absolute; top: 12.3px; width: 8.8px; height: 8.8px; }
+.ap-ea-punto[data-i="0"] { left: 16.6px; }
+.ap-ea-punto[data-i="1"] { left: 29.6px; }
+.ap-ea-punto[data-i="2"] { left: 43.3px; }
+.ap-ea-punto-claro,
+.ap-ea-punto-oscuro { position: absolute; inset: 0; border-radius: 50%; }
+.ap-ea-punto-claro { background: #7195C9; }
+.ap-ea-punto-oscuro { background: #2C60AD; }
+
+/* tarjeta-ticket con el desglose */
+.ap-ea-resumen { position: absolute; left: 24px; top: 528px; width: 366px; height: 264.1px; border-radius: 24.5px; }
+.ap-ea-resumen > * { position: absolute; }
+.ap-ea-resumen-icono { left: 19.3px; top: 15.4px; width: 51px; height: 54.3px; }
+.ap-ea-resumen-icono-canto,
+.ap-ea-resumen-icono-cara { position: absolute; left: 0; width: 51px; height: 51px; border-radius: 16px; }
+.ap-ea-resumen-icono-canto { top: 3.3px; background: var(--ap-canto-ficha); }
+.ap-ea-resumen-icono-cara { top: 0; background: var(--ap-gris-ficha); color: var(--ap-azul); display: flex; align-items: center; justify-content: center; }
+.ap-ea-resumen-titulo { left: 84.6px; top: 23px; font: 700 16.5px/1 var(--ap-font); color: var(--ap-tinta); white-space: nowrap; }
+.ap-ea-resumen-cuando { left: 84.6px; top: 44.1px; font: 400 13.1px/1 var(--ap-font); color: #5F6B84; white-space: nowrap; }
+.ap-ea-resumen-etiqueta { right: 18.4px; top: 30px; line-height: 0; }
+.ap-ea-resumen-etiqueta .ap-etiqueta { height: 19.6px; padding: 0 6.3px 0 5.7px; gap: 4px; }
+.ap-ea-resumen-etiqueta .ap-etiqueta-texto { font-size: 13px; }
+.ap-ea-resumen-muesca { top: 70.5px; width: 23px; height: 23px; border-radius: 50%; background: #EEEFF1; }
+.ap-ea-resumen-muesca[data-lado="izq"] { left: -11.5px; box-shadow: inset -2px 0 4px rgba(14, 29, 54, 0.05); }
+.ap-ea-resumen-muesca[data-lado="der"] { right: -11.5px; box-shadow: inset 2px 0 4px rgba(14, 29, 54, 0.05); }
+.ap-ea-resumen-punteado {
+  left: 16.6px;
+  top: 81.2px;
+  width: 333px;
+  height: 2.5px;
+  background: repeating-linear-gradient(90deg, #D8DBDF 0 8px, transparent 8px 13.1px);
+}
+.ap-ea-resumen-desglose { left: 20.6px; right: 20.6px; top: 94px; }
+.ap-ea-resumen .ap-desglose-fila .ap-desglose-texto { font-size: 14.5px; color: var(--ap-tinta-2); }
+.ap-ea-resumen .ap-desglose-fila[data-fuerte] .ap-desglose-texto { color: var(--ap-tinta); }
+.ap-ea-resumen .ap-desglose-monto { font-size: 14.4px; }
+.ap-ea-resumen .ap-desglose-total .ap-desglose-texto { font-size: 16.6px; }
+.ap-ea-resumen .ap-desglose-total-monto { font-size: 16.5px; }
+
+/* pie blanco con "Esperando al cliente" (sombra hacia arriba) */
+.ap-ea-acept-pie {
+  position: absolute;
+  left: 0;
+  top: 808px;
+  width: 414px;
+  height: 120px;
+  background: var(--ap-blanco);
+  box-shadow: 0 -12px 22px -6px rgba(14, 29, 54, 0.07);
+}
+.ap-ea-acept-pie .ap-boton { position: absolute; left: 26.2px; top: 16.4px; }
+.ap-ea-acept-esperando .ap-boton-cara { border-radius: 20px; color: #5F6B84; gap: 11px; }
+.ap-ea-acept-esperando .ap-boton-texto { font-size: 16.6px; }

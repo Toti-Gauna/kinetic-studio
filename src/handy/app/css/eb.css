@@ -1,0 +1,454 @@
+/* Especialista, segunda parte (app/especialista-trabajo.ts): agenda, chat con el cliente, en camino, trabajo, fin, cobros
+   y la reseña. Posiciones absolutas medidas en las fotos (px de la pantalla de 414×896). Prefijo ap-eb-.
+   Lo de abajo de todo (campo del chat, botonera del trabajo y del fin) sube 18 px respecto de la foto (914 → 896). */
+
+/* ── piezas compartidas ─────────────────────────────────────────────────── */
+.ap-eb { --ap-eb-gris: #5F6B84; }
+.ap-eb > .ap-abs { position: absolute; }
+
+/* botón volver: cara + canto (gris en el chat, blanco sobre el mapa) o plano claro (Cobros) */
+.ap-eb-volver { position: absolute; display: block; color: var(--ap-tinta); }
+.ap-eb-volver-canto,
+.ap-eb-volver-cara { position: absolute; left: 0; width: 100%; border-radius: 16px; }
+.ap-eb-volver-canto { background: var(--ap-canto-ficha); }
+.ap-eb-volver-cara { top: 0; display: flex; align-items: center; justify-content: center; }
+.ap-eb-volver[data-tono="gris"] .ap-eb-volver-cara { background: var(--ap-gris-ficha); }
+.ap-eb-volver[data-tono="blanco"] .ap-eb-volver-cara { background: var(--ap-blanco); }
+.ap-eb-volver[data-tono="blanco"] .ap-eb-volver-canto { box-shadow: 0 8px 18px -6px rgba(14, 29, 54, 0.28); }
+.ap-eb-volver[data-tono="claro"] .ap-eb-volver-cara { background: #F1F2F5; border-radius: 18px; }
+
+/* cuadrito con ícono (ficha gris con canto, celeste o verde plano) */
+.ap-eb-cuadro { position: absolute; display: block; color: var(--ap-azul); }
+.ap-eb-cuadro-canto,
+.ap-eb-cuadro-cara { position: absolute; left: 0; width: 100%; border-radius: 16px; }
+.ap-eb-cuadro-canto { background: var(--ap-canto-ficha); }
+.ap-eb-cuadro-cara { top: 0; background: var(--ap-gris-ficha); display: flex; align-items: center; justify-content: center; }
+.ap-eb-cuadro[data-tono="celeste"] .ap-eb-cuadro-cara { background: var(--ap-celeste); border-radius: 14px; }
+.ap-eb-cuadro[data-tono="verde"] .ap-eb-cuadro-cara { background: var(--ap-verde-fondo); border-radius: 14px; color: var(--ap-verde); }
+.ap-eb-cuadro[data-tono="celeste-canto"] .ap-eb-cuadro-cara { background: var(--ap-celeste); border-radius: 18px; }
+.ap-eb-cuadro[data-tono="celeste-canto"] .ap-eb-cuadro-canto { background: #C6D4EE; border-radius: 18px; }
+
+/* tarjeta-ticket de la cuenta (15-e-trabajo, 19-e-fin): encabezado, muescas, punteado y el desglose */
+.ap-eb-cuenta { position: absolute; width: 366.3px; border-radius: 28px; }
+.ap-eb-cuenta > * { position: absolute; }
+.ap-eb-cuenta .ap-eb-cuadro { left: 18.3px; top: 15.7px; width: 52.3px; height: 55px; }
+.ap-eb-cuenta-titulo { left: 84.6px; top: 22.8px; font: 700 16.5px/1 var(--ap-font); color: var(--ap-tinta); white-space: nowrap; }
+.ap-eb-cuenta-detalle { left: 84.6px; top: 44.6px; font: 400 13.1px/1 var(--ap-font); color: var(--ap-eb-gris); white-space: nowrap; }
+.ap-eb-cuenta-etiqueta { right: 18.3px; top: 30.4px; line-height: 0; }
+.ap-eb-cuenta-muesca {
+  top: 69.7px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #F1F2F5;
+}
+.ap-eb-cuenta-muesca[data-lado="izq"] { left: -12px; }
+.ap-eb-cuenta-muesca[data-lado="der"] { right: -12px; }
+.ap-eb-cuenta-punteado {
+  left: 17px;
+  top: 82.1px;
+  width: 332.6px;
+  height: 2.5px;
+  background: repeating-linear-gradient(90deg, #D8DBDF 0 8px, transparent 8px 13.1px);
+}
+.ap-eb-cuenta-desglose { left: 20.6px; top: 96.9px; width: 325px; }
+.ap-eb-cuenta .ap-desglose-total { height: 36.8px; }
+.ap-eb-cuenta .ap-desglose-total-monto { font-size: 16.4px; }
+/* en las cuentas del especialista los conceptos van en tinta (en el cliente, 09-u-confirmar, en gris) */
+.ap-eb-cuenta .ap-desglose-fila .ap-desglose-texto,
+.ap-eb-cob-mov-detalle .ap-desglose-fila .ap-desglose-texto { color: var(--ap-tinta); }
+
+/* ── 11/12-e-chat · chat con el cliente ─────────────────────────────────── */
+.ap-eb-chat { background: var(--ap-fondo-seccion); }
+.ap-eb-chat-cabeza {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 414px;
+  height: 119px;
+  background: var(--ap-blanco);
+  border-radius: 0 0 28px 28px;
+  box-shadow: 0 8px 22px -10px rgba(14, 29, 54, 0.16);
+  z-index: 3;
+}
+.ap-eb-chat-cabeza > * { position: absolute; }
+.ap-eb-chat-avatar { left: 87.7px; top: 58.9px; line-height: 0; }
+.ap-eb-chat-avatar .ap-avatar-iniciales { font-stretch: 125%; }
+.ap-eb-chat-nombre { left: 141px; top: 61.4px; font: 700 17.3px/1 var(--ap-font); color: var(--ap-tinta); white-space: nowrap; }
+.ap-eb-chat-detalle { left: 141px; top: 83.9px; font: 400 13px/1 var(--ap-font); color: var(--ap-eb-gris); white-space: nowrap; }
+
+.ap-eb-chat-hilo { position: absolute; left: 0; top: 0; width: 414px; height: 672px; }
+.ap-eb-chat-msj { position: absolute; left: 20px; right: 19.6px; display: flex; flex-direction: column; }
+.ap-eb-chat-fecha { left: 0; right: 0; }
+
+.ap-eb-chat-panel {
+  position: absolute;
+  left: 0;
+  top: 672px;
+  width: 414px;
+  height: 224px;
+  background: var(--ap-blanco);
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -6px 18px -6px rgba(14, 29, 54, 0.12);
+  z-index: 3;
+}
+.ap-eb-chat-panel > * { position: absolute; }
+.ap-eb-chat-acciones { left: 19.6px; top: 13.3px; width: 400px; }
+.ap-eb-chat-acciones .ap-acciones-fila .ap-boton-cara { border-radius: 26px; }
+.ap-eb-chat-acciones .ap-acciones { gap: 20px; }
+.ap-eb-chat-acciones .ap-acciones-fila[data-fila="2"] { gap: 9px; }
+.ap-eb-chat-acciones .ap-boton[data-tam] .ap-boton-cara { padding: 0 14.3px; gap: 5px; }
+.ap-eb-chat-acciones .ap-boton[data-tam] .ap-boton-texto { font-size: 13.6px; }
+.ap-eb-chat-acciones .ap-chip[data-tam] .ap-chip-base,
+.ap-eb-chat-acciones .ap-chip[data-tam] .ap-chip-sel { padding: 0 10.5px; }
+.ap-eb-chat-atajo { position: relative; display: inline-flex; flex: none; }
+/* campo del mensaje de 11/12-e-chat: más grande que el de fase 1 (52 · 50 · 52,4) */
+.ap-eb-chat-campo { left: 19.6px; top: 151px; width: 374.8px; }
+.ap-eb-chat-campo .ap-campo { align-items: flex-start; }
+.ap-eb-chat-campo .ap-campo-adjuntar { width: 52px; height: 52px; }
+.ap-eb-chat-campo .ap-campo-entrada { height: 50px; border-radius: 25px; }
+.ap-eb-chat-campo .ap-campo-placeholder,
+.ap-eb-chat-campo .ap-campo-escrito { left: 16px; font-size: 16.3px; line-height: 50px; }
+.ap-eb-chat-campo .ap-campo-placeholder { color: #5F6B84; }
+.ap-eb-chat-campo .ap-campo .ap-campo-adjuntar .ap-icono { width: 24px; height: 24px; }
+.ap-eb-chat-campo .ap-campo-enviar { width: 52.4px; height: 56.4px; }
+.ap-eb-chat-campo .ap-campo-enviar-canto,
+.ap-eb-chat-campo .ap-campo-enviar-cara { width: 52.4px; height: 52.4px; }
+
+/* ── 13/14-e-en-camino ──────────────────────────────────────────────────── */
+.ap-eb-camino .ap-encabezado-campana { left: 336.9px; }
+.ap-eb-cam-vos { position: absolute; width: 0; height: 0; }
+.ap-eb-cam-vos-halo,
+.ap-eb-cam-vos-disco { position: absolute; border-radius: 50%; }
+.ap-eb-cam-vos-halo { left: -20px; top: -20px; width: 40px; height: 40px; background: rgba(255, 255, 255, 0.6); }
+.ap-eb-cam-vos-disco {
+  left: -14.25px;
+  top: -14.25px;
+  width: 28.5px;
+  height: 28.5px;
+  background: var(--ap-azul);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-eb-cam-vos-texto { font: 900 13.4px/1 var(--ap-display); font-stretch: 125%; color: var(--ap-blanco); letter-spacing: -0.01em; margin-top: 1px; }
+.ap-eb-cam-distancia {
+  position: absolute;
+  right: 12px;
+  top: 128.3px;
+  height: 27.4px;
+  padding: 0 10.5px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 999px;
+  background: var(--ap-blanco);
+  box-shadow: 0 6px 16px -6px rgba(14, 29, 54, 0.25);
+  color: var(--ap-azul);
+  font: 700 13.5px/1 var(--ap-font);
+  white-space: nowrap;
+}
+.ap-eb-cam-distancia .ap-icono { color: #E5322D; }
+.ap-eb-cam-distancia[data-estado="llegaste"] { color: var(--ap-verde); }
+.ap-eb-cam-distancia[data-estado="llegaste"] .ap-icono { color: var(--ap-verde); }
+
+.ap-eb-cam-panel {
+  position: absolute;
+  left: 0;
+  top: 306px;
+  width: 414px;
+  height: 640px;
+  background: var(--ap-azul);
+  border-radius: 40px 40px 0 0;
+  z-index: 6;
+}
+.ap-eb-cam-panel > * { position: absolute; }
+.ap-eb-cam-asa { left: 178.3px; top: 12.3px; width: 57.7px; height: 4.7px; border-radius: 3px; background: rgba(255, 255, 255, 0.75); }
+.ap-eb-cam-rotulo.ap-rotulo { left: 24px; top: 35.4px; color: #C4D2E8; }
+.ap-eb-cam-titulo { left: 24px; top: 54.4px; font-size: 24px; line-height: 26.3px; font-stretch: 122%; color: var(--ap-blanco); white-space: nowrap; }
+.ap-eb-cam-hora { left: 24.8px; top: 112.4px; display: flex; align-items: center; gap: 7.6px; color: #D7E1F0; font: 600 14.2px/1 var(--ap-font); white-space: nowrap; }
+.ap-eb-cam-pasos { left: 23.7px; top: 147.6px; }
+.ap-eb-cam-aviso,
+.ap-eb-cam-cliente { left: 23.7px; width: 366.3px; border-radius: 26px; background: var(--ap-blanco); }
+.ap-eb-cam-aviso { top: 224.7px; height: 86px; }
+.ap-eb-cam-cliente { top: 329.3px; height: 83.4px; }
+.ap-eb-cam-aviso > *,
+.ap-eb-cam-cliente > * { position: absolute; }
+.ap-eb-cam-aviso .ap-eb-cuadro { left: 14.6px; top: 14.3px; width: 45px; height: 45.3px; }
+.ap-eb-cam-aviso-titulo { left: 73.3px; top: 14.7px; font: 700 15.8px/1 var(--ap-font); color: var(--ap-tinta); white-space: nowrap; }
+.ap-eb-cam-aviso-texto { left: 73.3px; top: 37.4px; font: 400 13px/17.7px var(--ap-font); color: #26324A; white-space: nowrap; }
+.ap-eb-cam-cliente-avatar { left: 14.6px; top: 15.5px; line-height: 0; }
+.ap-eb-cam-cliente-avatar .ap-avatar-iniciales { font-stretch: 125%; }
+.ap-eb-cam-cliente-nombre { left: 81.3px; top: 15.8px; font: 700 16.2px/1 var(--ap-font); color: var(--ap-tinta); white-space: nowrap; }
+.ap-eb-cam-cliente-texto { left: 81.3px; top: 35.8px; font: 400 12.8px/15.7px var(--ap-font); color: var(--ap-eb-gris); white-space: nowrap; }
+.ap-eb-cam-cliente-chat {
+  left: 302.3px;
+  top: 16.4px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--ap-azul);
+  color: var(--ap-blanco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── 15-e-trabajo ───────────────────────────────────────────────────────── */
+.ap-eb-sin-botones .ap-encabezado-campana,
+.ap-eb-sin-botones .ap-encabezado-ubicacion { display: none; }
+.ap-eb-crono {
+  position: absolute;
+  left: 306.7px;
+  top: 63.3px;
+  width: 83.3px;
+  height: 37.4px;
+  border-radius: 18.7px;
+  background: var(--ap-tinta-2);
+  color: var(--ap-blanco);
+}
+.ap-eb-crono > * { position: absolute; }
+.ap-eb-crono-halo,
+.ap-eb-crono-punto { border-radius: 50%; }
+.ap-eb-crono-halo { left: 9.6px; top: 11.4px; width: 14px; height: 14px; background: rgba(242, 107, 91, 0.45); }
+.ap-eb-crono-punto { left: 11.6px; top: 13.4px; width: 10px; height: 10px; background: #F26B5B; }
+.ap-eb-crono-digitos { left: 27.4px; top: 9.3px; height: 19px; display: flex; font: 700 17.2px/19px var(--ap-font); font-variant-numeric: tabular-nums; }
+.ap-eb-crono-rueda { position: relative; width: 9.9px; height: 19px; overflow: hidden; }
+.ap-eb-crono-tira { position: absolute; left: 0; top: 0; width: 100%; display: flex; flex-direction: column; }
+.ap-eb-crono-tira > span { display: block; height: 19px; text-align: center; }
+.ap-eb-crono-dos { width: 5.2px; text-align: center; margin-top: -1px; }
+
+.ap-eb-trab-rotulo { left: 24px; top: 134.3px; }
+.ap-eb-trab-titulo { left: 24px; top: 154.6px; white-space: nowrap; }
+.ap-eb-trab-tags { left: 23.7px; top: 231px; display: flex; gap: 8.3px; }
+.ap-eb-trab-tags .ap-etiqueta { height: 19px; }
+.ap-eb-trab-pedido { left: 23.7px; top: 268.3px; width: 366.3px; height: 96.7px; border-radius: 28px; background: var(--ap-fondo-seccion); }
+.ap-eb-trab-pedido > * { position: absolute; }
+.ap-eb-trab-foto { left: 12px; top: 11.7px; width: 98px; height: 74.3px; border-radius: 14px; overflow: hidden; line-height: 0; }
+.ap-eb-trab-pedido-rotulo { left: 126.6px; top: 21.1px; font: 700 12.3px/1 var(--ap-font); color: var(--ap-eb-gris); white-space: nowrap; }
+.ap-eb-trab-pedido-texto { left: 126.6px; top: 39.2px; font: 400 14.35px/19.4px var(--ap-font); color: var(--ap-tinta); white-space: nowrap; }
+.ap-eb-trab-rotulo-2 { left: 24px; top: 387.1px; }
+.ap-eb-trab-agregar {
+  left: 23.7px;
+  top: 411.7px;
+  width: 366.3px;
+  height: 54px;
+  border-radius: 22px;
+  border: 1.6px dashed var(--ap-canto-ficha);
+}
+.ap-eb-trab-agregar > * { position: absolute; }
+.ap-eb-trab-agregar .ap-eb-cuadro { left: 10.4px; top: 7px; width: 36.3px; height: 36.7px; }
+.ap-eb-trab-agregar .ap-eb-cuadro-cara { border-radius: 12px; }
+.ap-eb-trab-agregar-texto { left: 57.4px; top: 17px; font: 700 15.8px/1 var(--ap-font); color: var(--ap-azul); white-space: nowrap; }
+.ap-eb-trab-links { left: 0; top: 771px; width: 414px; height: 20px; }
+.ap-eb-trab-link { position: absolute; top: 0; display: flex; align-items: center; gap: 8.4px; font: 700 14.5px/20px var(--ap-font); white-space: nowrap; }
+.ap-eb-trab-link[data-link="ayuda"] { left: 44.3px; color: var(--ap-azul); }
+.ap-eb-trab-link[data-link="cancelar"] { left: 226.3px; color: var(--ap-rojo); }
+
+/* botonera de abajo (15-e-trabajo, 19-e-fin): blanca con un fundido arriba */
+.ap-eb-pie {
+  position: absolute;
+  left: 0;
+  width: 414px;
+  background: var(--ap-blanco);
+  box-shadow: 0 -14px 22px -4px rgba(255, 255, 255, 0.92), 0 -1px 0 rgba(14, 29, 54, 0.03);
+  z-index: 4;
+}
+.ap-eb-pie > * { position: absolute; }
+.ap-eb-pie-chat { left: 23.7px; top: 17px; width: 60px; height: 64.7px; }
+.ap-eb-pie-chat .ap-eb-cuadro { left: 0; top: 0; width: 100%; height: 100%; }
+.ap-eb-pie-chat .ap-eb-cuadro-cara { color: var(--ap-azul); }
+.ap-eb-trab-terminar { left: 94.3px; top: 19.7px; }
+.ap-eb-trab-terminar .ap-boton-texto { font-size: 16.6px; }
+.ap-eb-trab-terminar .ap-icono { width: 19px; height: 19px; }
+.ap-eb-trab-terminar .ap-boton-cara { gap: 14px; padding-left: 26px; }
+
+/* ── 19-e-fin ───────────────────────────────────────────────────────────── */
+.ap-eb-fin-ilustracion { position: absolute; left: 0; top: 0; width: 414px; height: 320px; }
+.ap-eb-fin-ilustracion > * { position: absolute; }
+.ap-eb-fin-cuadro {
+  left: 128.4px;
+  top: 152.4px;
+  width: 156px;
+  height: 148px;
+  border-radius: 34px;
+  background: var(--ap-amarillo);
+  transform: rotate(-5deg);
+}
+.ap-eb-fin-handys { left: 0; top: 0; line-height: 0; }
+.ap-eb-fin-handys > * { position: absolute; }
+.ap-eb-fin-tilde {
+  left: 241.9px;
+  top: 128px;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--ap-blanco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-eb-fin-tilde-disco {
+  width: 55.2px;
+  height: 55.2px;
+  border-radius: 50%;
+  background: var(--ap-verde);
+  color: var(--ap-blanco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-eb-fin-rotulo { left: 0; width: 414px; top: 318.2px; text-align: center; }
+.ap-eb-fin-titulo { left: 0; width: 414px; top: 339.2px; text-align: center; white-space: nowrap; }
+.ap-eb-fin-ganaste { left: 0; width: 414px; top: 418.4px; text-align: center; font: 700 15px/1 var(--ap-font); color: var(--ap-eb-gris); }
+.ap-eb-fin-monto { left: 0; width: 414px; top: 438.5px; text-align: center; font-size: 47px; font-stretch: 112%; color: var(--ap-verde); white-space: nowrap; }
+.ap-eb-fin-cuenta { left: 24px; top: 506px; height: 400px; }
+.ap-eb-fin-cuenta .ap-etiqueta { height: 17.6px; padding: 0 9px 0 8px; gap: 5px; }
+.ap-eb-fin-cuenta .ap-etiqueta-texto { font-size: 12.9px; }
+.ap-eb-fin-pie { top: 736px; height: 160px; }
+.ap-eb-fin-pie .ap-boton[data-accion="ver-agenda"] { left: 24px; top: 16.2px; }
+.ap-eb-fin-pie .ap-boton[data-accion="volver-inicio"] { left: 24px; top: 82.7px; }
+
+/* ── 20/21-e-turnos · Tu agenda ─────────────────────────────────────────── */
+.ap-eb-ag-titulo { left: 24px; top: 132.4px; white-space: nowrap; }
+.ap-eb-ag-cal { left: 23px; top: 178.3px; }
+.ap-eb-ag-rotulo { left: 24.7px; top: 556.6px; }
+.ap-eb-ag-turno { left: 23.7px; top: 582.7px; width: 367px; height: 150.6px; }
+.ap-eb-ag-turno > * { position: absolute; }
+.ap-eb-ag-turno-cara {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 146.3px;
+  border-radius: 26px;
+  background: var(--ap-blanco);
+  overflow: hidden;
+  box-shadow: 0 10px 26px -8px rgba(14, 29, 54, 0.14), inset 0 0 0 1px #EEF0F3;
+}
+.ap-eb-ag-turno-canto { left: 0; top: 4.3px; width: 100%; height: 146.3px; border-radius: 26px; background: var(--ap-canto-ficha); }
+.ap-eb-ag-turno-cara > * { position: absolute; }
+.ap-eb-ag-turno .ap-eb-cuadro { left: 15.6px; top: 23.3px; width: 51px; height: 54.7px; }
+.ap-eb-ag-turno-titulo { left: 81px; top: 12.1px; font: 700 14.6px/17.3px var(--ap-font); color: var(--ap-tinta); white-space: nowrap; }
+.ap-eb-ag-turno-lugar { left: 81px; top: 51.2px; font: 400 12.3px/1 var(--ap-font); color: var(--ap-eb-gris); white-space: nowrap; }
+.ap-eb-ag-turno-hora { left: 80.6px; top: 70.1px; display: flex; align-items: center; gap: 3.6px; font: 400 12.3px/1 var(--ap-font); color: var(--ap-eb-gris); white-space: nowrap; }
+.ap-eb-ag-turno-monto { right: 14.7px; top: 32.6px; font: 700 16px/1 var(--ap-font); color: var(--ap-verde); white-space: nowrap; }
+.ap-eb-ag-turno-estado { right: 14.7px; top: 52.2px; font: 700 11px/1 var(--ap-font); color: #3F4A5E; white-space: nowrap; }
+.ap-eb-ag-turno-mas {
+  left: 0;
+  top: 98.3px;
+  width: 100%;
+  height: 48px;
+  background: #EBEBEB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 12.8px/1 var(--ap-font);
+  color: var(--ap-tinta);
+}
+
+/* ── 41-e-caja · Cobros ─────────────────────────────────────────────────── */
+.ap-eb-cob-volver { left: 23.7px; top: 129.3px; width: 55px; height: 56.4px; }
+.ap-eb-cob-titulo { left: 96.7px; top: 147.4px; font-size: 20.5px; font-stretch: 120%; white-space: nowrap; }
+.ap-eb-cob-tarjeta { left: 23.7px; top: 201.7px; width: 366.6px; height: 199.3px; }
+.ap-eb-cob-tarjeta > * { position: absolute; }
+.ap-eb-cob-tarjeta-canto { left: 0; top: 5.3px; width: 100%; height: 194px; border-radius: 30px; background: #0E1626; }
+.ap-eb-cob-tarjeta-cara { left: 0; top: 0; width: 100%; height: 194px; border-radius: 30px; background: var(--ap-tinta-2); overflow: hidden; }
+.ap-eb-cob-tarjeta-cara > * { position: absolute; }
+.ap-eb-cob-esquina { left: 0; top: 0; display: block; }
+.ap-eb-cob-rotulo.ap-rotulo { left: 21px; top: 37.1px; color: #B8BCC6; }
+.ap-eb-cob-clave { left: 21px; font: 700 11.9px/1 var(--ap-font); color: #B8BCC6; white-space: nowrap; }
+.ap-eb-cob-clave[data-clave="cbu"] { top: 82.5px; }
+.ap-eb-cob-clave[data-clave="alias"] { top: 136.3px; }
+.ap-eb-cob-numero { left: 21px; top: 98.8px; display: flex; align-items: center; gap: 0; color: var(--ap-blanco); white-space: nowrap; }
+.ap-eb-cob-puntos { display: flex; gap: 4.3px; margin-right: 8.8px; }
+.ap-eb-cob-puntos i { display: block; width: 6.1px; height: 6.1px; border-radius: 50%; background: var(--ap-blanco); }
+.ap-eb-cob-ultimos { font: 900 20.4px/1 var(--ap-display); font-stretch: 100%; letter-spacing: 0.035em; margin-left: -1.4px; }
+.ap-eb-cob-alias { left: 21px; top: 153.8px; font: 700 16.5px/1 var(--ap-font); color: var(--ap-amarillo); white-space: nowrap; }
+.ap-eb-cob-editar { left: 254.3px; top: 19.3px; }
+.ap-eb-cob-editar.ap-boton[data-variante="blanco"] { --ap-canto: #C9D0DC; }
+.ap-eb-cob-editar .ap-boton-cara { border-radius: 16px; gap: 9px; }
+.ap-eb-cob-editar .ap-boton-canto { border-radius: 16px; }
+.ap-eb-cob-editar .ap-boton-texto { font-size: 14.8px; color: var(--ap-azul); }
+.ap-eb-cob-editar .ap-icono { color: var(--ap-azul); width: 15px; height: 15px; }
+.ap-eb-cob-info { left: 25.4px; top: 409.2px; display: flex; gap: 8.2px; }
+.ap-eb-cob-info .ap-icono { color: var(--ap-azul); margin-top: 1.4px; }
+.ap-eb-cob-info p { font: 400 13.9px/19.3px var(--ap-font); color: var(--ap-eb-gris); white-space: nowrap; }
+.ap-eb-cob-hoja {
+  left: 0;
+  top: 468.8px;
+  width: 414px;
+  height: 440px;
+  border-radius: 40px 40px 0 0;
+  background: #4A73B3;
+}
+.ap-eb-cob-hoja > * { position: absolute; }
+.ap-eb-cob-hoja-asa { left: 178.4px; top: 12px; width: 57.6px; height: 5.2px; border-radius: 3px; background: #C6D2E6; }
+.ap-eb-cob-hoja-titulo { left: 0; width: 414px; top: 28.1px; text-align: center; font-size: 18.1px; font-stretch: 125%; color: var(--ap-blanco); white-space: nowrap; }
+.ap-eb-cob-mov { left: 17.2px; width: 379.6px; }
+.ap-eb-cob-mov-canto,
+.ap-eb-cob-mov-cara { position: absolute; left: 0; width: 100%; border-radius: 26px; }
+.ap-eb-cob-mov-canto { background: #3E66A8; }
+.ap-eb-cob-mov-cara { top: 0; background: var(--ap-blanco); overflow: hidden; }
+.ap-eb-cob-mov-cara > * { position: absolute; }
+.ap-eb-cob-mov .ap-eb-cuadro { left: 15.6px; top: 12.8px; width: 47.2px; height: 52px; }
+.ap-eb-cob-mov-titulo { left: 76.8px; top: 20.5px; font: 700 14.7px/1 var(--ap-font); color: var(--ap-tinta); white-space: nowrap; }
+.ap-eb-cob-mov-fecha { left: 76.8px; top: 39.7px; font: 400 12.5px/1 var(--ap-font); color: var(--ap-eb-gris); white-space: nowrap; }
+.ap-eb-cob-mov-monto { right: 16px; top: 21.4px; font: 700 16px/1 var(--ap-font); color: var(--ap-verde); white-space: nowrap; }
+.ap-eb-cob-mov-estado { right: 16px; top: 41.4px; font: 700 11.2px/1 var(--ap-font); color: var(--ap-eb-gris); white-space: nowrap; }
+.ap-eb-cob-mov-detalle { left: 15.6px; top: 74.8px; width: 348px; height: 164.4px; border-radius: 22px; background: #F2F3F7; }
+.ap-eb-cob-mov-detalle .ap-desglose { position: absolute; left: 14.8px; top: 6.7px; width: 318.8px; }
+.ap-eb-cob-mov-detalle .ap-desglose-separador[data-lugar="total"] {
+  height: 2px;
+  margin-top: 5.6px;
+  background: repeating-linear-gradient(90deg, var(--ap-tinta) 0 5.3px, transparent 5.3px 8.2px);
+}
+.ap-eb-cob-mov-detalle .ap-desglose-total { height: 33.4px; }
+.ap-eb-cob-mov-detalle .ap-desglose-total-monto { font-size: 15.4px; }
+.ap-eb-cob-mov-menos {
+  left: 0;
+  top: 251.6px;
+  width: 100%;
+  height: 49.6px;
+  background: #EBEBEB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 13px/1 var(--ap-font);
+  color: var(--ap-tinta);
+}
+
+/* ── reseña del cliente (hoja al estilo de 16-u-resena-2) ───────────────── */
+.ap-eb-resena .ap-hoja-titulo { top: 30.4px; }
+.ap-eb-resena .ap-hoja-cerrar { left: 331.4px; top: 23.3px; width: 40.5px; height: 40.5px; }
+.ap-eb-resena .ap-hoja-cerrar .ap-icono { width: 38px; height: 38px; stroke-width: 2.4; }
+.ap-eb-res { position: absolute; left: -25.1px; top: -91px; width: 392.8px; height: 520px; }
+.ap-eb-res > * { position: absolute; }
+.ap-eb-res-avatar { left: 153.05px; top: 76.35px; line-height: 0; }
+.ap-eb-res-avatar .ap-avatar-iniciales { font-stretch: 125%; }
+.ap-eb-res-nombre { left: 0; width: 392.8px; top: 172.4px; text-align: center; font-size: 23.1px; font-stretch: 120%; white-space: nowrap; }
+.ap-eb-res-rubro { left: 0; width: 392.8px; top: 204.3px; display: flex; justify-content: center; }
+.ap-eb-res-rubro .ap-chip-rubro[data-tam="m"] { height: 27.4px; padding: 0 10px 0 9.5px; gap: 6px; }
+.ap-eb-res-rubro .ap-chip-rubro .ap-chip-texto { font-size: 13.6px; }
+.ap-eb-res-estrellas { left: 42.9px; top: 246px; }
+.ap-eb-res-rotulo { left: 0; width: 392.8px; top: 315.9px; text-align: center; }
+.ap-eb-res-chips { left: 0; width: 392.8px; top: 339.4px; display: flex; justify-content: center; gap: 9.6px; }
+.ap-eb-res-chips .ap-chip[data-tam] .ap-chip-base,
+.ap-eb-res-chips .ap-chip[data-tam] .ap-chip-sel { height: 31.2px; padding: 0 10px; }
+.ap-eb-res-chips .ap-chip-texto { font-size: 16px; }
+.ap-eb-res-comentario {
+  left: 23.8px;
+  top: 385.4px;
+  width: 344.8px;
+  height: 60px;
+  border-radius: 22px;
+  background: var(--ap-fondo-seccion);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 18px;
+  color: var(--ap-tinta);
+}
+.ap-eb-res-comentario .ap-icono { color: var(--ap-azul); flex: none; }
+.ap-eb-res-comentario p { font: 500 15px/1.2 var(--ap-font); white-space: nowrap; }
+.ap-eb-res-listo { left: 23.8px; top: 464.2px; }
+.ap-eb-res-listo .ap-boton-texto { font-size: 18px; }
