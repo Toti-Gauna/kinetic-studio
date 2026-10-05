@@ -17,20 +17,25 @@ const shot = (id: string, at: number, len: number) => {
     .fromTo(`${id} h2`, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, at + 0.3);
 };
 
-show('#s-intro', 0, 3);
+show('#s-intro', 0, 2.5);
 tl.fromTo('#s-intro .logo', { scale: 1.3, opacity: 0, filter: 'blur(20px)' }, { scale: 1, opacity: 1, filter: 'blur(0px)', duration: 1.4, ease: 'expo.out' }, 0.1)
   .fromTo('#s-intro .tag', { opacity: 0, letterSpacing: '30px' }, { opacity: 1, letterSpacing: '8px', duration: 1.2 }, 0.8);
-shot('#s-home', 3, 3.5);
-shot('#s-crear', 6.5, 3.5);
-shot('#s-cat', 10, 3);
-shot('#s-pay', 13, 3);
-shot('#s-club', 16, 3);
-shot('#s-admin', 19, 3.5);
-show('#s-season', 22.5, 4);
-tl.to('#s-season .sw', { clipPath: 'inset(0 0% 0 0)', duration: 0.45, ease: 'expo.inOut', stagger: 0.95 }, 22.6)
-  .fromTo('#s-season .sw', { fontSize: 200 }, { fontSize: 250, duration: 1.4, stagger: 0.95 }, 22.6)
-  .to('#s-season .sw', { clipPath: 'inset(0 0 0 100%)', duration: 0.45, ease: 'expo.inOut' }, 25.4)
-  .fromTo('#s-season .kick', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 25.5);
+// act I — the store
+shot('#s-home', 2.5, 2.5);
+shot('#s-crear', 5, 2.5);
+shot('#s-cat', 7.5, 2.5);
+shot('#s-pay', 10, 2.5);
+shot('#s-club', 12.5, 2);
+// act II — the admin dashboard
+shot('#s-admin', 14.5, 2.5);
+shot('#s-ped', 17, 2.5);
+shot('#s-prod', 19.5, 2);
+shot('#s-mkt', 21.5, 2);
+show('#s-season', 23.5, 3);
+tl.to('#s-season .sw', { clipPath: 'inset(0 0% 0 0)', duration: 0.4, ease: 'expo.inOut', stagger: 0.7 }, 23.6)
+  .fromTo('#s-season .sw', { fontSize: 200 }, { fontSize: 250, duration: 1.2, stagger: 0.7 }, 23.6)
+  .to('#s-season .sw', { clipPath: 'inset(0 0 0 100%)', duration: 0.4, ease: 'expo.inOut' }, 25.5)
+  .fromTo('#s-season .kick', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 25.6);
 show('#s-wa', 26.5, 2.4);
 tl.fromTo('#s-wa .phone', { y: 300 }, { y: 0, duration: 0.7, ease: 'expo.out' }, 26.5)
   .to('#s-wa .b', { opacity: 1, duration: 0.2, stagger: 0.38 }, 26.9)
