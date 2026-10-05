@@ -149,6 +149,13 @@ export const catalog: TrailerEntry[] = [
     path: 'trailers/ecommerce-remix/index.html', poster: 10.2, preview: 8.0, duration: 60, scenes: 16,
   },
   {
+    id: 'velmar-comercial', enabled: true, title: 'VELMAR', category: 'Producto',
+    logline: 'Comercial de 30 s para la tienda de Velmar con capturas reales de la demo: la tienda, el panel admin, temporadas (Halloween, Navidad, Año Nuevo) y un agente de IA por WhatsApp.',
+    tags: ['30 s', 'capturas reales', 'tienda + panel admin', 'temporadas', 'agente IA por WhatsApp', 'música sintetizada', 'datos de muestra rotulados'],
+    status: 'tech', palette: ['#1c2016', '#d2ad69', '#f6f1e8'], motif: 'cart',
+    path: 'trailers/velmar-comercial/index.html', poster: 4, preview: 18.5, duration: 30, scenes: 13,
+  },
+  {
     id: 'deploy', enabled: true, title: 'DEPLOY', category: 'Producto',
     logline: 'Para developers: una terminal con comandos reales, el código que genera la música con resaltado en vivo, el treemap del kit y el chequeo real de los 14 tráileres antes de publicar este.',
     tags: ['terminal real', 'tipeo humano', 'syntax highlight', 'treemap', 'pipeline', 'todo corrió de verdad'],
