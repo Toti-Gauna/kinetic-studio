@@ -149,6 +149,13 @@ export const catalog: TrailerEntry[] = [
     path: 'trailers/ecommerce-remix/index.html', poster: 10.2, preview: 8.0, duration: 60, scenes: 16,
   },
   {
+    id: 'velmar-premium', enabled: true, title: 'VELMAR PREMIUM', category: 'Producto',
+    logline: '"Objetos con alma." Un comercial premium para la tienda de Velmar con componentes reales de la demo en 3D: productos, personalización en vivo, tienda en escritorio, celular y modo oscuro, checkout, Club, panel admin, temporadas y un asistente con IA en WhatsApp.',
+    tags: ['33 s', 'componentes reales en 3D', 'tienda + panel admin', 'partículas por temporada', 'grano de película', 'banda sonora cinematográfica', 'datos de muestra rotulados'],
+    status: 'tech', palette: ['#12150e', '#d2ad69', '#f6f1e8'], motif: 'cart',
+    path: 'trailers/velmar-premium/index.html', poster: 32.5, preview: 9.5, duration: 33.5, scenes: 10,
+  },
+  {
     id: 'velmar-comercial', enabled: true, title: 'VELMAR', category: 'Producto',
     logline: 'Comercial de 30 s para la tienda de Velmar con capturas reales de la demo: la tienda, el panel admin, temporadas (Halloween, Navidad, Año Nuevo) y un agente de IA por WhatsApp.',
     tags: ['30 s', 'capturas reales', 'tienda + panel admin', 'temporadas', 'agente IA por WhatsApp', 'música sintetizada', 'datos de muestra rotulados'],
