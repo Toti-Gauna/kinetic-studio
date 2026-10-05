@@ -48,4 +48,41 @@ tl.set('#s-end', { opacity: 1 }, 30)
 const t = new URLSearchParams(location.search).get('t');
 const btn = document.getElementById('play')!;
 if (t !== null) { btn.remove(); tl.seek(+t); }
-else btn.addEventListener('click', () => { btn.remove(); tl.restart(); });
+else btn.addEventListener('click', () => { btn.remove(); tl.restart(); score(); });
+
+// ---- sound: everything synthesized with WebAudio (warm pad + soft beat at 100 BPM, whooshes on cuts, chime at the end)
+function score() {
+  const ac = new AudioContext(), t0 = ac.currentTime + 0.05, out = ac.createGain();
+  out.gain.value = 0.8; out.connect(ac.destination);
+  const env = (g: GainNode, at: number, peak: number, a: number, d: number) => {
+    g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(peak, at + a); g.gain.exponentialRampToValueAtTime(0.0001, at + a + d);
+  };
+  const tone = (f: number, at: number, len: number, vol: number, type: OscillatorType = 'sine', a = 0.01) => {
+    const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.value = f;
+    env(g, t0 + at, vol, a, len); o.connect(g).connect(out); o.start(t0 + at); o.stop(t0 + at + a + len + 0.05);
+  };
+  const noise = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);
+  noise.getChannelData(0).forEach((_, i, d) => (d[i] = Math.random() * 2 - 1));
+  const hiss = (at: number, len: number, vol: number, from: number, to: number) => {
+    const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain(); s.buffer = noise;
+    f.type = 'bandpass'; f.Q.value = 1.2; f.frequency.setValueAtTime(from, t0 + at); f.frequency.exponentialRampToValueAtTime(to, t0 + at + len);
+    env(g, t0 + at, vol, len * 0.6, len * 0.4); s.connect(f).connect(g).connect(out); s.start(t0 + at); s.stop(t0 + at + len + 0.05);
+  };
+  const beat = 0.6, chords = [[220, 277.2, 329.6], [185, 220, 277.2], [146.8, 185, 220], [164.8, 207.7, 246.9]]; // A – F#m – D – E
+  for (let bar = 0; bar < 12; bar++) {
+    const at = bar * beat * 4;
+    chords[bar % 4].forEach(f => { tone(f, at, beat * 4, 0.05, 'triangle', 0.4); tone(f / 2, at, beat * 4, 0.04, 'sine', 0.3); });
+    for (let b = 0; b < 4; b++) {
+      const bt = at + b * beat; if (bt > 29) break;
+      if (bt >= 2.4) { // kick
+        const o = ac.createOscillator(), g = ac.createGain(); o.frequency.setValueAtTime(140, t0 + bt); o.frequency.exponentialRampToValueAtTime(45, t0 + bt + 0.15);
+        env(g, t0 + bt, 0.5, 0.005, 0.25); o.connect(g).connect(out); o.start(t0 + bt); o.stop(t0 + bt + 0.3);
+        hiss(bt + beat / 2, 0.05, 0.05, 8000, 9000); // off-beat hat
+      }
+      if (bt >= 2.4) tone(chords[bar % 4][(b * 2) % 3] * 2, bt + beat / 2, 0.25, 0.04, 'sine'); // pluck arp
+    }
+  }
+  [2.5, 5, 7.5, 10, 12.5, 14.5, 17, 19.5, 21.5, 23.5, 26.5, 28.9].forEach(c => hiss(c - 0.3, 0.4, 0.12, 400, 4000)); // cut whooshes
+  [23.6, 24.3, 25].forEach((c, i) => tone([440, 554.4, 659.3][i], c, 0.5, 0.15, 'square')); // season stabs
+  [880, 1108.7, 1318.5, 1760].forEach((f, i) => tone(f, 28.9 + i * 0.08, 1.6, 0.08, 'sine')); // end chime
+}
