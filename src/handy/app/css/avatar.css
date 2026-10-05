@@ -1,0 +1,48 @@
+/* Avatar con iniciales (ui/avatar.ts) y píldora Verificado. */
+.ap-avatar {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--ap-tinta-2);
+  color: var(--ap-blanco);
+  vertical-align: middle;
+}
+.ap-avatar[data-tono="azul"] { background: var(--ap-azul); }
+.ap-avatar[data-tono="medio"] { background: #4A6FB2; }
+.ap-avatar[data-tono="vivo"] { background: var(--ap-azul-vivo); }
+.ap-avatar-iniciales {
+  font-family: var(--ap-display);
+  font-stretch: var(--ap-display-ancho);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  margin-top: 0.06em;
+}
+.ap-avatar-tilde {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--ap-verde);
+  color: var(--ap-blanco);
+  box-shadow: 0 0 0 2px var(--ap-blanco);
+}
+
+.ap-verificado {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  padding: 0 8px 0 6px;
+  border-radius: 999px;
+  background: var(--ap-verde-fondo);
+  color: var(--ap-verde-texto);
+  font: 700 12px/1 var(--ap-font);
+  white-space: nowrap;
+  vertical-align: middle;
+}

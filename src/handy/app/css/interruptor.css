@@ -1,0 +1,73 @@
+/* Interruptor Disponible (ui/interruptor.ts). Medido en 01/02-e-inicio. */
+.ap-disponible {
+  position: absolute;
+  width: 193.5px;
+  height: 54.3px;
+  color: var(--ap-blanco);
+}
+.ap-disponible-no,
+.ap-disponible-si {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 51px;
+  border-radius: 25.5px;
+}
+.ap-disponible-no {
+  width: 193.5px;
+  background: var(--ap-tinta-2);
+  box-shadow: 0 8px 18px -8px rgba(14, 29, 54, 0.35);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 13.4px;
+}
+.ap-disponible-si { width: 169.5px; height: 54.3px; }
+.ap-disponible-canto,
+.ap-disponible-cara {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 51px;
+  border-radius: 25.5px;
+}
+.ap-disponible-canto {
+  top: 3.3px;
+  background: var(--ap-azul-canto);
+  box-shadow: 0 10px 24px -6px rgba(31, 87, 168, 0.45);
+}
+.ap-disponible-cara {
+  top: 0;
+  background: var(--ap-azul);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 13.1px;
+}
+.ap-disponible-no > span,
+.ap-disponible-cara > span { font: 700 15.4px/1 var(--ap-font); white-space: nowrap; }
+
+/* llavecita: pista + perilla */
+.ap-llavecita {
+  position: absolute;
+  right: 6.5px;
+  top: 14.6px;
+  width: 40.4px;
+  height: 21.8px;
+  border-radius: 10.9px;
+}
+.ap-disponible .ap-llavecita { right: 6.5px; top: 14.6px; }
+.ap-llavecita-apagada,
+.ap-llavecita-prendida { position: absolute; inset: 0; border-radius: inherit; }
+.ap-llavecita-apagada { background: #D3D6DC; }
+.ap-llavecita-prendida { background: var(--ap-verde); }
+.ap-llavecita-perilla {
+  position: absolute;
+  left: 2.2px;
+  top: 2.15px;
+  width: 17.5px;
+  height: 17.5px;
+  border-radius: 50%;
+  background: var(--ap-blanco);
+  box-shadow: 0 2px 4px rgba(14, 29, 54, 0.25);
+}

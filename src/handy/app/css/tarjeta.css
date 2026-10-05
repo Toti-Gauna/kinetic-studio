@@ -1,0 +1,67 @@
+/* Tarjeta-ticket del turno (ui/tarjeta.ts · tarjetaTurno). Posiciones relativas a la tarjeta (366,6 × 139,2). */
+.ap-tarjeta[data-borde] { box-shadow: var(--ap-sombra-tarjeta), inset 0 0 0 1.8px var(--ap-borde); }
+.ap-turno {
+  position: absolute;
+  width: 366.6px;
+  height: 139.2px;
+  border-radius: 22px;
+  overflow: hidden;
+}
+.ap-turno > span { position: absolute; }
+.ap-turno-avatar { left: 18.4px; top: 16.9px; display: block; line-height: 0; }
+.ap-turno-nombre {
+  left: 84.6px;
+  top: 26px;
+  font: 700 17px/1 var(--ap-font);
+  color: var(--ap-tinta);
+  white-space: nowrap;
+}
+.ap-turno-rubro {
+  left: 84.3px;
+  top: 48px;
+  display: flex;
+  align-items: center;
+  gap: 3.8px;
+  color: #5F6B84;
+  font: 400 13px/1 var(--ap-font);
+  white-space: nowrap;
+}
+.ap-turno-estado { left: 265.8px; top: 31.8px; line-height: 0; }
+.ap-turno-estado .ap-etiqueta { padding: 0 6.6px; }
+.ap-turno-muesca {
+  top: 73px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #F1F2F5;
+  box-shadow: inset 0 0 0 1.8px var(--ap-borde);
+}
+.ap-turno-muesca[data-lado="izq"] { left: -12px; }
+.ap-turno-muesca[data-lado="der"] { right: -12px; }
+.ap-turno-punteado {
+  left: 16.6px;
+  top: 83.7px;
+  width: 333px;
+  height: 2.5px;
+  background: repeating-linear-gradient(90deg, #D8DBDF 0 8px, transparent 8px 13.1px);
+}
+.ap-turno-cuando {
+  left: 18px;
+  top: 100.3px;
+  display: flex;
+  align-items: center;
+  gap: 9.6px;
+  color: var(--ap-azul);
+  font: 700 16px/1 var(--ap-font);
+  white-space: nowrap;
+}
+.ap-turno-accion {
+  right: 18.7px;
+  top: 104.6px;
+  display: flex;
+  align-items: center;
+  gap: 3.4px;
+  color: var(--ap-azul);
+  font: 700 13.3px/1 var(--ap-font);
+  white-space: nowrap;
+}

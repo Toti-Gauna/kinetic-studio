@@ -1,0 +1,36 @@
+/* Pasos del seguimiento (ui/pasos.ts), sobre fondo azul. El alto de los tramos y la posición de cada fila los pone el
+   builder según la variante (usuario 10-u-seguimiento · especialista 13-e-en-camino). */
+.ap-pasos { position: relative; color: var(--ap-blanco); }
+.ap-pasos-icono { position: absolute; left: 0; top: 0; }
+.ap-pasos-tramos { position: absolute; left: 0; right: 0; }
+.ap-pasos-tramo {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+}
+.ap-pasos-relleno,
+.ap-pasos-completo {
+  position: absolute;
+  inset: 0;
+  background: var(--ap-blanco);
+  border-radius: 4px;
+}
+.ap-pasos-relleno { transform-origin: 0 50%; }
+.ap-pasos-etiquetas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+}
+/* con tres etiquetas la del medio va centrada (13-e-en-camino) */
+.ap-pasos-etiquetas[data-n="3"] { display: grid; grid-template-columns: 1fr auto 1fr; }
+.ap-pasos-etiquetas[data-n="3"] .ap-pasos-etiqueta:last-child { justify-self: end; }
+.ap-pasos-etiqueta { position: relative; display: inline-block; justify-self: start; white-space: nowrap; font: 600 12.1px/1 var(--ap-font); }
+.ap-pasos-etiquetas[data-n="3"] .ap-pasos-etiqueta:nth-child(2) { justify-self: center; }
+.ap-pasos-etiqueta-apagada { color: var(--ap-azul-palido); }
+.ap-pasos[data-variante="especialista"] .ap-pasos-etiqueta-apagada { color: #BCCDE5; }
+.ap-pasos-etiqueta-prendida { position: absolute; left: 0; top: 0; color: var(--ap-blanco); }

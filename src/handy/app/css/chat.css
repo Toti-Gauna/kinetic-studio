@@ -1,0 +1,174 @@
+/* Chat (ui/chat.ts). Medido en 12-u-chat y 12-e-chat-2. Fondo de la pantalla del chat: var(--ap-fondo-seccion). */
+.ap-burbuja {
+  max-width: 306px;
+  padding: 6.2px 12.5px 9.3px;
+  border-radius: 16px;
+  font: 600 14.2px/19.8px var(--ap-font);
+  background: var(--ap-blanco);
+  color: var(--ap-tinta);
+  box-shadow: 0 4px 12px -6px rgba(14, 29, 54, 0.18);
+  width: fit-content;
+}
+.ap-burbuja[data-lado="der"] { margin-left: auto; border-bottom-right-radius: 6px; transform-origin: 100% 100%; }
+.ap-burbuja[data-lado="izq"] { margin-right: auto; border-bottom-left-radius: 6px; transform-origin: 0 100%; }
+.ap-burbuja[data-tono="azul"] { background: var(--ap-azul); color: var(--ap-blanco); box-shadow: none; }
+/* en la app del especialista el texto del chat es más liviano (500, no 600), un poco más ancho y con más aire (11/12-e-chat) */
+.ap-burbuja[data-app="especialista"] { max-width: 300px; padding: 6.5px 12.6px 8.8px; font-weight: 500; line-height: 21.6px; letter-spacing: 0.15px; }
+
+.ap-foto.ap-burbuja { display: flex; flex-direction: column; gap: 7.7px; padding: 5px 6px 10.3px; }
+.ap-foto-imagen {
+  position: relative;
+  width: 127px;
+  height: 84px;
+  border-radius: 10px;
+  background: linear-gradient(#E6EAF2 0 72%, #D9DFEA 72% 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-foto-canilla {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--ap-blanco);
+  color: var(--ap-azul);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-foto-pie { font: 600 14.2px/17px var(--ap-font); }
+/* la foto del caño (especialista): imagen de 158,4 × 119,3 pegada al borde de la tarjeta, pie como las burbujas del especialista */
+.ap-foto.ap-burbuja[data-imagen="cano"] { gap: 6px; padding: 5.5px 5.1px 7.5px; }
+.ap-foto[data-imagen="cano"] .ap-foto-imagen { width: 158.4px; height: 119.3px; overflow: hidden; display: block; }
+.ap-foto-cano { display: block; }
+.ap-foto-gota, .ap-foto-gotita { transform-box: fill-box; transform-origin: 50% 50%; }
+.ap-foto[data-app="especialista"] .ap-foto-pie { padding: 0 6px 0 5.8px; font: 500 14.2px/21.6px var(--ap-font); letter-spacing: 0.15px; }
+
+.ap-aviso-chat {
+  width: 337.5px;
+  margin: 0 auto;
+  padding: 16px 24px 18px;
+  border-radius: 24px;
+  background: var(--ap-blanco);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.ap-aviso-chat-escudo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--ap-azul);
+  color: var(--ap-blanco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-aviso-chat-texto { font: 400 13px/1.4 var(--ap-font); color: var(--ap-gris); }
+
+.ap-fecha-chat { display: flex; justify-content: center; }
+.ap-fecha-chat span {
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: #E4E7EC;
+  color: var(--ap-gris);
+  font: 700 11.5px/1 var(--ap-font);
+}
+
+.ap-acciones { display: flex; flex-direction: column; gap: 19.5px; }
+/* un solo renglón por fila: lo que no entra se sale por la derecha (scroll horizontal en la app) */
+.ap-acciones-fila { display: flex; flex-wrap: nowrap; gap: 8px; }
+.ap-acciones-fila[data-fila="2"] { gap: 9.5px; }
+.ap-acciones .ap-boton[data-tam] .ap-boton-texto { font-size: 13.8px; }
+.ap-acciones .ap-boton[data-tam] .ap-boton-cara { padding: 0 14.5px; gap: 7.5px; }
+.ap-acciones .ap-boton[data-tam] .ap-icono { width: 16px; height: 16px; }
+.ap-acciones .ap-chip[data-tam] .ap-chip-base,
+.ap-acciones .ap-chip[data-tam] .ap-chip-sel { height: 49.4px; padding: 0 11.2px; }
+.ap-acciones .ap-chip[data-tam] .ap-chip-texto { font-size: 14.2px; }
+
+.ap-campo { display: flex; align-items: center; gap: 10px; }
+.ap-campo-adjuntar {
+  flex: none;
+  width: 47.5px;
+  height: 47.5px;
+  border-radius: 50%;
+  background: var(--ap-fondo-seccion);
+  color: var(--ap-azul);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-campo-entrada {
+  position: relative;
+  flex: 1 1 auto;
+  height: 42px;
+  border-radius: 21px;
+  background: var(--ap-fondo-seccion);
+}
+.ap-campo-placeholder,
+.ap-campo-escrito {
+  position: absolute;
+  left: 14px;
+  top: 0;
+  font: 400 14px/42px var(--ap-font);
+  white-space: nowrap;
+}
+.ap-campo-placeholder { color: var(--ap-gris-claro); }
+.ap-campo-escrito { color: var(--ap-tinta); }
+.ap-campo-enviar { position: relative; flex: none; width: 49px; height: 53px; color: var(--ap-blanco); }
+.ap-campo-enviar-canto,
+.ap-campo-enviar-cara {
+  position: absolute;
+  left: 0;
+  width: 49px;
+  height: 49px;
+  border-radius: 50%;
+}
+.ap-campo-enviar-canto { top: 4px; background: var(--ap-azul-oscuro); }
+.ap-campo-enviar-cara { top: 0; background: var(--ap-azul); display: flex; align-items: center; justify-content: center; }
+
+/* tarjetas de turno del chat (solicitud, propuesta). Medidas en 36-e-chat-nuevo-2 y 40-u-chat2-4. */
+.ap-chat-tarjeta {
+  position: relative;
+  padding: 15px 18.5px 19px;
+  border-radius: 22px;
+  background: var(--ap-blanco);
+  box-shadow: var(--ap-sombra-tarjeta);
+  color: var(--ap-tinta);
+}
+.ap-chat-tarjeta[data-tono="celeste"] { background: var(--ap-celeste); }
+.ap-chat-tarjeta[data-lado="der"] { margin-left: auto; transform-origin: 100% 100%; }
+.ap-chat-tarjeta[data-lado="izq"] { margin-right: auto; transform-origin: 0 100%; }
+.ap-chat-tarjeta-rotulo { display: flex; align-items: center; gap: 5.5px; height: 17px; color: var(--ap-azul); }
+.ap-chat-tarjeta-rotulo span { font: 700 13px/1 var(--ap-font); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+.ap-chat-tarjeta-filas { display: flex; flex-direction: column; gap: 4.6px; margin-top: 12.4px; }
+.ap-chat-tarjeta-fila { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.ap-chat-tarjeta-clave { flex: none; font: 400 14.2px/17px var(--ap-font); color: var(--ap-gris); white-space: nowrap; }
+.ap-chat-tarjeta-valor { font: 700 14.2px/17px var(--ap-font); text-align: right; }
+.ap-chat-tarjeta-fila[data-fuerte] .ap-chat-tarjeta-clave,
+.ap-chat-tarjeta-fila[data-fuerte] .ap-chat-tarjeta-valor { font: 700 16px/19px var(--ap-font); color: var(--ap-tinta); }
+.ap-chat-tarjeta-separador {
+  display: block;
+  height: 1.1px;
+  margin: 3px 0 2px;
+  background: repeating-linear-gradient(90deg, rgba(14, 29, 54, 0.18) 0 4px, transparent 4px 6.5px);
+}
+.ap-chat-tarjeta-nota { margin: 6px 0 0; font: 400 12.3px/14.6px var(--ap-font); color: var(--ap-gris); }
+.ap-chat-tarjeta-estados { position: relative; height: 19.3px; margin-top: 8px; }
+.ap-chat-tarjeta-estado {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 19.3px;
+  padding: 0 7.8px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font: 700 12.4px/1 var(--ap-font);
+  background: var(--ap-gris-ficha);
+  color: var(--ap-tinta);
+}
+.ap-chat-tarjeta-estado[data-tono="verde"] { background: var(--ap-verde-fondo); color: var(--ap-verde-texto); }

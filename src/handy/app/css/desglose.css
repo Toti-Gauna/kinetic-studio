@@ -1,0 +1,32 @@
+/* Desglose de precios (ui/desglose.ts). Medido en 09-u-confirmar. */
+.ap-desglose { display: flex; flex-direction: column; width: 100%; }
+.ap-desglose-fila,
+.ap-desglose-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  white-space: nowrap;
+}
+.ap-desglose-fila .ap-desglose-texto { font: 400 14.6px/1 var(--ap-font); color: var(--ap-gris); }
+.ap-desglose-fila[data-fuerte] .ap-desglose-texto { font-weight: 700; color: var(--ap-tinta); }
+.ap-desglose-monto { font: 700 14.6px/1 var(--ap-font); color: var(--ap-tinta); font-variant-numeric: tabular-nums; }
+.ap-desglose-monto[data-tono="rojo"] { color: var(--ap-rojo); }
+.ap-desglose-monto[data-tono="verde"] { color: var(--ap-verde); }
+.ap-desglose-separador { display: block; flex: none; height: 1.1px; margin: 3px 0 1.5px; }
+.ap-desglose-separador[data-lugar="total"] { margin: 5.4px 0 0; }
+.ap-desglose-separador[data-tipo="punteado"] { background: repeating-linear-gradient(90deg, var(--ap-borde) 0 4px, transparent 4px 6.5px); }
+.ap-desglose-separador[data-tipo="linea"] { background: var(--ap-linea); }
+/* la letra del total empieza 14,5 debajo de la línea con el monto en Archivo (09-u-confirmar) y 12,4 con el monto en
+   DM Sans (15-e-trabajo) */
+.ap-desglose-total { height: 40.6px; }
+.ap-desglose-total[data-display] { height: 48.8px; }
+.ap-desglose-total .ap-desglose-texto { font: 700 16.5px/1 var(--ap-font); color: var(--ap-tinta); }
+.ap-desglose-total-monto { font: 700 17px/1 var(--ap-font); color: var(--ap-azul); font-variant-numeric: tabular-nums; }
+.ap-desglose-total[data-display] .ap-desglose-total-monto {
+  font-family: var(--ap-display);
+  font-stretch: 106%;
+  font-weight: 900;
+  font-size: 22px;
+}
+.ap-desglose-total[data-tono="verde"] .ap-desglose-total-monto { color: var(--ap-verde); }
+.ap-desglose-total[data-tono="tinta"] .ap-desglose-total-monto { color: var(--ap-tinta); }

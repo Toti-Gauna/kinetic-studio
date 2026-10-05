@@ -1,0 +1,55 @@
+/* Botones (ui/botones.ts): cara + canto apilados. El alto total lo pone el builder (cara + canto). */
+.ap-boton {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  vertical-align: top;
+  --ap-cara: var(--ap-azul);
+  --ap-canto: var(--ap-azul-oscuro);
+  --ap-boton-tinta: var(--ap-blanco);
+}
+.ap-boton-canto,
+.ap-boton-cara {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  border-radius: 20px;
+}
+.ap-boton-canto { background: var(--ap-canto); }
+.ap-boton-cara {
+  top: 0;
+  background: var(--ap-cara);
+  color: var(--ap-boton-tinta);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.ap-boton-texto { font: 700 16.8px/1 var(--ap-font); }
+
+/* tamaños: alto de la cara y relleno lateral cuando el ancho sale del contenido */
+.ap-boton[data-tam="grande"] .ap-boton-canto,
+.ap-boton[data-tam="grande"] .ap-boton-cara { height: 52px; border-radius: 20px; }
+.ap-boton[data-tam="grande"] .ap-boton-cara { padding: 0 26px; }
+.ap-boton[data-tam="medio"] .ap-boton-canto,
+.ap-boton[data-tam="medio"] .ap-boton-cara { height: 48px; border-radius: 24px; }
+.ap-boton[data-tam="medio"] .ap-boton-cara { padding: 0 22px; gap: 8px; }
+.ap-boton[data-tam="medio"] .ap-boton-texto { font-size: 15.5px; }
+.ap-boton[data-tam="pildora"] .ap-boton-canto,
+.ap-boton[data-tam="pildora"] .ap-boton-cara { height: 46px; border-radius: 23px; }
+.ap-boton[data-tam="pildora"] .ap-boton-cara { padding: 0 20px; gap: 8px; }
+.ap-boton[data-tam="pildora"] .ap-boton-texto { font-size: 15px; }
+/* sin ancho explícito el botón toma el ancho de la cara: la cara pasa a estática para medir */
+.ap-boton:not([style*="width"]) .ap-boton-cara { position: relative; }
+
+/* variantes (verde y amarillo son planos: el canto solo aparece si el builder recibe `canto`) */
+.ap-boton[data-variante="verde"] { --ap-cara: var(--ap-verde); --ap-canto: #157A42; }
+.ap-boton[data-variante="gris"] { --ap-cara: var(--ap-gris-ficha); --ap-canto: var(--ap-canto-ficha); --ap-boton-tinta: var(--ap-tinta); }
+.ap-boton[data-variante="blanco"] { --ap-cara: var(--ap-blanco); --ap-canto: var(--ap-canto-ficha); --ap-boton-tinta: var(--ap-tinta); }
+.ap-boton[data-variante="amarillo"] { --ap-cara: var(--ap-amarillo); --ap-canto: var(--ap-amarillo-canto); --ap-boton-tinta: var(--ap-tinta); }
+.ap-boton[data-variante="celeste"] { --ap-cara: var(--ap-celeste); --ap-boton-tinta: var(--ap-azul); }
+.ap-boton[data-variante="texto-azul"] { --ap-cara: var(--ap-blanco); --ap-boton-tinta: var(--ap-azul); }
+.ap-boton[data-variante="contorno"] { --ap-cara: transparent; --ap-boton-tinta: var(--ap-tinta); }
+.ap-boton[data-variante="contorno"] .ap-boton-cara { border: 1.25px dashed var(--ap-canto-ficha); }
+.ap-boton[data-variante="contorno"] .ap-boton-texto { font-size: 14px; }

@@ -1,0 +1,31 @@
+/* Aviso negro arriba (ui/aviso.ts). Medido en 03-e-precio. */
+.ap-aviso-capa { position: absolute; left: 0; top: 0; width: 414px; height: 896px; overflow: hidden; pointer-events: none; }
+/* la capa del aviso va por encima de la barra de estado (z 50) y de la isla (z 51) de PhoneFrame: el toast las tapa */
+.hd-capa.ap-aviso-capa { z-index: 60; }
+.ap-aviso {
+  position: absolute;
+  left: 17.1px;
+  width: 379.4px;
+  height: 74.6px;
+  border-radius: 30px;
+  background: #000000;
+  box-shadow: 0 12px 26px -12px rgba(0, 0, 0, 0.45);
+}
+.ap-aviso > span { position: absolute; white-space: nowrap; }
+.ap-aviso-circulo {
+  left: 13.1px;
+  top: 13.8px;
+  width: 47px;
+  height: 47px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ap-amarillo);
+  color: var(--ap-tinta);
+}
+.ap-aviso[data-tono="verde"] .ap-aviso-circulo { background: var(--ap-verde); color: var(--ap-blanco); }
+.ap-aviso[data-tono="azul"] .ap-aviso-circulo { background: var(--ap-azul); color: var(--ap-blanco); }
+.ap-aviso[data-tono="rojo"] .ap-aviso-circulo { background: var(--ap-rojo); color: var(--ap-blanco); }
+.ap-aviso-titulo { left: 74.3px; top: 20.8px; font: 700 14.2px/1 var(--ap-font); color: var(--ap-blanco); }
+.ap-aviso-detalle { left: 74.4px; top: 41.2px; font: 400 12.4px/1 var(--ap-font); color: #B3B3B3; }

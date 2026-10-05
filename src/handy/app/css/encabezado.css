@@ -1,0 +1,99 @@
+/* Encabezado (ui/encabezado.ts): logo + campana + pin. Coordenadas absolutas de la pantalla de 414×896. */
+.ap-encabezado {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 414px;
+  height: 124px;
+  color: var(--ap-azul);
+  z-index: 5;
+}
+.ap-encabezado[data-variante="azul"] { color: var(--ap-blanco); }
+.ap-encabezado-fondo {
+  position: absolute;
+  inset: 0;
+  background: var(--ap-azul);
+  border-radius: 0 0 30px 30px;
+  box-shadow: 0 6px 16px -4px rgba(14, 29, 54, 0.30);
+}
+.ap-encabezado-logo {
+  position: absolute;
+  left: 24px;
+  top: 55.7px;
+  width: 147.3px;
+  height: 53px;
+}
+.ap-encabezado-palabra { display: block; overflow: visible; }
+.ap-encabezado-bajada {
+  position: absolute;
+  left: 0;
+  top: 41.6px;
+  font: 700 9.5px/1 var(--ap-font);
+  letter-spacing: 0.065em;
+  white-space: nowrap;
+}
+
+/* botón cuadrado: cara de 53,5 + canto azul oscuro de 4,4 abajo */
+.ap-boton-cuadrado {
+  position: absolute;
+  top: 54.9px;
+  width: 53.5px;
+  height: 57.9px;
+  color: var(--ap-blanco);
+}
+.ap-boton-cuadrado[data-tono="translucido"] { height: 53.5px; }
+.ap-encabezado-campana { left: 273.9px; }
+.ap-encabezado-ubicacion { left: 336.9px; }
+.ap-boton-cuadrado-canto,
+.ap-boton-cuadrado-cara {
+  position: absolute;
+  left: 0;
+  width: 53.5px;
+  height: 53.5px;
+  border-radius: 16px;
+}
+.ap-boton-cuadrado-canto { top: 4.4px; background: var(--ap-azul-oscuro); }
+.ap-boton-cuadrado-cara {
+  top: 0;
+  background: var(--ap-azul);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-boton-cuadrado[data-tono="translucido"] .ap-boton-cuadrado-cara { background: rgba(255, 255, 255, 0.2); }
+
+/* globito amarillo con el número (aro blanco de 2 px) */
+.ap-globito {
+  position: absolute;
+  left: 41.9px;
+  top: -2.5px;
+  width: 14.2px;
+  height: 14.2px;
+  border-radius: 50%;
+  background: var(--ap-amarillo);
+  box-shadow: 0 0 0 2px var(--ap-blanco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-globito-numero {
+  font: 800 11.5px/1 var(--ap-font);
+  margin-top: 0.5px;
+  color: var(--ap-tinta);
+  font-variant-numeric: tabular-nums;
+}
+
+/* píldora de la dirección (01-u-inicio) */
+.ap-direccion {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  height: 31.3px;
+  padding: 0 10px 0 10.3px;
+  border-radius: 999px;
+  background: var(--ap-celeste);
+  color: var(--ap-azul);
+  white-space: nowrap;
+}
+.ap-direccion-texto { margin-left: 5.2px; font: 700 13.8px/1 var(--ap-font); }
+.ap-direccion-chevron { margin-left: 7px; color: #6F8FC4; }

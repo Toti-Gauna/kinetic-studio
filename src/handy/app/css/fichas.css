@@ -1,0 +1,51 @@
+/* Fichas de la grilla de inicio (ui/fichas.ts): 114 × 98 + canto 3,6. */
+.ap-ficha {
+  position: absolute;
+  width: 114px;
+  height: 101.6px;
+}
+.ap-ficha-canto,
+.ap-ficha-cara {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 98px;
+  border-radius: 18px;
+}
+.ap-ficha-canto { top: 3.6px; background: var(--ap-canto-ficha); }
+.ap-ficha-cara { top: 0; background: var(--ap-gris-ficha); color: var(--ap-tinta); }
+.ap-ficha-icono {
+  position: absolute;
+  left: 39px;
+  top: 20.9px;
+}
+.ap-ficha-texto {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 62.3px;
+  text-align: center;
+  font: 700 13.85px/1 var(--ap-font);
+  white-space: nowrap;
+}
+/* acceso "Quiero…": cuadro blanco con el ícono azul y el texto en dos renglones */
+.ap-ficha-cuadro {
+  position: absolute;
+  left: 36.5px;
+  top: 10px;
+  width: 41px;
+  height: 41px;
+  border-radius: 12px;
+  background: var(--ap-blanco);
+  color: var(--ap-azul);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-ficha-acceso .ap-ficha-texto {
+  top: 56px;
+  padding: 0 8px;
+  font-size: 13.5px;
+  line-height: 1.12;
+  white-space: normal;
+}

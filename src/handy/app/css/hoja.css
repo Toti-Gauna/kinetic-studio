@@ -1,0 +1,55 @@
+/* Hoja inferior (ui/hoja.ts) y velo. Medida en 03-e-precio. */
+.ap-hoja-capa { position: absolute; left: 0; top: 0; width: 414px; height: 896px; overflow: hidden; }
+.ap-velo { position: absolute; inset: 0; background: rgba(14, 29, 54, 0.45); }
+.ap-hoja {
+  position: absolute;
+  left: 10.6px;
+  width: 392.8px;
+  bottom: -40px;
+  background: var(--ap-blanco);
+  border-radius: 32px 32px 0 0;
+  box-shadow: 0 -10px 30px -12px rgba(14, 29, 54, 0.3);
+}
+.ap-hoja-asa {
+  position: absolute;
+  left: 170.2px;
+  top: 12px;
+  width: 52.4px;
+  height: 4.7px;
+  border-radius: 3px;
+  background: #D5D7DC;
+}
+.ap-hoja-titulo {
+  position: absolute;
+  left: 60px;
+  right: 60px;
+  top: 34.2px;
+  text-align: center;
+}
+.ap-hoja-linea {
+  position: absolute;
+  left: 25.1px;
+  right: 25.1px;
+  top: 74.6px;
+  height: 1.5px;
+  background: var(--ap-linea);
+}
+.ap-hoja-cerrar {
+  position: absolute;
+  left: 313.2px;
+  top: 26.2px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--ap-rojo);
+  color: var(--ap-blanco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-hoja-cuerpo {
+  position: absolute;
+  left: 25.1px;
+  right: 25.1px;
+  top: 91px;
+}

@@ -1,0 +1,95 @@
+/* Calendario de mes y tira de días (ui/calendario.ts). Medidos en 20-e-turnos y 27-u-programar. */
+.ap-cal { position: relative; border-radius: 26px; }
+.ap-cal-flecha {
+  position: absolute;
+  top: 14.6px;
+  width: 49px;
+  height: 49px;
+  border-radius: 50%;
+  background: var(--ap-gris-ficha);
+  color: var(--ap-tinta);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-cal-flecha[data-lado="izq"] { left: 6.2px; }
+.ap-cal-flecha[data-lado="der"] { right: 6.2px; }
+.ap-cal-mes {
+  position: absolute;
+  left: 60px;
+  right: 60px;
+  top: 28.2px;
+  text-align: center;
+  font-size: 20.3px;
+  font-stretch: 112%;
+  color: var(--ap-azul);
+  white-space: nowrap;
+}
+.ap-cal-iniciales { position: absolute; left: 6.2px; top: 73.5px; height: 12px; }
+.ap-cal-iniciales > span {
+  position: absolute;
+  top: 0;
+  width: 47.5px;
+  text-align: center;
+  font: 700 11px/1 var(--ap-font);
+  color: var(--ap-gris);
+}
+.ap-cal-grilla { position: absolute; left: 6.2px; top: 95px; }
+.ap-cal-dia { position: absolute; width: 47.5px; height: 48.5px; }
+.ap-cal-canto,
+.ap-cal-cara {
+  position: absolute;
+  left: 0;
+  width: 47.5px;
+  height: 45px;
+  border-radius: 12px;
+}
+.ap-cal-canto { top: 3.5px; background: var(--ap-canto-ficha); }
+.ap-cal-cara {
+  top: 0;
+  background: var(--ap-gris-ficha);
+  color: var(--ap-tinta);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.ap-cal-cara b { font: 700 15px/1 var(--ap-font); }
+.ap-cal-dia[data-pasado] > .ap-cal-cara { color: var(--ap-gris); }
+.ap-cal-dia[data-evento] > .ap-cal-cara { background: var(--ap-celeste); color: var(--ap-azul); }
+.ap-cal-dia[data-evento] > .ap-cal-canto { background: #D7E0EE; }
+.ap-cal-puntos { display: flex; gap: 3px; height: 0; margin-top: 3px; overflow: visible; }
+.ap-cal-puntos i { display: block; width: 5px; height: 5px; margin-top: 2px; border-radius: 50%; background: currentColor; }
+.ap-cal-cara:has(.ap-cal-puntos) b { margin-top: -6px; }
+.ap-cal-sel { position: absolute; inset: 0; }
+.ap-cal-sel .ap-cal-canto { background: var(--ap-azul-oscuro); }
+.ap-cal-sel .ap-cal-cara { background: var(--ap-azul); color: var(--ap-blanco); }
+
+/* tira de días */
+.ap-tira { display: flex; gap: 10px; }
+.ap-tira-dia { position: relative; flex: none; width: 63px; height: 76px; }
+.ap-tira-canto,
+.ap-tira-cara {
+  position: absolute;
+  left: 0;
+  width: 63px;
+  height: 72px;
+  border-radius: 16px;
+}
+.ap-tira-canto { top: 4px; background: var(--ap-canto-ficha); }
+.ap-tira-cara {
+  top: 0;
+  background: var(--ap-gris-ficha);
+  color: var(--ap-tinta);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.ap-tira-nombre { font: 700 11px/1 var(--ap-font); letter-spacing: 0.04em; color: var(--ap-gris); }
+.ap-tira-cara b { font-family: var(--ap-display); font-stretch: 112%; font-weight: 900; font-size: 22px; line-height: 1; }
+.ap-tira-sel { position: absolute; inset: 0; }
+.ap-tira-sel .ap-tira-canto { background: var(--ap-azul-oscuro); }
+.ap-tira-sel .ap-tira-cara { background: var(--ap-azul); color: var(--ap-blanco); }
+.ap-tira-sel .ap-tira-nombre { color: var(--ap-azul-palido); }

@@ -1,0 +1,67 @@
+/* Mapa (ui/mapa.ts): ocupa la pantalla entera; capas SVG apiladas y el radar/punto/pin como divs centrados. */
+.ap-mapa {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 414px;
+  height: 896px;
+  overflow: hidden;
+}
+.ap-mapa-capa,
+.ap-mapa-ruta { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
+.ap-mapa-etiqueta { font-family: var(--ap-font); font-weight: 700; font-size: 11px; }
+.ap-mapa-etiqueta[data-etiqueta="plaza"] { font-size: 9.6px; }
+/* LA PERLA: versalita negra y ancha (Archivo expandida), como en 01/02-e-inicio */
+.ap-mapa-etiqueta[data-etiqueta="perla"] { font-family: var(--ap-display); font-stretch: 120%; font-size: 14.4px; font-weight: 900; letter-spacing: 0; }
+.ap-mapa-etiqueta[data-etiqueta="mar"] { font-size: 13px; font-weight: 600; letter-spacing: 0.13em; }
+
+/* radar: anillos centrados en el punto (el div mide 0×0 y está en el punto) */
+.ap-radar { position: absolute; width: 0; height: 0; }
+.ap-radar-anillo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+}
+/* alfas medidas en 02-e-inicio-2 sobre el blanco de las calles: anillo 2 ≈ 1,4 %, anillo 1 ≈ 4,7 %, brillo ≈ 2,7 % y halo
+   ≈ 9 % más (cada uno sobre los de afuera) */
+.ap-radar-anillo[data-anillo="2"] {
+  width: 306px;
+  height: 306px;
+  margin: -153px 0 0 -153px;
+  background: rgba(47, 107, 255, 0.014);
+  box-shadow: inset 0 0 0 2px rgba(47, 107, 255, 0.065);
+}
+.ap-radar-anillo[data-anillo="1"] {
+  width: 195px;
+  height: 195px;
+  margin: -97.5px 0 0 -97.5px;
+  background: rgba(47, 107, 255, 0.047);
+  box-shadow: inset 0 0 0 1.2px rgba(47, 107, 255, 0.26);
+}
+.ap-radar-anillo[data-anillo="brillo"] { width: 79px; height: 79px; margin: -39.5px 0 0 -39.5px; background: rgba(47, 107, 255, 0.027); }
+.ap-radar-anillo[data-anillo="halo"] {
+  width: 41px;
+  height: 41px;
+  margin: -20.5px 0 0 -20.5px;
+  background: rgba(47, 107, 255, 0.093);
+  box-shadow: inset 0 0 0 1px rgba(47, 107, 255, 0.3);
+}
+
+/* punto "yo": dos puntos apilados (gris y azul) con aro blanco */
+.ap-mapa-yo { position: absolute; width: 0; height: 0; }
+.ap-mapa-yo-punto {
+  position: absolute;
+  left: -9.5px;
+  top: -9.5px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: var(--ap-azul-vivo);
+  box-shadow: 0 0 0 2.6px var(--ap-blanco);
+}
+.ap-mapa-yo-punto[data-capa="gris"] { background: #717171; box-shadow: 0 0 0 3.6px var(--ap-blanco); left: -9px; top: -9px; width: 18px; height: 18px; }
+
+/* pin de destino: la punta en el punto */
+.ap-mapa-pin { position: absolute; width: 0; height: 0; }
+.ap-mapa-pin svg { position: absolute; left: -14px; top: -35px; display: block; overflow: visible; }

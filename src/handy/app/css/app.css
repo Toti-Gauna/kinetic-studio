@@ -1,0 +1,133 @@
+/* Handy · app 2026 — tokens y base de la biblioteca nueva (src/handy/app/DISENO.md).
+   Todo lleva el prefijo ap-. Medidas en px a 1:1 dentro de la pantalla de 414×896 (foto × 0,3638).
+   Sin filtros, sin blend modes, sin transiciones ni keyframes: las escenas animan solo transform y opacity.
+   Los estados que cambian de color (seleccionado, prendido, tecleado) son capas apiladas que se cruzan con opacity.
+   Las fuentes las define src/handy/app/fuentes.ts: --hd-app-font (DM Sans) y --hd-app-display (Archivo 125 %). */
+
+:root {
+  /* azules */
+  --ap-azul: #1F57A8;
+  --ap-azul-oscuro: #183E78;
+  --ap-azul-canto: #143E7E;
+  --ap-azul-medio: #3E6EB4;
+  --ap-azul-palido: #9AB3D8;
+  --ap-azul-vivo: #2F6BFF;
+  /* tintas */
+  --ap-tinta: #0E1D36;
+  --ap-tinta-2: #1D2C4A;
+  --ap-gris: #5B6780;
+  --ap-gris-claro: #8A93A3;
+  /* superficies */
+  --ap-blanco: #FFFFFF;
+  --ap-gris-ficha: #ECECEC;
+  --ap-canto-ficha: #D3D6DC;
+  --ap-celeste: #E9EFF9;
+  --ap-fondo-seccion: #F4F5F8;
+  --ap-borde: #E6E9EF;
+  --ap-linea: #EBEDF2;
+  /* estados */
+  --ap-verde: #1E9E57;
+  --ap-verde-texto: #137140;
+  --ap-verde-fondo: #E3F5EA;
+  --ap-amarillo: #F5F59A;
+  --ap-amarillo-canto: #D8D65E;
+  --ap-rojo: #D93025;
+  --ap-rojo-texto: #A3221A;
+  --ap-rojo-fondo: #FDECEA;
+  --ap-negro: #0B0B0C;
+  /* mapa */
+  --ap-mapa-calle: #F8F9FB;
+  --ap-mapa-manzana: #E6E9EE;
+  --ap-mapa-mar: #CFE3F7;
+  --ap-mapa-arena: #F6E2A8;
+  --ap-mapa-plaza: #D7EBCF;
+  /* sombras */
+  --ap-sombra-tarjeta: 0 10px 26px -8px rgba(14, 29, 54, 0.14), 0 2px 6px rgba(14, 29, 54, 0.04);
+  --ap-sombra-flotante: 0 12px 30px -10px rgba(14, 29, 54, 0.28);
+  /* tipografías (por si falta fuentes.ts) */
+  --ap-font: var(--hd-app-font, 'DM Sans Variable', 'DM Sans', system-ui, sans-serif);
+  --ap-display: var(--hd-app-display, 'Archivo Variable', 'Archivo', system-ui, sans-serif);
+  /* ancho de Archivo en los titulares. Las fotos no son parejas: midiendo cada título contra la foto da 110 % en los
+     titulares de inicio (¿Qué necesitás hoy?, Quiero…, Contale a HandIA), 115–120 % en las tarjetas (Estás disponible,
+     No estás recibiendo pedidos) y 125 % (la expandida) en los títulos de las hojas (Tu precio). El default es el medio;
+     cada pantalla pasa el medido (tituloResaltado({ ancho })). */
+  --ap-display-ancho: 115%;
+}
+
+/* raíz de cualquier pieza de la app nueva (especificidad 0: el color y la letra de cada componente mandan) */
+:where(.ap-ui) {
+  font-family: var(--ap-font);
+  color: var(--ap-tinta);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.25;
+  letter-spacing: normal;
+  text-transform: none;
+  font-optical-sizing: auto;
+}
+:where(.ap-ui) *, :where(.ap-ui) *::before, :where(.ap-ui) *::after { box-sizing: border-box; }
+:where(.ap-ui) :is(p, h1, h2, h3) { margin: 0; }
+.ap-icono { display: block; flex: none; }
+
+/* una pantalla completa: la capa .hd-capa del teléfono (414×896), fondo blanco que tapa a las de abajo */
+.ap-pantalla {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 414px;
+  height: 896px;
+  overflow: hidden;
+  background: var(--ap-blanco);
+}
+/* bloque absoluto dentro de una pantalla (cada gancho de escena es uno de estos) */
+.ap-abs { position: absolute; }
+
+/* ── tipografía ─────────────────────────────────────────────────────────── */
+/* Archivo expandida: titulares de la app */
+.ap-display {
+  font-family: var(--ap-display);
+  font-stretch: var(--ap-display-ancho);
+  font-weight: 900;
+  line-height: 1;
+}
+:where(.ap-display) { color: var(--ap-tinta); }
+.ap-titulo-xl { font-size: 31px; }
+.ap-titulo-l { font-size: 25px; }
+.ap-titulo-m { font-size: 21px; }
+.ap-titulo-s { font-size: 18px; }
+
+/* rótulo de sección: TU PRÓXIMO TURNO · ¿CUÁNDO PODÉS IR? */
+.ap-rotulo {
+  font: 700 12px/1 var(--ap-font);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ap-gris);
+}
+.ap-texto { font: 400 15px/1.4 var(--ap-font); color: var(--ap-gris); }
+.ap-texto-s { font: 400 13px/1.35 var(--ap-font); color: var(--ap-gris); }
+.ap-fuerte { font-weight: 700; color: var(--ap-tinta); }
+
+/* palabra con subrayado amarillo: una banda detrás de la parte baja (≈ 45 % del alto) corrida hacia abajo.
+   La banda es un elemento propio (.ap-resalte-banda) para que la escena la dibuje con scaleX desde la izquierda. */
+.ap-resalte { position: relative; display: inline-block; z-index: 0; line-height: 1; }
+.ap-resalte-banda {
+  position: absolute;
+  left: -0.13em;
+  right: -0.1em;
+  bottom: 0.05em;
+  height: 0.45em;
+  background: var(--ap-amarillo);
+  z-index: -1;
+  transform-origin: 0 50%;
+}
+
+/* ── superficies ────────────────────────────────────────────────────────── */
+.ap-tarjeta {
+  background: var(--ap-blanco);
+  border-radius: 22px;
+  box-shadow: var(--ap-sombra-tarjeta);
+}
+.ap-tarjeta[data-borde] { box-shadow: var(--ap-sombra-tarjeta), inset 0 0 0 1.5px var(--ap-borde); }
+.ap-caja {
+  background: var(--ap-fondo-seccion);
+  border-radius: 22px;
+}

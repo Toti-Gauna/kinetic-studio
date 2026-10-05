@@ -1,0 +1,75 @@
+/* Chips (ui/chips.ts). La capa elegida (.ap-chip-sel) va encima de la base con la misma forma. */
+.ap-chip {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  vertical-align: top;
+  border-radius: 999px;
+}
+.ap-chip-base,
+.ap-chip-sel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: inherit;
+  white-space: nowrap;
+}
+.ap-chip-base { position: relative; }
+.ap-chip-sel {
+  position: absolute;
+  inset: 0;
+  background: var(--ap-azul);
+  color: var(--ap-blanco);
+}
+.ap-chip-texto { font: 700 13px/1 var(--ap-font); }
+
+.ap-chip[data-tam="s"] .ap-chip-base, .ap-chip[data-tam="s"] .ap-chip-sel { height: 26px; padding: 0 11px; gap: 5px; }
+.ap-chip[data-tam="s"] .ap-chip-texto { font-size: 12.5px; }
+.ap-chip[data-tam="m"] .ap-chip-base, .ap-chip[data-tam="m"] .ap-chip-sel { height: 36px; padding: 0 15px; gap: 6px; }
+.ap-chip[data-tam="m"] .ap-chip-texto { font-size: 14px; }
+.ap-chip[data-tam="l"] .ap-chip-base, .ap-chip[data-tam="l"] .ap-chip-sel { height: 49.5px; padding: 0 13.8px 0 14.2px; gap: 6.5px; }
+.ap-chip[data-tam="l"] .ap-chip-texto { font-size: 13px; }
+.ap-chip-sel { padding: inherit; }
+
+.ap-chip[data-tono="gris"] .ap-chip-base { background: var(--ap-gris-ficha); color: var(--ap-tinta); }
+.ap-chip[data-tono="blanco"] .ap-chip-base { background: var(--ap-blanco); color: var(--ap-tinta); }
+.ap-chip[data-tono="celeste"] .ap-chip-base { background: var(--ap-celeste); color: var(--ap-azul); }
+
+/* chip de rubro: celeste con ícono y texto azul */
+.ap-chip-rubro {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  height: 19.3px;
+  padding: 0 7.6px 0 8.3px;
+  border-radius: 999px;
+  background: var(--ap-celeste);
+  color: var(--ap-azul);
+  white-space: nowrap;
+  vertical-align: top;
+}
+.ap-chip-rubro .ap-chip-texto { font-size: 11.8px; }
+.ap-chip-rubro[data-tam="m"] { height: 26px; padding: 0 12px 0 11px; gap: 7px; }
+.ap-chip-rubro[data-tam="m"] .ap-chip-texto { font-size: 14px; }
+
+/* etiqueta chica */
+.ap-etiqueta {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  height: 18.2px;
+  padding: 0 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+  vertical-align: middle;
+  background: var(--ap-amarillo);
+  color: var(--ap-tinta);
+}
+.ap-etiqueta-texto { font: 700 12px/1 var(--ap-font); }
+.ap-etiqueta[data-tono="verde"] { background: var(--ap-verde-fondo); color: var(--ap-verde-texto); }
+.ap-etiqueta[data-tono="celeste"] { background: var(--ap-celeste); color: var(--ap-azul); }
+.ap-etiqueta[data-tono="rojo"] { background: var(--ap-rojo-fondo); color: var(--ap-rojo); }
+.ap-etiqueta[data-tono="translucido"] { background: rgba(255, 255, 255, 0.22); color: var(--ap-blanco); }

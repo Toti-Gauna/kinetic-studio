@@ -1,0 +1,49 @@
+/* Barra inferior (ui/barra.ts): azul, 414×84 pegada abajo, cuatro pestañas con sus dos estados apilados. */
+.ap-barra {
+  position: absolute;
+  left: 0;
+  top: 812px;
+  width: 414px;
+  height: 84px;
+  padding: 0 10px;
+  display: flex;
+  background: var(--ap-azul);
+  border-radius: 30px 30px 0 0;
+  box-shadow: 0 -6px 22px -2px rgba(14, 29, 54, 0.16);
+  z-index: 6;
+}
+.ap-barra-item {
+  position: relative;
+  flex: 1 1 0;
+  height: 100%;
+}
+.ap-barra-apagada,
+.ap-barra-prendida {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 14px;
+}
+.ap-barra-icono { display: flex; align-items: center; justify-content: center; width: 27px; height: 27px; }
+.ap-barra-apagada { color: var(--ap-azul-palido); }
+/* el ícono apagado es blanco al 55 % por trazo (= #9AB3D8 sobre el azul): donde se cruzan dos trazos queda más claro, como en la foto */
+.ap-barra-apagada .ap-barra-icono { color: var(--ap-blanco); }
+.ap-barra-apagada .ap-icono { stroke-opacity: 0.55; }
+.ap-barra-prendida { color: var(--ap-blanco); }
+.ap-barra-texto {
+  margin-top: 3px;
+  font: 600 12.35px/1 var(--ap-font);
+  white-space: nowrap;
+}
+.ap-barra-prendida .ap-barra-texto { font-weight: 700; }
+.ap-barra-punto {
+  margin-top: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ap-amarillo);
+}

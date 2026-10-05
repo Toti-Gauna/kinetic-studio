@@ -1,0 +1,78 @@
+/* Hoja "Tu precio" (ui/precio.ts). Medida en 03-e-precio (montos rápidos) y 05 / 09-e-precio (teclado).
+   Todo relativo al cuerpo de la hoja (x 35,7 · y 190,3 de la pantalla) o a la caja gris (y 459,5). */
+.ap-precio { position: absolute; left: 0; top: 0; width: 343.4px; height: 706px; }
+.ap-precio > * { position: absolute; }
+/* en esta hoja el rótulo sale un poco más grande y abierto que en las pantallas de inicio */
+.ap-precio-rotulo { left: 0; top: 1.4px; font-size: 12.2px; letter-spacing: 0.12em; }
+.ap-precio-horarios { left: 0; top: 27px; width: 340px; display: flex; flex-wrap: wrap; gap: 8.3px 8px; }
+.ap-precio-contornos { left: 0; top: 144.8px; display: flex; flex-direction: column; gap: 8.6px; }
+
+/* caja gris: dos fondos (corto para los montos rápidos, largo para el teclado) y las dos capas de contenido */
+.ap-precio-caja { left: -0.4px; top: 269.2px; width: 343.4px; height: 356px; }
+.ap-precio-caja > * { position: absolute; }
+.ap-precio-fondo { left: 0; top: 0; width: 100%; height: 356px; border-radius: 26px; background: var(--ap-fondo-seccion); }
+.ap-precio-fondo[data-modo="teclado"] { height: 700px; }
+.ap-precio-caja > .ap-monto { left: 16px; top: 67.2px; }
+.ap-precio-rapidos,
+.ap-precio-tecleo { left: 0; top: 0; width: 100%; height: 100%; }
+.ap-precio-rapidos > *,
+.ap-precio-tecleo > * { position: absolute; }
+
+/* Handy sugiere $ 44.000 · Vos decidís */
+.ap-precio-sugerencia { left: 0; right: 0; top: 17px; height: 36px; display: flex; align-items: center; justify-content: center; }
+.ap-precio-lamparita { line-height: 0; margin-right: 10.5px; }
+.ap-precio-sugerencia-texto { font: 400 14.5px/1 var(--ap-font); color: var(--ap-tinta-2); white-space: nowrap; }
+.ap-precio-sugerencia-texto b { font-weight: 700; }
+.ap-precio-sugerencia .ap-etiqueta { height: 21px; padding: 0 8px; margin-left: 7px; }
+.ap-precio-sugerencia .ap-etiqueta-texto { font-size: 11.7px; }
+
+/* ⓘ Incluye $ 13.000 de materiales estimados. */
+.ap-precio-info {
+  left: 0; right: 0; top: 136px; height: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font: 400 12.6px/1 var(--ap-font); color: var(--ap-gris); white-space: nowrap;
+}
+.ap-precio-info .ap-icono { color: var(--ap-azul); }
+
+/* montos rápidos: dos filas centradas; los blancos traen su versión azul encima */
+.ap-precio-rapidos-filas { left: 0; right: 0; top: 165px; display: flex; flex-direction: column; align-items: center; gap: 7.4px; }
+.ap-precio-rapidos-fila { display: flex; gap: 9.5px; }
+.ap-precio-rapidos-fila[data-fila="2"] { gap: 8.5px; }
+.ap-precio-rapido { position: relative; display: inline-block; }
+.ap-precio-rapido-sel { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.ap-precio-rapido-sel .ap-boton { width: 100%; }
+.ap-precio-rapido .ap-boton[data-tam] .ap-boton-cara { padding: 0 13.6px; }
+.ap-precio-rapido .ap-boton[data-tam] .ap-boton-texto { font-size: 13.8px; }
+.ap-precio-caja .ap-precio-escribir { left: 76.2px; top: 287px; }
+.ap-precio-escribir[data-tam] .ap-boton-texto { font-size: 14.3px; }
+.ap-precio-escribir[data-tam] .ap-icono { width: 15.5px; height: 15.5px; }
+
+/* Recibís (caja verde) */
+.ap-precio-recibis { left: 0; top: 373.2px; width: 343.4px; height: 130px; border-radius: 22px; background: var(--ap-verde-fondo); }
+.ap-precio-recibis > * { position: absolute; }
+.ap-precio-recibis-icono {
+  left: 18.1px; top: 24.9px; width: 47px; height: 47px; border-radius: 14px;
+  background: var(--ap-verde); color: var(--ap-blanco);
+  display: flex; align-items: center; justify-content: center;
+}
+.ap-precio-recibis-titulo { left: 81px; top: 25px; font: 700 14.9px/1 var(--ap-font); color: var(--ap-verde-texto); }
+.ap-precio-recibis-monto {
+  right: 18px; top: 19px;
+  font-family: var(--ap-display); font-stretch: 110%; font-weight: 900; font-size: 24px; line-height: 1;
+  color: var(--ap-verde-texto); white-space: nowrap;
+}
+.ap-precio-recibis-detalle { left: 81px; top: 49.5px; width: 226px; margin: 0; font: 500 13px/18px var(--ap-font); color: #2C6B48; }
+
+/* modo teclado: advertencia roja, Listo y el teclado */
+.ap-precio-advertencia {
+  left: 16px; top: 135px; width: 311.4px; height: 71.5px; border-radius: 12px;
+  background: var(--ap-rojo-fondo); color: #8F1D16;
+}
+.ap-precio-advertencia .ap-icono { position: absolute; left: 11.2px; top: 9.3px; }
+.ap-precio-advertencia p { position: absolute; left: 34.2px; top: 6.6px; width: 255px; margin: 0; font: 700 13.85px/18.7px var(--ap-font); }
+.ap-precio-tecleo-grupo { left: 0; top: 0; width: 100%; height: 100%; }
+.ap-precio-tecleo-grupo > * { position: absolute; }
+.ap-precio-tecleo-grupo > .ap-precio-listo { left: 128.1px; top: 220.1px; }
+.ap-precio-listo[data-tam] .ap-boton-texto { font-size: 14.5px; }
+.ap-precio-listo[data-tam] .ap-icono { width: 16px; height: 16px; }
+.ap-precio-tecleo-grupo > .ap-teclado { left: 16px; top: 284.1px; }

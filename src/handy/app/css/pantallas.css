@@ -1,0 +1,122 @@
+/* Pantallas completas de la app 2026 (app/usuario.ts, app/especialista.ts): posiciones absolutas medidas en las fotos
+   (px de la pantalla de 414×896). Los componentes traen su propio CSS. */
+
+/* ── usuario · inicio (01-u-inicio) ─────────────────────────────────────── */
+.ap-fichas { position: absolute; width: 366.9px; height: 211.8px; }
+.ap-u-titulo { left: 23.6px; top: 179.1px; white-space: nowrap; }
+.ap-u-rotulo { left: 22.9px; top: 456.4px; }
+.ap-u-quiero { left: 23.3px; top: 758.8px; white-space: nowrap; }
+
+/* banner "Contale a HandIA": cara azul de 366,4 × 99,3 con canto azul oscuro de 5,5 */
+.ap-handia { position: absolute; width: 366.4px; height: 104.8px; color: var(--ap-blanco); }
+.ap-handia-canto,
+.ap-handia-cara {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 99.3px;
+  border-radius: 26px;
+}
+.ap-handia-canto { top: 5.5px; background: var(--ap-azul-oscuro); }
+.ap-handia-cara { top: 0; background: var(--ap-azul); }
+.ap-handia-cara > span { position: absolute; white-space: nowrap; }
+.ap-handia-cuadro {
+  left: 14.2px;
+  top: 13.8px;
+  width: 71px;
+  height: 71px;
+  border-radius: 18px;
+  background: var(--ap-azul-medio);
+  display: flex;
+  justify-content: center;
+}
+/* el halo amarillo translúcido va detrás del cuello del foco (centro 34,6 · 35,5 del cuadro), no de las patas */
+.ap-handia-halo {
+  position: absolute;
+  left: 15px;
+  top: 15.9px;
+  width: 39.2px;
+  height: 39.2px;
+  border-radius: 50%;
+  background: rgba(245, 245, 154, 0.31);
+}
+.ap-handia-lampara { position: relative; left: -0.35px; top: -1.3px; line-height: 0; }
+.ap-handia-pregunta { left: 101.2px; top: 21.9px; font: 400 12.7px/1 var(--ap-font); color: #D2DDEE; }
+.ap-handia-titulo { left: 101.4px; top: 38px; font-size: 19px; font-stretch: 110%; color: var(--ap-blanco); }
+.ap-handia-ayuda {
+  left: 101.8px;
+  top: 64.5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ap-amarillo);
+  font: 700 12px/1 var(--ap-font);
+}
+.ap-handia-flecha {
+  left: 309.3px;
+  top: 28.7px;
+  width: 41.5px;
+  height: 41.5px;
+  border-radius: 50%;
+  background: var(--ap-amarillo);
+  color: var(--ap-tinta);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── especialista · inicio (01/02-e-inicio) ─────────────────────────────── */
+.ap-buscando {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  height: 27.2px;
+  padding: 0 10.6px 0 8px;
+  border-radius: 999px;
+  background: var(--ap-blanco);
+  box-shadow: 0 6px 16px -6px rgba(14, 29, 54, 0.25);
+  color: var(--ap-azul);
+  font: 700 13.45px/1 var(--ap-font);
+  white-space: nowrap;
+}
+.ap-buscando-punto {
+  width: 9.6px;
+  height: 9.6px;
+  margin: 0 3.5px 0 2.6px;
+  border-radius: 50%;
+  background: var(--ap-azul-vivo);
+  box-shadow: 0 0 0 2.4px rgba(47, 107, 255, 0.4);
+}
+
+.ap-e-fuera,
+.ap-e-disponible { position: absolute; width: 382px; border-radius: 28px; }
+.ap-e-fuera { height: 254px; }
+.ap-e-disponible { height: 129.8px; }
+.ap-e-fuera > *,
+.ap-e-disponible > * { position: absolute; }
+.ap-e-fuera-rotulo { left: 21px; top: 21.3px; }
+.ap-e-fuera-titulo { left: 21px; top: 41.3px; }
+.ap-e-fuera-texto { left: 21.2px; top: 122.6px; font-size: 15.2px; line-height: 21.4px; white-space: nowrap; }
+.ap-e-fuera-boton { left: 20.7px; top: 179.4px; }
+.ap-e-llave { left: 283.6px; top: -8.4px; line-height: 0; }
+/* en la app la Llave lleva el contorno fino de su dibujo suelto (handys.ts lo engrosa ×1,5 para la fila de handys) */
+.ap-e-llave .hd-h-cuerpo > path:first-child { stroke-width: 13.3px; }
+.ap-e-llave .hd-h-cuerpo > ellipse { stroke-width: 7.5px; }
+
+.ap-e-disponible-icono {
+  left: 19.7px;
+  top: 37.1px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--ap-azul);
+  box-shadow: 0 0 0 2.8px #7396C9;
+  color: var(--ap-blanco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ap-e-disponible-titulo { left: 92.6px; top: 20.6px; font-size: 19.2px; font-stretch: 115%; white-space: nowrap; }
+.ap-e-disponible-texto { left: 92px; top: 46.8px; font: 400 13.8px/18.4px var(--ap-font); color: var(--ap-gris); white-space: nowrap; }
+.ap-e-disponible-chips { left: 92.8px; top: 93.5px; display: flex; gap: 7px; }
