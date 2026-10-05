@@ -137,16 +137,16 @@ Trailer.run({
   },
 
   scenes: [
-    { type: 'origin', label: 'VELMAR', duration: 2, lines: ['TU TIENDA', '<em>VIVE</em> EL AÑO'], to: CELESTE },
+    { type: 'origin', label: 'VELMAR', duration: 2, lines: ['TU TIENDA', '<em>VIVE</em> EL AÑO'], to: '#f6f1e8' },
     {
       type: 'shift', label: 'TEMPORADAS', duration: 3.5, collapse: false, spin: 0,
       steps: [
-        { word: 'HALLOWEEN', form: BAG, bg: '#f97316', fg: INK, shape: INK, fx: 'rise' },
-        { word: 'NAVIDAD', form: TAG, bg: ROJO, fg: '#ffffff', shape: '#12a150', fx: 'slide', cut: 'right' },
-        { word: 'AÑO NUEVO', form: CARD, bg: INK, fg: SOL, shape: SOL, fx: 'bloom', cut: 'up' },
+        { word: 'HALLOWEEN', form: BAG, bg: '#d2ad69', fg: '#1c2016', shape: '#1c2016', fx: 'rise' },
+        { word: 'NAVIDAD', form: TAG, bg: '#3d4a2a', fg: '#f6f1e8', shape: '#d2ad69', fx: 'slide', cut: 'right' },
+        { word: 'AÑO NUEVO', form: CARD, bg: '#1c2016', fg: '#d2ad69', shape: '#e88aa0', fx: 'bloom', cut: 'up' },
       ],
     },
-    { type: 'stack', label: 'AGENTE IA', duration: 2.5, bg: '#25d366', fg: INK, accent: '#ffffff', stacks: [['AGENTE IA', 'EN *WHATSAPP'], ['VENDE', '*24/7']] },
-    { type: 'shopfinale', label: 'VELMAR', duration: 2, title: 'VELMAR', subtitle: 'MUY <span>PRONTO</span>', colors: [INK, SOL, ROJO, AZUL, CELESTE] },
+    { type: 'stack', label: 'AGENTE IA', duration: 2.5, bg: '#f6f1e8', fg: '#1c2016', accent: '#3d4a2a', stacks: [['AGENTE IA', 'EN *WHATSAPP'], ['VENDE', '*24/7']] },
+    { type: 'shopfinale', label: 'VELMAR', duration: 2, title: 'VELMAR', subtitle: 'MAR DEL <span>PLATA</span>', colors: ['#1c2016', '#d2ad69', '#3d4a2a', '#e88aa0', '#f6f1e8'] },
   ],
 });
